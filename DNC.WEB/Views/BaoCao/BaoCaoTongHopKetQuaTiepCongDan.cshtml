@@ -1,0 +1,202 @@
+﻿@{
+    ViewBag.Title = "BaoCaoTongHopKetQuaTiepCongDan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .grid-container {
+        display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
+        overflow: auto;
+        width: 100%;
+    }
+
+    .grid {
+        /*display: flex;*/
+        flex-wrap: nowrap;
+    }
+
+    .table tbody tr td:last-child {
+        min-width: 10px;
+    }
+</style>
+
+<script src="~/ScriptController/BaoCaoTongHopKetQuaTiepCongDanJs.js"></script>
+<div ng-controller="BaoCaoTongHopKetQuaTiepCongDanJs">
+    <div class="panel-default border-no-radius">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="../Home/Index">Trang chủ</a>
+                </li>
+                <li class="active">Báo cáo tổng hợp kết quả tiếp công dân</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search"></form>
+            </div>
+        </div>
+        <div class="hrt-dinhhuong hr-dott"></div>
+        <div class="box-scrol">
+            <div class="get-height1">
+                <div class="page-header panel-body">
+                    <div class="col-md-12 no-padding">
+                        <div class="col-md-12 no-padding p-table">
+                            <div class="col-md-12 no-padding" id="Report1">
+                                <div class="panel-body">
+                                    <div class="col-md-12 col-xs-12 no-padding">
+                                        <div class="col-md-3 Pding-div">
+                                            <select class="form-control input-sm" id="ddlDonVi" ng-model="IdDonVi" ng-change="reloadReport1()">
+                                                @*<option value="-1">--- Chọn cơ quan nhận ---</option>*@
+                                                <option ng-repeat="item in lstDepartments" ng-if="DeparmentId != item.Id" value="{{item.Id}}">{{item.Name}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 Pding-div">
+                                            <div class="input-group form-group-option date date-picker">
+                                                <input id="TuNgay" class=" form-control date-picker" ng-model="TuNgay" type="text" placeholder="Từ ngày:">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 Pding-div">
+                                            <div class="input-group form-group-option date date-picker">
+                                                <input id="DenNgay" class="form-control date-picker" size=" 16" ng-model="DenNgay" type="text" placeholder="Đến ngày:" />
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 Pding-div text-right">
+                                            <a ng-click="reloadReport1()" class="btn btn-xs btn-primary">
+                                                <i class="fa fa-tasks">&nbsp;Tạo báo cáo</i>
+                                            </a>
+                                            <a style="margin-left: 8px" class="btn btn-success btn-xs tooltip-success pull-right" data-toggle="modal" data-target="#myModal" data-placement="top" ng-click="Export_KetQuaTiepCongDan()"><i class="fa fa-print"></i> Xuất excel</a>
+                                        </div>
+                                    </div>
+                                    <div class="grid-container">
+                                        <div class="grid">
+                                            <table class="table table-bordered table-hover" border="1" style="width:2000px">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 3%; background-color: #f2f2f2; border-color: #ddd; left: 0; {{position}}" rowspan="4">STT</th>
+                                                        <th class="text-center" style="background-color: #f2f2f2; border-color: #ddd; left: 4.3%; {{position}}" rowspan="4">Tên đơn vị</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="4">Tổng số lượt tiếp</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="4">Tổng số người được tiếp</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="4">Tổng số vụ việc tiếp</th>
+                                                        <th class="text-center" colspan="8">Tiếp thường xuyên</th>
+                                                        <th class="text-center" colspan="18">Tiếp định kỳ và đột xuất của Thủ trưởng</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 3%" rowspan="3">Số lượt tiếp</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="3">Số người được tiếp</th>
+                                                        <th class="text-center" colspan="2">Số vụ việc</th>
+                                                        <th class="text-center" colspan="4">Trong đó đoàn đông người</th>
+
+                                                        <th class="text-center" colspan="9">Thủ trưởng tiếp</th>
+                                                        <th class="text-center" colspan="9">Ủy quyền tiếp</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Tiếp lần đầu</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Tiếp nhiều lần</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số đoàn được tiếp</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số người được tiếp</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Tiếp lần đầu</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Tiếp nhiều lần</th>
+
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số kỳ tiếp</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số lượt tiếp</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số người được tiếp</th>
+                                                        <th class="text-center" colspan="2">Số vụ việc</th>
+                                                        <th class="text-center" colspan="4">Trong đó đoàn đông người</th>
+
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số kỳ tiếp</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số lượt tiếp</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số người được tiếp</th>
+                                                        <th class="text-center" colspan="2">Số vụ việc</th>
+                                                        <th class="text-center" colspan="4">Trong đó đoàn đông người</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 3%">Tiếp lần đầu</th>
+                                                        <th class="text-center" style="width: 3%">Tiếp nhiều lần</th>
+                                                        <th class="text-center" style="width: 3%">Số đoàn được tiếp</th>
+                                                        <th class="text-center" style="width: 3%">Số người được tiếp</th>
+                                                        <th class="text-center" style="width: 3%">Tiếp lần đầu</th>
+                                                        <th class="text-center" style="width: 3%">Tiếp nhiều lần</th>
+
+                                                        <th class="text-center" style="width: 3%">Tiếp lần đầu</th>
+                                                        <th class="text-center" style="width: 3%">Tiếp nhiều lần</th>
+                                                        <th class="text-center" style="width: 3%">Số đoàn được tiếp</th>
+                                                        <th class="text-center" style="width: 3%">Số người được tiếp</th>
+                                                        <th class="text-center" style="width: 3%">Tiếp lần đầu</th>
+                                                        <th class="text-center" style="width: 3%">Tiếp nhiều lần</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="item in lstReport1">
+                                                        <td class="text-center" style="background-color:#fff; border-color:#ddd; left: 0; {{position}}">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                                                        <td style="background-color:#fff; border-color:#ddd; left: 4.3%; {{position}}">{{item.TenDonVi}}</td>
+
+                                                        <td class="text-center">{{item.TSLuot}}</td>
+                                                        <td class="text-center">{{item.TSNguoi}}</td>
+                                                        <td class="text-center">{{item.TSVuViec}}</td>
+
+                                                        <td class="text-center">{{item.TTXSoLuot}}</td>
+                                                        <td class="text-center">{{item.TTXSoNguoi}}</td>
+                                                        <td class="text-center">{{item.TTXVuViecLanDau}}</td>
+                                                        <td class="text-center">{{item.TTXVuViecNhieuLan}}</td>
+                                                        <td class="text-center">{{item.TTXSoDoan}}</td>
+                                                        <td class="text-center">{{item.TTXSoNguoiTrongDoan}}</td>
+                                                        <td class="text-center">{{item.TTXSoDoanLanDau}}</td>
+                                                        <td class="text-center">{{item.TTXSoDoanNhieuLan}}</td>
+
+                                                        <td class="text-center">{{item.TDKSoky}}</td>
+                                                        <td class="text-center">{{item.TDKSoLuot}}</td>
+                                                        <td class="text-center">{{item.TDKSoNguoi}}</td>
+                                                        <td class="text-center">{{item.TDKVuViecLanDau}}</td>
+                                                        <td class="text-center">{{item.TDKVuViecNhieuLan}}</td>
+                                                        <td class="text-center">{{item.TDKSoDoan}}</td>
+                                                        <td class="text-center">{{item.TDKSoNguoiTrongDoan}}</td>
+                                                        <td class="text-center">{{item.TDKSoDoanLanDau}}</td>
+                                                        <td class="text-center">{{item.TDKSoDoanNhieuLan}}</td>
+
+                                                        <td class="text-center">{{item.TDK_UQSoKy}}</td>
+                                                        <td class="text-center">{{item.TDK_UQSoLuot}}</td>
+                                                        <td class="text-center">{{item.TDK_UQSoNguoi}}</td>
+                                                        <td class="text-center">{{item.TDK_UQVuViecLanDau}}</td>
+                                                        <td class="text-center">{{item.TDK_UQVuViecNhieuLan}}</td>
+                                                        <td class="text-center">{{item.TDK_UQSoDoan}}</td>
+                                                        <td class="text-center">{{item.TDK_UQSoNguoiTrongDoan}}</td>
+                                                        <td class="text-center">{{item.TDK_UQSoDoanLanDau}}</td>
+                                                        <td class="text-center">{{item.TDK_UQSoDoanNhieuLan}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <iframe id="BC_KetQuaTiepCongDan" style="display: none;"></iframe>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    });
+    $('#DateOfBirth').datepicker();
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+</script>

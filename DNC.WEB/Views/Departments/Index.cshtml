@@ -1,0 +1,282 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/ScriptController/DepartmentsCtrl.js"></script>
+<style>
+    a:active {
+        color: whitesmoke;
+    }
+</style>
+@*Kendo Tree view*@
+
+<link href="~/Content/assets/css/chosen.min.css" rel="stylesheet" />
+<link href="~/Content/assets/styles/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/assets/styles/kendo.rtl.min.css" rel="stylesheet" />
+<link href="~/Content/assets/styles/kendo.default.min.css" rel="stylesheet" />
+<script src="~/Content/assets/js/kendo.all.min.js"></script>
+
+<div class="panel-default border-no-radius" ng-controller="DepartmentCtrl" ng-app="myApp">
+    <div class="breadcrumbs no-padding" id="breadcrumbs">
+        <script type="text/javascript">
+            try { ace.settings.check('breadcrumbs', 'fixed') } catch (e) { }
+        </script>
+        <div class="col-xs-12">
+            <div class="col-md-9 col-sm-8 hidden-xs no-padding-left">
+               <ul class="breadcrumb">
+            <li>
+                <a href="../Home/Index">Trang chủ</a>
+            </li>
+            <li><a>Quản lý danh mục</a></li>
+            <li>Cơ cấu tổ chức</li>
+        </ul><!-- /.breadcrumb -->
+            </div>
+        </div>
+        <!-- /.breadcrumb -->
+    </div>
+    <div class="hrt-dinhhuong hr-dott"></div>
+    <!-- /.panel-heading -->
+    <div class="get-height1">
+        <div class="col-md-4 pding-body Department Pding-div">
+            <div class="widget-box">
+                <div class="widget-header">
+                    <h5 class="widget-title">
+                        Danh sách đơn vị
+                        <div class="btn-group pull-right">
+                            <button id="btcollTree" type="button" class="btn btn-sm btn-danger " value="Phóng to" ng-click="collapseAll()" style="min-height:38px">
+                                <i class="fa fa-compress" ng-show="skinIndex" title="Thu nhỏ"></i>
+                                <i class="fa fa-expand" ng-show="!skinIndex" title="Mở rộng toàn bộ cây cơ cấu tổ chức"></i>
+                            </button>
+                        </div>
+                    </h5>
+                </div>
+                <div class="widget-body" style="min-height:80vh">
+                    <div class="col-md-12 modal-body no-padding">
+                        <div id="treeView" kendo-tree-view="tree"
+                             k-data-source="lstData"
+                             k-options="optionTree"
+                             k-on-change="selectedItem = dataItem">
+                            <span k-template>
+                                <a style="cursor:pointer;" ng-click="checkfunction(dataItem.id,dataItem.parentid)">{{dataItem.text}}</a>
+                            </span>
+                        </div>
+                        <ul id="menu">
+                            <li id="addItem">Thêm cùng cấp</li>
+                            <li id="addChirl">Thêm cấp con</li>
+                            <li id="deleteChirl">Xóa</li>
+                        </ul>
+                        <script>
+                            $(document).ready(function () {
+                                $("#menu").kendoContextMenu({
+                                    // listen to right-clicks on treeview container
+                                    target: "#treeView",
+                                    // show when node text is clicked
+                                    filter: ".k-in",
+                                    // handle item clicks
+                                    select: function (e) {
+                                        var button = $(e.item);
+                                        var node = $(e.target);
+                                        var item = $("#treeView").data("kendoTreeView").dataItem(node);
+                                        switch (button.text()) {
+                                            case "Thêm cùng cấp":
+                                                angular.element(document.getElementById('treeView')).scope().addAfter(item);
+                                                break;
+                                            case "Thêm cấp con":
+                                                angular.element(document.getElementById('treeView')).scope().addBelow(node, item.id);
+                                                break;
+                                            case "Xóa":
+                                                angular.element(document.getElementById('treeView')).scope().removes(item.id, item.text, item);
+                                                break;
+                                        }
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>            
+        </div>
+        <div class="col-md-8 pding-body Department Pding-div">
+            <div class="widget-box">
+                <div class="widget-header">
+                    <h5 class="widget-title">
+                        Thông tin đơn vị
+                    </h5>
+                </div>
+                <div class="widget-body" style="min-height:80vh">
+                    <div class="col-md-12" style="padding-top: 5px">
+                        <div class="profile-user-info profile-user-info-striped dv-name no-border-top">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name">Thuộc đơn vị<i style="color: red">*</i>:</div>
+                                <div class="profile-info-value">
+                                    <select ng-model="Phongban.ParentId">
+                                        <option value="0">--- Chọn cấp cha ---</option>
+                                        <option ng-repeat="x in lstDepartmentGetAllLevel" value="{{x.Id}}" ng-hide="Phongban.Id == x.Id" ng-selected="Phongban.ParentId == x.Id">{{x.Name}}</option>
+                                    </select>
+                                    <label id="lblCha" style="display: none;" class="messenge-error"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="profile-user-info profile-user-info-striped dv-name no-border-top">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Mã đơn vị<i style="color: red">*</i>:</div>
+                                <div class="profile-info-value">
+                                    <input id="CodeDep" ng-enter="EntnkyDP('Ten')" ng-blur="CheckvalidateNullthis($event)" type="text" class="form-control" maxlength="80" ng-model="Phongban.Code" checked tabindex="1" autofocus
+                                           placeholder="Ví dụ :CS-TX,CX-CT,CH-BN,..." />
+                                    <label class="help-block" id="lblCodeDep" style="display: none"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="profile-user-info profile-user-info-striped dv-name no-border-top">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Tên đơn vị<i style="color: red">*</i>:</div>
+                                <div class="profile-info-value">
+                                    <input id="Name" ng-enter="EntnkyDP('MoTa')" ng-blur="CheckvalidateNullthis($event)" type="text" class="form-control" maxlength="80" ng-model="Phongban.Name" checked tabindex="3"
+                                           placeholder="Nhập vào tên của đơn vị" />
+                                    <label class="help-block" id="lblName" ng-model="lblten" style="display: none"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="profile-user-info profile-user-info-striped dv-name no-border-top">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Mô tả:</div>
+                                <div class="profile-info-value">
+                                    <textarea id="MoTa" class="form-control"
+                                              maxlength="500" ng-model="Phongban.Descriptions" tabindex="4" placeholder="Nhập vào mô tả chức năng của đơn vị">
+                                        {{Phongban.Description}}
+                                    </textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="profile-user-info profile-user-info-striped dv-name no-border-top">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name">  Cấp:</div>
+                                <div class="profile-info-value">
+                                    <select ng-model="Phongban.Levels">
+                                        <option value="0" selected="selected">Cấp Tỉnh / Thành phố</option>
+                                        <option value="1">Cấp Quận / Huyện</option>
+                                        <option value="2">Cấp Sở / Ngành</option>
+                                        <option value="3">Cấp Xã / Phường</option>
+                                    </select>
+                                    <label class="help-block" id="lbllevels" style="display: none"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="profile-user-info profile-user-info-striped dv-name no-border-top">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name">  Trạng thái:</div>
+                                <div class="profile-info-value">
+                                    <div class="checkbox no-padding no-margin">
+                                        <input id="TrangThai" ng-enter="EntnkyDP('btnluuDepartment')" name="switch-field-1" class="ace ace-switch ace-switch-7" type="checkbox" ng-model="Phongban.Status" tabindex="7">
+                                        <span class="lbl"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="profile-user-info profile-user-info-striped dv-name no-border-top">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name">  Trạng thái sử dụng:</div>
+                                <div class="profile-info-value">
+                                    <div class="checkbox no-padding no-margin">
+                                        <input id="TrangThaiSuDung" ng-enter="EntnkyDP('btnluuDepartment')" name="switch-field-1" class="ace ace-switch ace-switch-7" type="checkbox" ng-model="Phongban.StatusUse" tabindex="7">
+                                        <span class="lbl"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="profile-user-info profile-user-info-striped dv-name no-border-top">
+                            <div class="profile-info-row">
+                                <div class="profile-info-value">
+                                    <div class="modal-footer no-border-top">
+                                        <div class="row pull-right" style="margin-right: 5px">
+                                            <button id="btnluuDepartment" ng-enter="EntnkyDP('btnRemoveDP')" class="btn btn-success btn-xs" ng-click="preCreate(Phongban)" ng-show="CheckAddEdit('2')" tabindex="9"><i class="fa fa-floppy-o"></i> Lưu lại</button>
+                                            <a id="btnRemoveDP" ng-if="Phongban.Id != null" class="btn btn-danger btn-xs" data-toggle="modal" ng-click="removes(Phongban.Id,Phongban.Name)" ng-show="CheckAddEdit('3')" tabindex="10">
+                                                <i class="fa fa-trash"></i> Xóa
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*xác nhận xóa*@
+    <div class="modal fade" id="confirm-delete-deparment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog dv-modal">
+            <div class="modal-content modal-xoa">
+                <div class="tab-content tab-content_xoa">
+                    <div class="modal-header no-padding widget-header-small">
+                        <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;</button>
+                        <p class="title-ct uppercase no-margin"><i class="ace-icon fa fa-exclamation-triangle red"></i>Thông báo</p>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn xóa:
+                        <label id="nameDepartment" class="red"></label>?
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-danger btn-xs btn-ok" ng-click="delete(ID)"><i class="fa fa-check-square-o"></i> Có</a>
+                        <button type="button" class="btn btn-xs btn-info" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*xác nhận cập nhật trạng thái*@
+    <div class="modal fade" id="confirm-updatestatus-folder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog dv-modal">
+            <div class="modal-content modal-xoa">
+                <div class="tab-content tab-content_xoa">
+                    <div class="modal-header no-padding widget-header-small">
+                        <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;</button>
+                        <p class="title-ct uppercase no-margin"><i class="ace-icon fa fa-exclamation-triangle red"></i>Thông báo</p>
+                    </div>
+                    <div class="modal-body">
+                        Đổi trạng thái tổ chức này sẽ đổi trạng thái tất cả các tổ chức trong nó, Bạn có chắc chắn muốn cập nhật?
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-danger btn-xs btn-ok" ng-click="UpdateStatusDisable(modelUpdate)"><i class="fa fa-check-square-o"></i> Có</a>
+                        <button type="button" class="btn btn-xs btn-info" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*xác nhận cập nhật trạng thái*@
+    <div class="modal fade" id="confirm-update-folder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog dv-modal">
+            <div class="modal-content modal-xoa">
+                <div class="tab-content tab-content_xoa">
+                    <div class="modal-header no-padding widget-header-small">
+                        <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;</button>
+                        <p class="title-ct uppercase no-margin"><i class="ace-icon fa fa-exclamation-triangle red"></i>Thông báo</p>
+                    </div>
+                    <div class="modal-body">
+                       Bạn có chắc muốn thay đổi thông tin tổ chức {{modelUpdate.Name}} ?
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-danger btn-xs btn-ok" ng-click="update(modelUpdate)"><i class="fa fa-check-square-o"></i> Có</a>
+                        <button type="button" class="btn btn-xs btn-info" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

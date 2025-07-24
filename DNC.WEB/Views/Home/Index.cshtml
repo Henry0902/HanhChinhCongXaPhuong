@@ -1,0 +1,270 @@
+﻿@using DNC.WEB.Repository
+@using DNC.WEB.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    GenericRepository<TiepCongDan> _context1 = new GenericRepository<TiepCongDan>();
+    ViewBag.TiepCongDan = _context1.GetAll().Count().ToString();
+    //GenericRepository<DonThu> _context2 = new GenericRepository<DonThu>();
+    //ViewBag.DonThuTiepNhan = _context2.GetAll().Where(x => x.IdTrangThai == 1 || x.IdTrangThai == 2).Count().ToString();
+    //ViewBag.DonThuXuLy = _context2.GetAll().Where(x => x.IdTrangThai == 3).Count().ToString();
+    //ViewBag.DonThuKetLuan = _context2.GetAll().Where(x => x.IdTrangThai == 4).Count().ToString();
+    //ViewBag.DonThuDaXuLy = _context2.GetAll().Where(x => x.IdTrangThai == 6).Count().ToString();
+}
+<style>
+    .panel {
+        margin-bottom: 0px;
+    }
+</style>
+
+<div class="main-content-inner">
+    <div class="page-content">
+        @*<div class="home-index">
+            <div class="col-md-10 breadcrumbs no-padding" id="breadcrumbs">
+                <script type="text/javascript">
+                    try { ace.settings.check('breadcrumbs', 'fixed') } catch (e) { }
+                </script>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="/Home/Index"><i class="ace-icon fa fa-home home-icon"></i>Trang chủ</a>
+                    </li>
+                </ul>
+            </div>
+        </div>*@
+        <script src="/ScriptController/HomeJs.js"></script>
+
+        <div class="scroll-tree ng-scope" ng-controller="HomeJs">
+            @*<div class="hrt hr20 hr-dott"></div>*@
+
+            <div class="col-xs-12 height-tree Pding-div">
+                <div class="col-md-12 no-padding" ng-if="lstDonThu.length > 0">
+                    <div class="col-md-12 Pding-div p-table widget-box collapsed">
+                        <div class="widget-header widget-header-flat">
+                            <h5 class="widget-title lighter">
+                                <i class="ace-icon fa fa-star red"></i>
+                                {{lstDonThu.length}} hồ sơ quá hạn xử lý
+                            </h5>
+                            <div class="widget-toolbar">
+                                <a href="#" data-action="collapse">
+                                    <i class="ace-icon fa fa-chevron-down"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="widget-body" style="display: none;">
+                            <table class="table table-bordered table-hover" border="1">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width: 3%">STT</th>
+                                        <th class="text-center" style="width: 10%">Nguồn đơn</th>
+                                        <th class="text-center" style="width: 10%">Ngày nhập</th>
+                                        <th class="text-center" style="width: 10%">Loại đối tượng / Số người</th>
+                                        <th class="text-center" style="width: 20%">Tên chủ đơn / Địa chỉ</th>
+                                        <th class="text-center">Nội dung hồ sơ</th>
+                                        <th class="text-center" style="width: 20%">Trạng thái / Hướng xử lý</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in lstDonThu" ng-style="item.TinhTrangHanXuLy === 2 && {'background-color':'#F5A9A9'} ">
+                                        <td class="text-center">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                                        @*<td class="text-center">{{item.Id}}</td>*@
+                                        <td>{{item.TenNguonDon}}</td>
+                                        <td class="text-center">
+                                            {{ item.NgayNhap | date:"dd/MM/yyyy" }}
+                                        </td>
+                                        <td class="text-center"> {{item.TenDoiTuong}} <hr style="width: 100%; margin: 5px 0; border-color: #b7b7b7; border-bottom: none; "> {{item.SoNguoi}}</td>
+                                        <td>
+                                            <b class="blue"><a href="" data-toggle="modal" data-target="#myModalXem" ng-click="show(item.Id);">{{item.HoTen}}</a> </b>
+                                            <hr style="width: 100%; margin: 5px 0; border-color: #b7b7b7; border-bottom: none; ">
+                                            {{item.DiaChi}}, {{item.TenPhuongXa}}, {{item.TenQuanHuyen}}, {{item.TenTinhThanh}}
+                                        </td>
+                                        <td>{{item.NoiDungDonThu}}</td>
+                                        <td>
+                                            {{item.TenTrangThai}}
+                                            <span class="bolder blue" ng-if="item.TinhTrangHanXuLy == 3"> (không giao hạn xử lý) </span>
+                                            <span class="bolder green" ng-if="item.TinhTrangHanXuLy == 1"> (Còn hạn {{item.NgayConXuLy}} ngày) </span>
+                                            <span class="bolder red" ng-if="item.TinhTrangHanXuLy == 2"> (Quá hạn {{item.NgayConXuLy}} ngày) </span>
+                                            <hr style="width: 100%; margin: 5px 0; border-color: #b7b7b7; border-bottom: none; ">
+                                            {{item.TenHuongXuLy}}
+                                        </td>
+                                        @*<td>{{item.TenNguoiNhap}}</td>*@
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="show-paging col-md-12 no-padding">
+                                <div class="paging">
+                                    <span>Hiển thị</span>
+                                    <select ng-model="pageSize" ng-change="reload()">
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="200">200</option>
+                                    </select>
+                                    <span> tổng số <span class="totalrecord">{{totalRecords}}</span> bản ghi</span>
+                                </div>
+                                <div class="pagination no-padding">
+                                    <ul class="pagination pull-right" style="margin:0" ng-hide="pageCount==0">
+                                        <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(1)"><a href="javascript:void(0)"><i class="fa fa-fast-backward"></i></a></li>
+                                        <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(pageIndex-1)"><a href="javascript:void(0)"><i class="fa fa-backward"></i></a></li>
+                                        <li ng-repeat="page in lstPage track by $index"><a href="javascript:void(0)" ng-click="selectPage(page)" ng-style="activepage(page)">{{page}}</a></li>
+                                        <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageIndex+1)"><a href="javascript:void(0)"><i class="fa fa-forward"></i></a></li>
+                                        <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageCount)"><a href="javascript:void(0)"><i class="fa fa-fast-forward"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9 no-padding" style="padding-top: 5px !important">
+                    <div class="col-md-12 Pding-div p-table" id="chart1">
+                        <div class="col-md-2 Pding-div">
+                            <select class="form-control" ng-model="namID" ng-change="changeYear()">
+                                <option ng-repeat="item in lstNam" value="{{item}}" ng-selected="namID == item">Năm {{item}}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <fusioncharts width="100%"
+                                          height="300"
+                                          type="mscombidy2d"
+                                          dataformat="json"
+                                          datasource={{dsChart1}}>
+                            </fusioncharts>
+                            <fusioncharts width="100%"
+                                          height="300"
+                                          type="doughnut3d"
+                                          dataformat="json"
+                                          datasource={{dsChart2}}>
+                            </fusioncharts>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 no-padding">
+                    <!--<div class="col-md-12 Pding-div">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3 center">
+                        <i class="fa fa-users fa-3x blue"></i>-->
+                    @*<img ng-src="../Images/CanXuLy.png" width="60px" height="60px" src="../Images/CanXuLy.png">*@
+                    <!--</div>
+                        <div class="col-xs-9">
+                            <div class="bolder red">@ViewBag.TiepCongDan</div>
+                            <div>Tiếp công dân</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+                    @*<div class="col-md-12 Pding-div">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3 center">
+                                <i class="fa fa-envelope fa-3x blue"></i>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="bolder red">{{ThongBao.DonThu}}</div>
+                                <div>Đơn thư tiếp nhận</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+                    <div class="col-md-12 Pding-div">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3 center">
+                                        <i class="fa fa-envelope fa-3x blue"></i>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        <div class="bolder red">{{ThongBao.DonThuXuLy}}</div>
+                                        <div>Đơn thư chờ xử lý</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 Pding-div">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3 center">
+                                        <i class="fa fa-envelope fa-3x blue"></i>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        <div class="bolder red">{{ThongBao.DonThuDuyetXuLy}}</div>
+                                        <div>Đơn thư duyệt xử lý</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 Pding-div">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3 center">
+                                        <i class="fa fa-envelope fa-3x blue"></i>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        <div class="bolder red">{{ThongBao.DonThuThuLy}}</div>
+                                        <div>Đơn thư thụ lý giải quyết</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 Pding-div">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3 center">
+                                        <i class="fa fa-envelope fa-3x blue"></i>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        <div class="bolder red">{{ThongBao.DonThuKetLuan}}</div>
+                                        <div>Đơn thư chờ kết luận</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 Pding-div">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3 center">
+                                        <i class="fa fa-envelope fa-3x blue"></i>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        <div class="bolder red">{{ThongBao.DonThuDuyetKetLuan}}</div>
+                                        <div>Đơn thư duyệt kết quả</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 Pding-div">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3 center">
+                                        <i class="fa fa-envelope fa-3x blue"></i>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        <div class="bolder red">{{ThongBao.DonThuTraKetQua}}</div>
+                                        <div>Đơn thư chờ trả kết quả</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.col -->
+        </div>
+    </div>
+</div>

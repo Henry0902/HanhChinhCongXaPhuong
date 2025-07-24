@@ -1,0 +1,237 @@
+﻿@{
+    ViewBag.Title = "BaoCaoTongHopKetQuaXuLyDonKienNghiPhanAnh";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .grid-container {
+        display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
+        max-height: 650px;
+        overflow: auto;
+        width: 100%;
+    }
+
+    .grid {
+        /*display: flex;*/
+        flex-wrap: nowrap;
+    }
+
+    .table tbody tr td:last-child {
+        min-width: 10px;
+    }
+</style>
+
+<script src="~/ScriptController/BaoCaoTongHopKetQuaXuLyDonKienNghiPhanAnhJs.js"></script>
+<div ng-controller="BaoCaoTongHopKetQuaXuLyDonKienNghiPhanAnhJs">
+    <div class="panel-default border-no-radius">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="../Home/Index">Trang chủ</a>
+                </li>
+                <li class="active">Báo cáo tổng hợp kết quả xử lý Đơn Khiến Nghị Phản Ánh</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search"></form>
+            </div>
+        </div>
+        <div class="hrt-dinhhuong hr-dott"></div>
+        <div class="box-scrol">
+            <div class="get-height1">
+                <div class="page-header panel-body">
+                    <div class="col-md-12 no-padding">
+                        <div class="col-md-12 no-padding p-table">
+                            <div class="col-md-12 no-padding" id="Report1">
+                                <div class="panel-body">
+                                    <div class="col-md-12 col-xs-12 no-padding">
+                                        <div class="col-md-3 Pding-div">
+                                            <select class="form-control input-sm" id="ddlDonVi" ng-model="IdDonVi" ng-change="reloadReport1()">
+                                                @*<option value="-1">--- Chọn cơ quan nhận ---</option>*@
+                                                <option ng-repeat="item in lstDepartments" ng-if="DeparmentId != item.Id" value="{{item.Id}}">{{item.Name}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 Pding-div">
+                                            <div class="input-group form-group-option date date-picker">
+                                                <input id="TuNgay" class=" form-control date-picker" ng-model="TuNgay" type="text" placeholder="Từ ngày:">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 Pding-div">
+                                            <div class="input-group form-group-option date date-picker">
+                                                <input id="DenNgay" class="form-control date-picker" size=" 16" ng-model="DenNgay" type="text" placeholder="Đến ngày:" />
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 Pding-div text-right">
+                                            <a ng-click="reloadReport1()" class="btn btn-xs btn-primary">
+                                                <i class="fa fa-tasks">&nbsp;Tạo báo cáo</i>
+                                            </a>
+                                            <a style="margin-left: 8px" class="btn btn-success btn-xs tooltip-success pull-right" data-toggle="modal" data-target="#myModal" data-placement="top" ng-click="Export_TongHopKetQuaXuLyDonKienNghiPhanAnh()"><i class="fa fa-print"></i> Xuất excel</a>
+
+                                        </div>
+                                    </div>
+                                    <div class="grid-container">
+                                        <div class="grid">
+                                            <table class="table table-bordered table-hover" border="1" style="width:2000px">
+                                                <thead style=" top: 0; z-index:2; {{position}}">
+                                                    <tr>
+                                                        <th class="text-center" style="width: 3%; background-color: #f2f2f2; border-color: #ddd; left: 0; {{position}}" rowspan="3">STT</th>
+                                                        <th class="text-center" style="width: 15%; background-color: #f2f2f2; border-color: #ddd; left: 0%; {{position}}; " rowspan="3">Tên đơn vị</th>
+                                                        <th class="text-center" colspan="3">Tổng số đơn phải xử lý</th>
+                                                        <th class="text-center" colspan="3">Số đơn đã xem xét về điều kiện xử lý</th>
+                                                        <th class="text-center" colspan="2">Đủ điều kiện xử lý</th>
+                                                        <th class="text-center" colspan="4">Phân loại đơn theo nội dung</th>
+                                                        <th class="text-center" colspan="2">Phân loại đơn theo tình trạng giải quyết</th>
+                                                        <th class="text-center" colspan="4">Kết quả xử lý đơn</th>
+                                                        <th class="text-center" colspan="2">Kết quả giải quyết vụ việc thuộc thẩm quyền</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Tổng số đơn</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số đơn kỳ trước chuyển sang</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số đơn tiếp nhận trong kỳ</th>
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Tổng số</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Đơn kỳ trước chuyển sang</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Đơn tiếp nhận trong kỳ</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số đơn</th>
+                                                        <th class="text-center" style="width: 6%" rowspan="2">Số vụ việc</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Chế độ chính sách</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Đất đai</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Tư pháp</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">khác</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Đã được giải quyết</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Chưa được giải quyết</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Vụ việc thuộc thẩm quyền</th>
+                                                        <th class="text-center" colspan="3">Vụ việc không thuộc thẩm quyền</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số vụ việc đã được giải quyết</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số vụ việc chưa được giải quyết</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 4%">Tổng số</th>
+                                                        <th class="text-center" style="width: 3%">Chuyển đơn</th>
+                                                        <th class="text-center" style="width: 3%">Đôn đốc giải quyết</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" style="background-color: #f2f2f2; border-color: #ddd; left: 0; {{position}}"></th>
+                                                        <th class="text-center" style="background-color: #f2f2f2; border-color: #ddd; left: 0%; {{position}}">MS</th>
+                                                        <th class="text-center">1 = 2 + 3</th>
+                                                        <th class="text-center">2</th>
+                                                        <th class="text-center">3</th>
+                                                        <th class="text-center">4 = 5 + 6</th>
+                                                        <th class="text-center">5</th>
+                                                        <th class="text-center">6</th>
+                                                        <th class="text-center">7</th>
+                                                        <th class="text-center">8 = 9 + 10 + 11 + 12 = 13 + 14 = 15 + 18</th>
+                                                        <th class="text-center">9</th>
+                                                        <th class="text-center">10</th>
+                                                        <th class="text-center">11</th>
+                                                        <th class="text-center">12</th>
+                                                        <th class="text-center">13</th>
+                                                        <th class="text-center">14</th>
+                                                        <th class="text-center">15</th>
+                                                        <th class="text-center">16 = 17 + 18</th>
+                                                        <th class="text-center">17</th>
+                                                        <th class="text-center">18</th>
+                                                        <th class="text-center">19</th>
+                                                        <th class="text-center">20</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="item in lstReport1">
+                                                        <td class="text-center" style="background-color:#fff; border-color:#ddd; left: 0; {{position}}">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                                                        <td style="background-color:#fff; border-color:#ddd; left: 0%; {{position}}">{{item.TenDonVi}}</td>
+
+                                                        @*Tổng số đơn phải xử lý*@
+                                                        <td class="text-center">{{ item.TNTruocKy + item.TNTrongKy }}</td>
+                                                        <td class="text-center">{{item.TNTruocKy}}</td>
+                                                        <td class="text-center">{{item.TNTrongKy}}</td>
+
+                                                        @*Số đơn đã xem xét điều kiện xử lý*@
+                                                        <td class="text-center">{{item.DonDaXuLyKyTruoc + item.DonDaXuLyTrongKy}}</td>
+                                                        <td class="text-center">{{item.DonDaXuLyKyTruoc}}</td>
+                                                        <td class="text-center">{{item.DonDaXuLyTrongKy}}</td>
+
+                                                        @*Đủ điều kiện xử lý*@
+                                                        <td class="text-center">{{item.DonDuDieuKien}}</td>
+                                                        <td class="text-center">{{item.CheDoChinhSach + item.DatDai + item.TuPhap + item.Khac}}</td>
+
+                                                        @*Phân loại đơn theo nội dung*@
+                                                        <td class="text-center">{{item.CheDoChinhSach}}</td>
+                                                        <td class="text-center">{{item.DatDai}}</td>
+                                                        <td class="text-center">{{item.TuPhap}}</td>
+                                                        <td class="text-center">{{item.Khac}}</td>
+
+                                                        @*Phân loại đơn theo tình trạng giải quyết*@
+                                                        <td class="text-center">{{item.DaDuocGiaiQuyet}}</td>
+                                                        <td class="text-center">{{item.ChuaDuocGiaiQuyet}}</td>
+
+                                                        @*Kết quả xử lý đơn*@
+                                                        <td class="text-center">{{item.VuViecThuocThamQuyen}}</td>
+                                                        <td class="text-center">{{item.DonChuyenDon + item.DonDonDoc}}</td>
+                                                        <td class="text-center">{{item.DonChuyenDon}}</td>
+                                                        <td class="text-center">{{item.DonDonDoc}}</td>
+
+                                                        @*Kết quả giải quyết vụ việc thuộc thẩm quyền*@
+                                                        <td class="text-center">{{item.VuViecDaGiaiQuyet}}</td>
+                                                        <td class="text-center">{{item.VuViecChuaGiaiQuyet}}</td>
+                                                    </tr>
+
+                                                    @*Tính Tổng các cột*@
+                                                    <tr style="background-color:#f2f2f2; bottom: 0% ;{{position}}">
+                                                        <td class="text-center" style="background-color:#f2f2f2; border-color:#ddd; left: 0%; {{position}}"></td>
+                                                        <td class="text-center" colspan="1" style="background-color:#f2f2f2; border-color:#ddd; left: 0%; {{position}}">Tổng số</td>
+                                                        <td class="text-center">{{totals.TNTruocKy + totals.TNTrongKy}}</td>
+                                                        <td class="text-center">{{totals.TNTruocKy}}</td>
+                                                        <td class="text-center">{{totals.TNTrongKy}}</td>
+                                                        <td class="text-center">{{totals.DonDaXuLyKyTruoc + totals.DonDaXuLyTrongKy}}</td>
+                                                        <td class="text-center">{{totals.DonDaXuLyKyTruoc}}</td>
+                                                        <td class="text-center">{{totals.DonDaXuLyTrongKy}}</td>
+                                                        <td class="text-center">{{totals.DonDuDieuKien}}</td>
+                                                        <td class="text-center">{{totals.CheDoChinhSach + totals.DatDai + totals.TuPhap + totals.Khac}}</td>
+                                                        <td class="text-center">{{totals.CheDoChinhSach}}</td>
+                                                        <td class="text-center">{{totals.DatDai}}</td>
+                                                        <td class="text-center">{{totals.TuPhap}}</td>
+                                                        <td class="text-center">{{totals.Khac}}</td>
+                                                        <td class="text-center">{{totals.DaDuocGiaiQuyet}}</td>
+                                                        <td class="text-center">{{totals.ChuaDuocGiaiQuyet}}</td>
+                                                        <td class="text-center">{{totals.VuViecThuocThamQuyen}}</td>
+                                                        <td class="text-center">{{totals.DonChuyenDon + totals.DonDonDoc}}</td>
+                                                        <td class="text-center">{{totals.DonChuyenDon}}</td>
+                                                        <td class="text-center">{{totals.DonDonDoc}}</td>
+                                                        <td class="text-center">{{totals.VuViecDaGiaiQuyet}}</td>
+                                                        <td class="text-center">{{totals.VuViecChuaGiaiQuyet}}</td>
+                                                    </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <iframe id="BC_TongHopKetQuaXuLyDonKienNghiPhanAnh" style="display: none;"></iframe>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    });
+    $('#DateOfBirth').datepicker();
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+</script>

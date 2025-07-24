@@ -1,0 +1,415 @@
+﻿@{
+    ViewBag.Title = "Chỉnh sửa thông tin cá nhân";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<style>
+    .wrapper {
+        width: 50%;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+        height: 80px;
+    }
+
+    .title {
+        color: #007bff;
+    }
+
+    .form-group {
+        text-align: left;
+        margin-bottom: 15px;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        /*padding: 8px;*/
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .btn-custom {
+        padding: 2px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        min-width: 100px;
+    }
+
+    .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-save {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-submit {
+        background-color: #28a745;
+        color: white;
+    }
+
+    select {
+        padding: 0 !important;
+        height: 32px !important;
+    }
+
+    .subtitle {
+        font-weight: bold;
+    }
+
+    input.b-radius-4 {
+        border-radius: 4px !important;
+    }
+
+</style>
+
+<script src="~/ScriptController/ProfileEditJs.js"></script>
+<div class="main-content-inner" ng-controller="ProfileEditJs">
+    <div class="panel-default">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="/dang-ky-tiep-dan/danh-sach">Trang chủ</a>
+                </li>
+                <li><a>Thông tin cá nhân</a></li>
+                <li class="active">Chỉnh sửa</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <button type="button" class="btn-custom btn-cancel" ng-click="redirectToPage()">Hủy</button>
+                <button type="button" class="btn-custom btn-save" ng-click="submitRegister(0)">Lưu</button>
+                <button type="submit" class="btn-custom btn-submit" ng-click="submitRegister(1)" ng-show="formData.Status == 1">Gửi phê duyệt →</button>
+            </div>
+        </div>
+        <div class="page-header panel-body">
+            <div class="p-table ptdv-pding">
+                <div class="panel-body" style="margin-top: 24px;">
+                    <div class="row" style="margin: 0 !important">
+                        <div class="col-xs-12">
+                            <div id="user-profile-1" class="user-profile row">
+                                <div class="col-xs-12 col-sm-3 center">
+                                    <div>
+                                        <span class="profile-picture">
+                                            <img id="avatar" class="editable img-responsive" ng-show="!formData.Avatar" alt="Ảnh đại diện" src="~/Content/assets/images/profile-pic.jpg" />
+                                            <img id="avatar" class="editable img-responsive" ng-show="formData.Avatar" alt="{{formData.DisplayName}}" src="{{formData.Avatar}}" />
+                                        </span>
+                                        <div class="space-4"></div>
+                                        <div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
+                                            <div class="inline position-relative">
+                                                <a href="#" class="user-title-label dropdown-toggle" data-toggle="dropdown">
+                                                    <span class="white">{{formData.DisplayName}}</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="space-6"></div>
+                                    <div class="profile-contact-info">
+                                        <div class="profile-contact-links align-center">
+                                            <a class="btn btn-link" ng-click="triggerFileInput()" ng-show="!formData.FileName">
+                                                <i class="ace-icon fa fa-image bigger-120 "></i>
+                                                Thay avatar
+                                            </a>
+                                            <input type="file" id="fileInput" style="display: none;" onchange="angular.element(this).scope().fileChanged(this)" />
+
+                                            <ul style="list-style-type: none; margin: 0 !important" ng-show="formData.FileName">
+                                                <li style="padding: 3px 0; ">
+                                                    <span>📄</span>
+                                                    {{ truncateText(formData.FileName) }}
+                                                    <span style="cursor: pointer; color: red;" ng-click="removeFile()"> ❌</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="hr hr12 dotted"></div>
+                                    <div style="display: flex; justify-content: center">
+                                        <img ng-show="formData.Status == 0" class="editable img-responsive" alt="Chờ đăng ký" src="~/Content/assets/images/cho_dang_ky.png" />
+                                        <img ng-show="formData.Status == 1" class="editable img-responsive" alt="Cập nhật" src="~/Content/assets/images/can_cap_nhat.png" />
+                                        <img ng-show="formData.Status == 2" class="editable img-responsive" alt="Đã kích hoạt" src="~/Content/assets/images/icon_da_kich_hoat.png" />
+                                        <img ng-show="formData.Status == 3" class="editable img-responsive" alt="Đã kích hoạt" src="~/Content/assets/images/icon_vohieuhoa.png" />
+                                    </div>
+                                    <div class="hr hr16 dotted"></div>
+                                </div>
+                                <div class="col-xs-12 col-sm-9">
+                                    <form class="form-horizontal" id="validation-form" method="get" style="padding: 0 24px 30px;">
+                                        <div class="form-group">
+                                            <label class="no-padding-right" for="fullName">Họ và tên <span class="red"> *</span></label>
+                                            <div class="clearfix">
+                                                <input type="text" trim-input name="fullName" class="b-radius-4" id="fullName" maxlength="100" placeholder="Nhập..." ng-model="formData.DisplayName" required style="width: 100%;" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="no-padding-right" for="phoneNumber">Số điện thoại <span class="red"> *</span></label>
+                                            <div class="clearfix">
+                                                <input type="tel" name="phoneNumber" disabled id="phoneNumber" onkeypress="return isNumber(event)" maxlength="11" ng-model="formData.Mobile" ng-pattern="/^0[0-9]{9}$/" placeholder="Nhập..." required style="width: 100%; border-radius: 4px !important" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="no-padding-right" for="name">Email:</label>
+                                            <div class="clearfix">
+                                                <input type="email" class="b-radius-4" trim-input name="email" id="email" maxlength="255" required ng-model="formData.Email" placeholder="Nhập..." style="width: 100%" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="no-padding-right" for="platform">Giới tính <span class="red"> *</span></label>
+                                            <div class="clearfix">
+                                                <select class="input-medium" id="gender" style="width: 100%" required name="gender" ng-model="formData.Gender">
+                                                    <option value="" disabled selected>--- Chọn giới tính ---</option>
+                                                    <option value="0">Nam</option>
+                                                    <option value="1">Nữ</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="no-padding-right" for="platform">Ngày sinh: </label>
+                                            <div class="input-group form-group-option date date-picker">
+                                                <input class="form-control date-picker b-radius-4" ng-change="validateDate()" style="margin-top: 0 !important" type="text" placeholder="Nhập..." id="birthday" name="birthday" ng-model="formData.DateOfBirth">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="no-padding-right" for="name">Căn cước công dân <span class="red"> *</span></label>
+                                            <div class="clearfix">
+                                                <input type="text" class="b-radius-4" name="id_card" id="id_card" ng-disabled="formData.Status == 0 || formData.Status == 2" maxlength="12" onkeypress="return isNumber(event)" ng-model="formData.IdCard" placeholder="Nhập..." required style="width: 100%" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="no-padding-right" for="platform">Ngày cấp: </label>
+                                            <div class="input-group form-group-option date date-picker">
+                                                <input id="issuance_date" class=" form-control date-picker b-radius-4" style="margin-top: 0 !important" type="text" name="issuance_date" ng-model="formData.IssuanceDate" placeholder="Nhập...">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="no-padding-right" for="name">Nơi cấp:</label>
+                                            <div class="clearfix">
+                                                <input type="text" class="b-radius-4" trim-input name="issuance_agency" maxlength="255" id="issuance_agency" ng-model="formData.IssuanceAgency" placeholder="Nhập..." style="width: 100%" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" style="color: #181D27; font-weight: bold;">Nơi ở <span class="red"> *</span></label>
+                                            <div style="display: flex; justify-content: space-around; gap: 12px;" class="row">
+                                                <div class="mb-3 col-md-4" style="padding: 0">
+                                                    <div class="form-group no-margin">
+                                                        <label class="no-padding-right" for="province">Tỉnh/Thành phố:</label>
+                                                        <div class="clearfix">
+                                                            <select class="form-select" aria-label="Default select example" style="width: 100%" required name="province" id="province" ng-model="formData.ProvinceId" ng-change="getListDistrict(formData.ProvinceId)">
+                                                                <option value="" disabled selected>--- Chọn Tỉnh/Thành phố ---</option>
+                                                                <option ng-repeat="item in listProvince" value="{{item.Id}}" ng-selected="formData.ProvinceId == item.Id">{{item.Name}}</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 col-md-4" style="padding: 0">
+                                                    <div class="form-group no-margin">
+                                                        <label class="no-padding-right" for="district">Quận/Huyện <span class="red"> *</span></label>
+                                                        <div class="clearfix">
+                                                            <select class="form-select" aria-label="Default select example" style="width: 100%" required name="district" id="district" ng-model="formData.DistrictId" ng-change="getListCommune(formData.DistrictId)">
+                                                                <option value="" disabled selected>--- Chọn Quận/Huyện ---</option>
+                                                                <option ng-repeat="item in listDistrict" value="{{item.id}}" ng-selected="formData.DistrictId == item.id">{{item.TenQuanHuyen}}</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 col-md-4" style="padding: 0">
+                                                    <div class="form-group no-margin">
+                                                        <label class="no-padding-right" for="commune">Xã/Phường <span class="red"> *</span></label>
+                                                        <div class="clearfix">
+                                                            <select class="form-select" aria-label="Default select example" style="width: 100%" required name="commune" id="commune" ng-model="formData.CommuneId">
+                                                                <option value="" disabled selected>--- Chọn Xã/Phường ---</option>
+                                                                <option ng-repeat="item in listCommune" value="{{item.id}}" ng-selected="formData.CommuneId == item.id">{{item.TenPhuongXa}}</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="no-padding-right" for="specified_address">Địa chỉ cụ thể <span class="red"> *</span></label>
+                                            <div class="clearfix">
+                                                <textarea class="input-xlarge" trim-input placeholder="Nhập..." maxlength="255" required name="specified_address" ng-model="formData.SpecifiedAddress" id="specified_address" style="width: 100%; border-radius: 4px !important"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="no-padding-right" for="platform">Dân tộc: </label>
+                                            <div class="clearfix">
+                                                <select class="input-medium" style="width: 100%" name="ethnic" id="ethnic" ng-model="formData.EthnicId">
+                                                    <option value="" disabled selected>--- Chọn dân tộc ---</option>
+                                                    <option ng-repeat="item in lstDanToc" value="{{item.id}}" ng-selected="formData.EthnicId == item.id">{{item.TenDanToc}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="no-padding-right" for="nationality">Quốc tịch: </label>
+                                            <div class="clearfix">
+                                                <select class="input-medium" style="width: 100%" name="nationality" id="nationality" ng-model="formData.NationalityId">
+                                                    <option value="" disabled selected>--- Chọn quốc tịch ---</option>
+                                                    <option ng-repeat="item in lstQuocTich" value="{{item.id}}" ng-selected="formData.NationalityId == item.id">{{item.TenQuocTich}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+
+
+                            <!-- PAGE CONTENT ENDS -->
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: transparent; z-index: 30001; opacity: .8; filter: alpha(opacity=70); display: none">
+        <p style="position: absolute; top: 5%; left: 50%; color: #ff6a00; text-align: center">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-spin fa-fw margin-bottom"></i><br />
+            Vui lòng đợi...
+        </p>
+    </div>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+
+
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    });
+    $('#DateOfBirth').datepicker();
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+
+    jQuery(function ($) {
+        $('[data-rel=tooltip]').tooltip();
+        $('.select2').css('width', '200px').select2({ allowClear: true })
+            .on('change', function () {
+                $(this).closest('form').validate().element($(this));
+            });
+
+        jQuery.validator.addMethod("phone", function (value, element) {
+            return this.optional(element) || /^\(\d{3}\) \d{3}\-\d{4}( x\d{1,6})?$/.test(value);
+        }, "Enter a valid phone number.");
+
+        $('#validation-form').validate({
+            errorElement: 'div',
+            errorClass: 'help-block',
+            focusInvalid: false,
+            ignore: "",
+            rules: {
+                fullName: {
+                    required: true
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                phoneNumber: {
+                    required: true,
+                    digits: true,
+                    minlength: 10,
+                    maxlength: 11
+                },
+                gender: {
+                    required: true,
+                },
+                id_card: {
+                    required: true,
+                },
+                specified_address: {
+                    required: true,
+                },
+                province: {
+                    required: true,
+                },
+                district: {
+                    required: true,
+                },
+                commune: {
+                    required: true,
+                },
+            },
+
+            messages: {
+                fullName: "Trường dữ liệu này không được để trống",
+                phoneNumber: {
+                    required: "Trường dữ liệu này không được để trống",
+                    minlength: "Vui lòng nhập ít nhất 10 ký tự",
+                    maxlength: "Vui lòng nhập tối đa 11 ký tự",
+                },
+                email: {
+                    required: "Trường dữ liệu này không được để trống",
+                    email: "Vui lòng nhập email đúng định dạng"
+                },
+                gender: "Trường dữ liệu này không được để trống",
+                id_card: "Trường dữ liệu này không được để trống",
+                specified_address: "Trường dữ liệu này không được để trống",
+                province: "Trường dữ liệu này không được để trống",
+                district: "Trường dữ liệu này không được để trống",
+                commune: "Trường dữ liệu này không được để trống",
+            },
+
+            highlight: function (e) {
+                $(e).closest('.form-group').removeClass('has-info').addClass('has-error');
+            },
+
+            success: function (e) {
+                $(e).closest('.form-group').removeClass('has-error');
+                $(e).remove();
+            },
+
+            errorPlacement: function (error, element) {
+                if (element.is('input[type=checkbox]') || element.is('input[type=radio]')) {
+                    var controls = element.closest('div[class*="col-"]');
+                    if (controls.find(':checkbox,:radio').length > 1) controls.append(error);
+                    else error.insertAfter(element.nextAll('.lbl:eq(0)').eq(0));
+                }
+                else if (element.is('.select2')) {
+                    error.insertAfter(element.siblings('[class*="select2-container"]:eq(0)'));
+                }
+                else if (element.is('.chosen-select')) {
+                    error.insertAfter(element.siblings('[class*="chosen-container"]:eq(0)'));
+                }
+                else error.insertAfter(element.parent());
+            },
+
+            submitHandler: function (form) {
+            },
+            invalidHandler: function (form) {
+            }
+        });
+
+        $('#modal-wizard-container').ace_wizard();
+        $('#modal-wizard .wizard-actions .btn[data-dismiss=modal]').removeAttr('disabled');
+        $(document).one('ajaxloadstart.page', function (e) {
+            $('[class*=select2]').remove();
+        });
+    })
+</script>
+

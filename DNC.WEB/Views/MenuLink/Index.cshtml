@@ -1,0 +1,238 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/ScriptController/MenuLinkJs.js"></script>
+<link href="~/Content/jsTree/angular-ui-tree.css" rel="stylesheet" />
+<link href="~/Content/TreeCss.css" rel="stylesheet" />
+
+<div id="main-content-inner" ng-controller="MenuLinkJs">
+    <!-- Content Header (Page header) -->
+    <div class="panel-default">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="../Home/Index">Trang chủ</a>
+                </li>
+                <li><a>Quản lý hệ thống</a></li>
+                <li class="active">Chức năng</li>
+            </ul>
+        </div>
+        <div class="get-height1">
+            <div class="col-md-4 pding-body Department Pding-div">
+                <div class="widget-box">
+                    <div class="widget-header">
+                        <h5 class="widget-title">
+                            Danh sách chức năng
+                            <div class="btn-group pull-right">
+                                <button id="collTree" type="button" class="btn btn-sm btn-danger " value="Thu nhỏ" ng-click="collapseAll()" style="min-height:38px">
+                                    <i class="fa fa-compress" ng-show="skinIndex" title="Thu nhỏ"></i>
+                                    <i class="fa fa-expand" ng-show="!skinIndex" title="Phóng to"></i>
+                                </button>
+                            </div>
+                        </h5>
+                    </div>
+                    <div class="widget-body" style="min-height:70vh">
+                        <div ui-tree id="tree-root" data-drag-enabled="false" class="angular-ui-tree">
+                            <ol ui-tree-nodes ng-model="lstData" class="ng-pristine ng-untouched ng-valid angular-ui-tree-nodes">
+                                <li ng-repeat="item in lstData track by $index" ui-tree-node class="angular-ui-tree-node" collapsed="false">
+                                    <div class="tree-node tree-node-content body-pdding ng-scope">
+                                        <a href="" ng-if="item.items && item.items.length > 0" data-nodrag="" ng-click="toggle(this)">
+                                            <i class="fa fa-angle-down" ng-class="{
+                                                                                'fa-angle-right': collapsed,
+                                                                                'fa-angle-down': !collapsed
+                                                                            }"></i>
+                                        </a>
+                                        <a href="" ng-style="ActiveMenu(item.id)" ng-click="checkfunction(item.id,item.parentid)" ng-cloak ng-mousedown="showContextmenu($event,item.id)" oncontextmenu="return false">
+                                            {{item.name}}
+                                        </a>
+                                        <div id="contextmenu{{item.id}}" class="sub-div-menu" style="display:none;float: right;">
+                                            <a class="pull-right btn btn-danger btn-xs" data-nodrag="" data-toggle="modal" ng-click="removes(item.id,item.name,this)" title="Xóa" ng-show="checkFunctionRoles('3')"><i class="fa fa-times"></i></a>
+                                            <a class="pull-right btn btn-primary btn-xs" data-nodrag="" ng-click="newSubItem(item)" style="margin-right: 8px;" title="Tạo cấp con" ng-show="checkFunctionRoles('2')"><i class="fa fa-plus-square"></i></a>
+                                            <a class="pull-right btn btn-success btn-xs" data-nodrag="" ng-click="newItem(item)" style="margin-right: 8px;" title="Tạo cùng cấp" ng-show="checkFunctionRoles('2')"><i class="fa fa-plus"></i></a>
+                                        </div>
+                                    </div>
+
+                                    <ol ui-tree-nodes ng-model="item.items" ng-class="{hidden: collapsed}" class="ng-pristine ng-untouched ng-valid angular-ui-tree-nodes">
+                                        <li ng-repeat="sub in item.items" ui-tree-node class="angular-ui-tree-node" collapsed="false">
+                                            <div ui-tree-handle class="tree-node tree-node-content angular-ui-tree-handle ">
+                                                <a href="" ng-if="sub.items && sub.items.length > 0" data-nodrag="" ng-click="toggle(this)">
+                                                    <i class="fa fa-angle-down" ng-class="{
+                                                                                    'fa-angle-right': collapsed,
+                                                                                    'fa-angle-down': !collapsed
+                                                                                }"></i>
+                                                </a>
+                                                <a href="" ng-style="ActiveMenu(sub.id)" ng-click="checkfunction(sub.id,sub.parentid)" ng-cloak ng-mousedown="showContextmenu($event,sub.id)" oncontextmenu="return false">
+                                                    {{sub.name}}
+                                                </a>
+                                                <div id="contextmenu{{sub.id}}" class="sub-div-menu" style="display:none;float: right;">
+                                                    <a class="pull-right btn btn-danger btn-xs" data-nodrag="" data-toggle="modal" ng-click="removes(sub.id,sub.name,this)" title="Xóa" ng-show="checkFunctionRoles('3')"><i class="fa fa-times"></i></a>
+                                                    <a class="pull-right btn btn-primary btn-xs" data-nodrag="" ng-click="newSubItem(sub)" style="margin-right: 8px;" title="Tạo cấp con" ng-show="checkFunctionRoles('2')"><i class="fa fa-plus-square"></i></a>
+                                                    <a class="pull-right btn btn-success btn-xs" data-nodrag="" ng-click="newItem(sub)" style="margin-right: 8px;" title="Tạo cùng cấp" ng-show="checkFunctionRoles('2')"><i class="fa fa-plus"></i></a>
+                                                </div>
+                                            </div>
+                                            <ol ui-tree-nodes ng-model="sub.items" ng-class="{hidden: collapsed}" class="ng-pristine ng-untouched ng-valid angular-ui-tree-nodes">
+                                                <li ng-repeat="leaf in sub.items" ui-tree-node class="angular-ui-tree-node" collapsed="false">
+                                                    <div ui-tree-handle class="tree-node tree-node-content angular-ui-tree-handle-1 body-pdding">
+                                                        <a class="btn btn-success btn-xs" ng-if="leaf.items && leaf.items.length > 0" data-nodrag="" ng-click="toggle(this)">
+                                                            <i class="fa fa-angle-down" ng-class="{
+                                                                                            'fa-angle-right': collapsed,
+                                                                                            'fa-angle-down': !collapsed
+                                                                                        }"></i>
+                                                        </a>
+                                                        <a href="" ng-style="ActiveMenu(leaf.id)" ng-click="checkfunction(leaf.id,leaf.parentid)" ng-cloak ng-mousedown="showContextmenu($event,leaf.id)" oncontextmenu="return false">
+                                                            {{leaf.name}}
+                                                        </a>
+                                                        <div id="contextmenu{{leaf.id}}" class="sub-div-menu" style="display:none;float: right;">
+                                                            <a class="pull-right btn btn-danger btn-xs" data-nodrag="" data-toggle="modal" ng-click="removes(leaf.id,leaf.name,this)" ng-show="checkFunctionRoles('3')"><span class="fa fa-times"></span></a>
+                                                            <a class="pull-right btn btn-primary btn-xs" data-nodrag="" ng-click="newSubItem(leaf)" style="margin-right: 8px;" ng-show="checkFunctionRoles('2')"><i class="fa fa-plus-square"></i></a>
+                                                            <a class="pull-right btn btn-success btn-xs" data-nodrag="" ng-click="newItem(leaf)" style="margin-right: 8px;" ng-show="checkFunctionRoles('2')"><i class="fa fa-plus"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ol>
+                                        </li>
+                                    </ol>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 pding-body Department Pding-div">
+                <div class="widget-box">
+                    <div class="widget-header">
+                        <h5 class="widget-title">
+                            Thông tin chức năng
+                        </h5>
+                    </div>
+                    <div class="widget-body" style="min-height:70vh">
+                        <div class="col-md-9 col-xs-12" style="padding-top: 5px">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <div class="col-xs-12 chuc-nang-from">
+                                        <div class="profile-user-info profile-user-info-striped dv-name">
+                                            <div class="profile-info-row">
+                                                <div class="profile-info-name"> Danh mục cha:</div>
+                                                <div class="profile-info-value">
+                                                    <select ng-model="Menulink.ParentId">
+                                                        <option value="0">--- Chọn cấp cha ---</option>
+                                                        <option ng-repeat="x in lstMenuLinkGetAllLevel" value="{{x.Id}}" ng-selected="Menulink.ParentId == x.Id">{{x.Name}}</option>
+                                                    </select>
+                                                    <label id="lblCha" style="display: none;" class="messenge-error"></label>
+                                                </div>
+                                            </div>
+                                            <div class="profile-info-row">
+                                                <div class="profile-info-name">Tên <i style="color: red">(*)</i></div>
+                                                <div class="profile-info-value">
+                                                    @*ng-change="changeUrl()"*@
+                                                    <input type="text" class="form-control" maxlength="80" ng-model="Menulink.Name" id="lbName" tabindex="1" ng-enter="EntnkyML('link')" autofocus />
+                                                    <label id="lblTen" style="display: none;" class="messenge-error"></label>
+                                                </div>
+                                            </div>
+                                            <div class="profile-info-row">
+                                                <div class="profile-info-name"> URL :</div>
+                                                <div class="profile-info-value">
+                                                    <input id="url" type="text" class="form-control" ng-model="Menulink.Url" tabindex="3" ng-enter="EntnkyML('cssclass')" />
+                                                </div>
+                                            </div>
+                                            <div class="profile-info-row">
+                                                <div class="profile-info-name"> CssClass :</div>
+                                                <div class="profile-info-value">
+                                                    <input id="cssclass" type="text" class="form-control" ng-model="Menulink.CssClass" tabindex="4" ng-enter="EntnkyML('Mota')" />
+                                                </div>
+                                            </div>
+                                            <div class="profile-info-row">
+                                                <div class="profile-info-name"> Mô tả:</div>
+                                                <div class="profile-info-value">
+                                                    <textarea id="Mota" style="width: 100%" ng-model="Menulink.Description" rows="2" tabindex="5" ng-enter="EntnkyML('Target')">{{Menulink.Description}}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="profile-info-row">
+                                                <div class="profile-info-name">  Target :</div>
+                                                <div class="profile-info-value">
+                                                    <div class="col-md-12 col-xs-12 no-padding">
+                                                        <div class="col-md-4 no-padding">
+                                                            <select id="Target" ng-model="Menulink.Target" ng-init="Menulink.Target = '-1'" tabindex="6" ng-enter="EntnkyML('STT')">
+                                                                <option value="-1">--- Chọn target ---</option>
+                                                                <option value="_self"> Link tại trang</option>
+                                                                <option value="_blank"> Link sang tab mới</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-4 no-padding">
+                                                            <label class="control-label col-xs-3">STT</label>
+                                                            <div class="col-xs-9">
+                                                                <input id="STT" onkeypress="return isNumber(event)" type="text" class="form-control" ng-model="Menulink.OrderNo" tabindex="7" ng-enter="EntnkyML('TrangThai')" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 no-padding" style="display: -webkit-inline-box;">
+                                                            <div class="checkbox" style="margin-top: -6px;padding-left:0px">
+                                                                <input id="TrangThai" name="switch-field-1" class="ace ace-switch ace-switch-7" type="checkbox" ng-model="Menulink.IsLocked" tabindex="8" ng-enter="EntnkyML('btnThemmoi')" />
+                                                                <span class="lbl"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="profile-user-info profile-user-info-striped dv-name">
+                                            <div class="profile-info-row">
+                                                <div class="profile-info-value">
+                                                    <div class="modal-footer no-border-top">
+                                                        <a id="btnThemmoi" class="btn btn-success btn-xs" ng-click="preCreate(Menulink)" tabindex="9" ng-enter="EntnkyML('btnxoa')" ng-show="checkFunctionRoles('2')"><i class="fa fa-floppy-o" aria-hidden="true"></i> Lưu lại</a>
+                                                        <a id="btnxoa" ng-if="Menulink.ID != null" class="btn btn-danger btn-xs" ng-click="removes(Menulink.ID,Menulink.Name,this)" tabindex="10" ng-show="checkFunctionRoles('3')">
+                                                            <i class="fa fa-trash"></i> Xóa
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-xs-12">
+                            <div class="form-horizontal" style="padding-top: 5px">
+                                <div class="row">
+                                    <div class="col-xs-12 chuc-nang-from">
+                                        <div class="profile-user-info profile-user-info-striped dv-name">
+                                            <div class="profile-info-row">
+                                                <div ng-repeat="item in lstFunctions">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type="checkbox" name="function" class="ace" id='function{{item.Id}}' ng-enter="EntnkyND('')" ng-checked="SetCheckFunction(item.Id)" ng-click="setFunction(item.Id)" tabindex="9" />
+                                                            <span class="lbl"> {{item.Name}}</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*xác nhận xóa*@
+        <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm dv-modal">
+                <div class="modal-content modal-xoa">
+                    <div class="modal-header widget-header widget-header-small">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"><i class="ace-icon fa fa-exclamation-triangle red"></i>Thông báo</h4>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn xóa: <b style="color:red;">{{Name}}</b>?
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-danger btn-xs btn-ok" ng-click="remove(Id)"><i class="fa fa-check-square-o"></i> Xóa</a>
+                        <button type="button" class="btn btn-xs btn-primary" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

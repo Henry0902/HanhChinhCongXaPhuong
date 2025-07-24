@@ -1,0 +1,303 @@
+﻿
+myApp.controller("DmQuanHuyenJs",
+    function ($location, $scope, $routeParams, $route, crudService, $http, $cookieStore) {
+        // Tham số   
+        $scope.thongtintimkiem = '';
+        $scope.TrangThai = 0;
+        $scope.lstQuanHuyen = [];
+        $scope.QuanHuyen = {};
+        $scope.today = new Date();
+        $scope.lstPage = [];
+        // Tham số phân trang
+        $scope.Order = 'desc';
+        $scope.pageIndex = 1;
+        $scope.idTinhThanh = -1;
+        $scope.TrangThai = -1
+        $scope.pageSize = 10;
+        $scope.totalRecords = 0;
+        $scope.pageCount = 0;
+
+        //-------------------------------------------------------------------------------
+        var lblmaQuanHuyen = document.getElementById("lblmaQuanHuyen");
+        var lbltenQuanHuyen = document.getElementById("lbltenQuanHuyen");
+        //-------------------------------------------------------------------------------
+
+        // Convert datetime
+        var parseDate = function (value) {
+            if (value) {
+                return new Date(parseInt(value.replace("/Date(", "").replace(")/", "")));
+            }
+            return null;
+        }
+
+        //Load danh sách data
+        var getData = function () {
+            return $http({
+                url: "/DmQuanHuyen/GetIndex",
+                method: "GET",
+                params: {
+                    thongtintimkiem: $scope.thongtintimkiem,
+                    TrangThai: $scope.TrangThai,
+                    order: $scope.Order,
+                    pageSize: $scope.pageSize,
+                    pageIndex: $scope.pageIndex,
+                    idTinhThanh: $scope.idTinhThanh
+                }
+            });
+        }
+        // lấy danh sách tỉnh thành
+        $scope.lstTinhThanh = [];
+        var getAllDropdown = function () {
+            crudService.getAll("/DmTinhThanh/getAllDropDown")
+                .success(function (data) {
+                    $scope.lstTinhThanh = data.listTinhThanh;
+                });
+
+
+        }
+        getAllDropdown();
+        // Init data
+        var init = function () {
+            getData()
+            .success(function (data) {
+                angular.forEach(data, function (item) {
+                    item.NgayTao = parseDate(item.NgayTao);
+                });
+                $scope.lstQuanHuyen = data;
+                if (data.length > 0) {
+                    $scope.totalRecords = data[0].TotalRecords;
+                } else $scope.totalRecords = 0;
+                $scope.pageCount = Math.ceil($scope.totalRecords / $scope.pageSize);
+                for (i = 1; i <= $scope.pageCount && i <= 9; i++) {
+                    $scope.lstPage.push(i);
+                }
+            })
+            .error(function (error) {
+                console.log(error);
+            });
+        }
+
+        init();
+
+        // Clear Data
+        var clearData = function () {
+            $scope.lstPage = [];
+        }
+
+        // Lấy về trang click vào trong phân trang
+        $scope.selectPage = function (index) {
+            if (index == 0) {
+                index = 1;
+            }
+            $scope.pageIndex = index;
+            $scope.lstPage.splice(0);
+            var pageCount = $scope.pageCount;
+            if (pageCount <= 9) {
+                for (var i = 1; i <= pageCount; i++) {
+                    $scope.lstPage.push(i);
+                }
+            } else {
+                if (index >= 5) {
+                    if (index <= pageCount - 4) {
+                        for (i = index - 4; i <= index + 4 && i <= pageCount; i++) {
+                            $scope.lstPage.push(i);
+                        }
+                    } else {
+                        for (i = pageCount - 8; i <= pageCount; i++) {
+                            $scope.lstPage.push(i);
+                        }
+                    }
+                } else {
+                    for (i = 1; i <= 9; i++) {
+                        $scope.lstPage.push(i);
+                    }
+                }
+            }
+
+            if (!(index > pageCount)) {
+                $scope.currentPage.stt = index;
+            }
+
+            if (!(index > pageCount)) {
+                $scope.pageIndex = index;
+                getData()
+                    .success(function (data) {
+                        angular.forEach(data, function (item) {
+                            item.NgayTao = parseDate(item.NgayTao);
+                        });
+                        $scope.lstQuanHuyen = data;
+                        $scope.totalRecords = data[0].TotalRecords;
+                        $scope.pageCount = Math.ceil($scope.totalRecords / $scope.pageSize);
+                    })
+                    .error(function (error) {
+                        $.notify("Không tìm thấy dữ liệu!", "error");
+                    });
+            }
+        }
+
+        // Reload trang
+        $scope.reload = function () {
+            $scope.pageIndex = 1;
+            $scope.lstPage.splice(0);
+            $scope.lstPage = [];
+            init();
+        }
+
+        // Hiển thị thông tin modal Insert Update
+        $scope.show = function (id) {
+            $scope.QuanHuyen = {};
+            $('#lblmaQuanHuyen').hide();
+            $('#lbltenQuanHuyen').hide();
+            if (id != "") {
+                $scope.currentId = id;
+                $("#crud").val("update");
+                $scope.getbyID(id);
+            }
+            else {
+                $("#crud").val("create");
+                $scope.QuanHuyen = null;
+            }
+        }
+
+        // Get Data By ID
+        $scope.getbyID = function (id) {
+            crudService.get("/DmQuanHuyen/GetById?id=", id)
+                .success(function (data) {
+                    data.NgayTao = parseDate(data.NgayTao);
+                    //$scope.QuanHuyen_id = data.QuanHuyen_id;
+                    $scope.QuanHuyen = data;
+
+                }).error(function (error) {
+                    $.notify("Không tìm thấy dữ liệu!", "error");
+                });
+        };
+
+        // Thực hiện lưu trên modal Insert Update
+        $scope.preCreate = function (data) {
+            debugger
+            if (data == null) {
+                $("#lblmaQuanHuyen").show();
+                lblmaQuanHuyen.textContent = "Mã dự án không để trống";
+                $("#lbltenQuanHuyen").show();
+                lbltenQuanHuyen.textContent = "Tên dự án không để trống";
+                return;
+            }
+
+            if ($("#crud").val() == "create") {
+                if (validate(data) == false) {
+                    return;
+                }
+                $scope.create(data);
+                $("#myModal").modal("hide");
+            }
+            else if ($("#crud").val() == "update") {
+                if (validate(data) == false) {
+                    return;
+                }
+                $scope.update(data);
+                $("#myModal").modal("hide");
+            }
+        }
+
+        var validate = function (data) {
+            //$('#lblmaQuanHuyen').hide();
+            //$('#lbltenQuanHuyen').hide();
+            if (data.idTinhThanh == null || data.idTinhThanh == -1 || data.idTinhThanh == "") {
+                $("#lblmaQuanHuyen").show();
+                //$("#lblmaQuanHuyen").textContent = "Mã dự án không để trống!";
+                return false;
+            }
+            //if (/[`~!@#$%^&*()_|+\=?;:'"<>\{\}\[\]\\\/]/gi.test(data.QuanHuyen_ma) == true) {
+            //    $("#lblmaQuanHuyen").show();
+            //    $("#lblmaQuanHuyen").textContent = "Mã dự án không chứa ký tự đặc biệt!";
+            //    return false;
+            //}
+            //if (data.QuanHuyen_ten == null || data.QuanHuyen_ten == "") {
+            //    $("#lbltenQuanHuyen").show();
+            //    $("#lbltenQuanHuyen").textContent = "Tên dự án không để trống!";
+            //    return false;
+            //}
+            //if (/[`~!@#$%^&*()_|+\=?;:'"<>\{\}\[\]\\\/]/gi.test(data.QuanHuyen_ten) == true) {
+            //    $("#lbltenQuanHuyen").show();
+            //    $("#lbltenQuanHuyen").textContent = "Tên dự án không chứa ký tự đặc biệt!";
+            //    return false;
+            //}
+            return true;
+        }
+
+        // Hàm thực hiện Create
+        $scope.create = function (data) {
+            debugger
+            crudService.create("/DmQuanHuyen/Create", data)
+                .success(function (data) {
+                    $.notify("Tạo mới thành công!", "success");
+                    clearData();
+                    init();
+                })
+                .error(function (error) {
+                    $.notify("Tạo mới thất bại!", "error");
+                });
+        }
+
+        // Hàm thực hiện Update 
+        $scope.update = function (data) {
+            crudService.update("/DmQuanHuyen/Update", data)
+                .success(function () {
+                    $.notify("Cập nhật thành công!", "success");
+                    clearData();
+                    init();
+                })
+                .error(function () {
+                    $.notify("Cập nhật thất bại!", "error");
+                });
+        }
+
+        // Hàm thực hiện Update Status
+        $scope.UpdateStatus = function (data) {
+            var trangThai = 0;
+            if (data.TrangThai == 0) {
+                trangThai = 1;
+            } 
+            UpdateIsLocked(data.id, trangThai)
+                .success(function () {
+                    $.notify("Cập nhật thành công!", "success");
+                    clearData();
+                    init();
+                })
+                .error(function () {
+                    $.notify("Cập nhật thất bại!", "error");
+                });
+        }
+
+        var UpdateIsLocked = function (Id, Status) {
+            return $http({
+                url: "/DmQuanHuyen/updateStatus",
+                method: "GET",
+                params: {
+                    Id: Id,
+                    Status: Status
+                }
+            });
+        }
+        $scope.remove = function (id) {
+            crudService.remove("/DmQuanHuyen/Delete", id)
+                .success(function (data) {
+                    $("#confirm-delete").modal("hide");
+                    if (data.Messeger == 1) {
+                        $.notify("Danh mục đang được sử dụng, không xóa được !", "error");
+                    } else if (data.Messeger == 2) {
+                        $.notify("Xóa thành công !", "success");
+                    }
+                    $scope.reload();
+                })
+                .error(function (error) {
+                    $.notify("Xóa thất bại !", "error");
+                    console.log(error);
+                });
+        }
+        $scope.checkremove = function (id, tennhanvien) {
+            $scope.ID = id;
+            $scope.TenNhanVien = tennhanvien;
+        }
+    });
+

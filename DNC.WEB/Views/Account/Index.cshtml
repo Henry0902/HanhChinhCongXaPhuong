@@ -1,0 +1,240 @@
+﻿@using DNC.WEB.Repository
+@using DNC.WEB.Models
+@using DNC.WEB.Controllers
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+    
+    
+    // Xác thực tập trung dùng OTP
+    //Session["UsersName"] = Cls_xacthutaptrung.username_xacthuc();
+    //if (Session["UsersName"] != null)
+    //{
+    //    AccountController context1 = new AccountController();
+    //    context1.SignInTapTrung(Session["UsersName"].ToString());
+        
+    //    if (!Response.IsRequestBeingRedirected)
+    //    { 
+    //        Response.Redirect("~/Home/Index");       
+    //    }
+    //}
+}
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>Đăng nhập</title>
+    <meta name="description" content="User login page" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    @*<link href="~/Content/assets/css/custom.css" rel="stylesheet"/>*@
+    <!-- bootstrap & fontawesome -->
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <!-- text fonts -->
+    <link href="~/Content/admin/maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- ace styles -->
+    <link href="~/Content/assets/css/ace.min.css" rel="stylesheet" />
+
+    <link href="~/Content/Css/custom.css" rel="stylesheet" />
+    <!-- Javascrpit -->
+    <script src="~/Content/admin/ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/angular-cookie/angular-cookies.js"></script>
+    <script src="~/Scripts/angular-route.min.js"></script>
+    <script src="~/Scripts/angular-ui/ui-bootstrap.js"></script>
+    <script src="~/ScriptController/crud.js"></script>
+</head>
+<body class="login-layout bg-login login" ng-app="myApp">
+    <script src="~/ScriptController/AccountJs.js"></script>
+    <div class="main-container" ng-controller="AccountJs">
+        <div class="main-content">
+            <div class="row">
+                @{
+                    var context = new AccountRp();
+                    ViewBag.PortalTitle = context.SystemConfigs_GetAll_ByKey("PORTAL-TITLE").Value;
+                    ViewBag.PortalUnit = context.SystemConfigs_GetAll_ByKey("PORTAL-UNIT").Value;
+                    ViewBag.PortalCopyright = context.SystemConfigs_GetAll_ByKey("PORTAL-COPYRIGHT").Value;
+                    ViewBag.PortalYear = DateTime.Now.Year;
+
+                    //GenericRepository<Users> _context1 = new GenericRepository<Users>();
+                    //ViewBag.user = _context1.GetAll().Count().ToString();
+                    //GenericRepository<Kho> _context2 = new GenericRepository<Kho>(); 
+                    //ViewBag.kho = _context2.GetAll().Count().ToString();
+                    //GenericRepository<KeGia> _context3 = new GenericRepository<KeGia>(); 
+                    //ViewBag.kegia = _context3.GetAll().Count().ToString();
+                    //GenericRepository<HopCap> _context4 = new GenericRepository<HopCap>();
+                    //ViewBag.hopcap = _context4.GetAll().Count().ToString();                          
+                }
+                <div class="col-sm-10 col-sm-offset-1">
+                    @*<div class="center">
+                        <h1>
+                            <span class="white"></span>
+                        </h1>
+                        <h4 class="label label-xlg label-danger arrowed-in arrowed-in-right" style="text-transform: uppercase"><b class="white">Hệ thống cơ sở dữ liệu Tiếp công dân - xử lý hồ sơ</b></h4>
+                    </div>*@
+                    <div class="login-container" style="width: 470px">
+                        <div class="space-20"></div>
+                        <div class="position-relative">
+                            <div id="login-box" class="login-box visible widget-box no-border" style="position: relative; padding:1px">
+                                <div class="widget-body">
+                                    <div class="widget-main" style="background-color: transparent">
+                                        <div class="center">
+                                            <img src="~/Images/logo.png" width="120px" alt="Logo" />
+                                            <h4 class="header green bigger bolder">
+                                                BAN TIẾP CÔNG DÂN TỈNH BẮC NINH
+                                            </h4>
+                                        </div>
+                                        <div class="center">
+                                            <h4>
+                                                <span class="red">HỆ THỐNG TIẾP NHẬN, XỬ LÝ HỒ SƠ HÀNH CHÍNH CÔNG</span>
+                                            </h4>
+                                        </div>
+                                        @*<div class="space-6"></div>*@
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: #666666; z-index: 30001; opacity: .8; filter: alpha(opacity=70); display: none">
+                                                        <p style="position: absolute; top: 30%; left: 40%; color: White; text-align: center">
+                                                            <i class="fa fa-spinner fa-pulse fa-3x fa-spin fa-fw margin-bottom"></i><br />
+                                                            Vui lòng đợi...
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <label class="block clearfix">
+                                            <span class="block input-icon input-icon-right">
+                                                <input type="text" class="form-control" ng-keypress="doSomething()" id="username" placeholder="Tên đăng nhập" ng-model="username" name="Username" required autofocus />
+                                                <i class="ace-icon fa fa-user"></i>
+                                            </span>
+                                        </label>
+                                        <label id="lbluse" ng-model="lbluse" style="display: none; color: red"></label>
+                                        <label class="block clearfix">
+                                            <span class="block input-icon input-icon-right">
+                                                <input type="password" class="form-control" ng-keypress="doSomething()" id="password" placeholder="Mật khẩu" ng-model="password" name="Password" required autofocus />
+                                                <i class="ace-icon fa fa-lock"></i>
+                                            </span>
+                                        </label>
+                                        <label id="lblpass" ng-model="lblpass" style="display: none; color: red"></label>
+                                        <div class="space"></div>
+                                        <div class="clearfix">
+                                            <button type="submit" class="btn btn-sm btn-info2 text-uppercase" style="width: 100%" id="btnDangnhap" ng-click="LoginCheck()">
+                                                <i class="ace-icon fa fa-key"></i>
+                                                <span class="bigger-110">ĐĂNG NHẬP</span>
+                                            </button>
+
+                                        </div>
+                                        <label id="lblerror" ng-model="lblerror" style="display: none; color: red"></label>
+                                        <div class="space-4"></div>
+                                        <div class="text-center bolder">
+                                            <a href="../Exports/Templates/HDSD_HoSoLuuTru_TongHop.doc" class="red">Tài liệu hướng dẫn sử dụng</a>
+                                        </div>
+                                        <div class="bolder" style="display: flex; justify-content: center; gap: 16px;">
+                                            <a href="/tai-khoan-cong-dan/dang-ky" class="blue">Đăng ký tiếp dân</a>
+                                            <a href="/tai-khoan/quen-mat-khau" style="color: #659770">Quên mật khẩu</a>
+                                        </div>
+                                    </fieldset>
+                                        <div class="space-6"></div>
+                                    </div><!-- /.widget-main -->
+                                </div><!-- /.widget-body -->
+                            </div><!-- /.login-box -->
+                        </div><!-- /.position-relative -->
+                    </div>
+                </div><!-- /.col -->
+                @*<div style="clear:both; height:30px;"></div>
+                <div class="col-xs-12 col-md-8 col-md-offset-2">
+                    <div class="center">
+                        <span class="btn btn-app btn-md btn-purple no-hover" ng-hide="@ViewBag.user == 0">
+                            <span class="line-height-1 bigger-240 white">@ViewBag.user</span>
+                            <br>
+                            <span class="line-height-1 smaller-120">Người dùng</span>
+                        </span>
+
+                        <span class="btn btn-app btn-md btn-danger no-hover" ng-hide="@ViewBag.kho == 0">
+                            <span class="line-height-1 bigger-240 white">@ViewBag.kho</span>
+                            <br>
+                            <span class="line-height-1 smaller-120">Kho</span>
+                        </span>
+
+                        <span class="btn btn-app btn-md btn-yellow no-hover" ng-hide="@ViewBag.kegia == 0">
+                            <span class="line-height-1 bigger-240">@ViewBag.kegia</span>
+
+                            <br>
+                            <span class="line-height-1 smaller-120">Kệ giá</span>
+                        </span>
+
+                        <span class="btn btn-app btn-md btn-success no-hover" ng-hide="@ViewBag.hopcap == 0">
+                            <span class="line-height-1 bigger-240">@ViewBag.hopcap</span>
+                            <br>
+                            <span class="line-height-1 smaller-120">Hộp cặp</span>
+                        </span>
+
+                        <span class="btn btn-app btn-md btn-primary no-hover">
+                            <span class="line-height-1 bigger-240"></span>
+                            <br>
+                            <span class="line-height-1 smaller-120">Hồ sơ</span>
+                        </span>
+
+                        <span class="btn btn-app btn-md btn-warning no-hover">
+                            <span class="line-height-1 bigger-240"></span>
+
+                            <br>
+                            <span class="line-height-1 smaller-120">Tài liệu</span>
+                        </span>
+                    </div>
+                </div>*@
+            </div><!-- /.row -->
+        </div>
+
+    </div><!-- /.main-container -->
+    @*<script src="~/Content/assets/js/jquery-2.1.4.min.js"></script>*@
+
+    <script type="text/javascript">
+        $('#username').keypress(function (event) {
+
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode == '13') {
+                $("#password").click();
+            }
+
+        });
+        window.jQuery || document.write("<script src='dist/js/jquery.min.js'>" + "<" + "/script>");
+
+        if ('ontouchstart' in document.documentElement) document.write("<script src='dist/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
+
+        jQuery(function ($) {
+            $(document).on('click', '.toolbar a[data-target]', function (e) {
+                e.preventDefault();
+                var target = $(this).data('target');
+                $('.widget-box.visible').removeClass('visible'); //hide others
+                $(target).addClass('visible'); //show target
+            });
+        });
+        //you don't need this, just used for changing background
+        jQuery(function ($) {
+            $('#btn-login-dark').on('click', function (e) {
+                $('body').attr('class', 'login-layout');
+                $('#id-text2').attr('class', 'white');
+                $('#id-company-text').attr('class', 'blue');
+
+                e.preventDefault();
+            });
+            $('#btn-login-light').on('click', function (e) {
+                $('body').attr('class', 'login-layout light-login');
+                $('#id-text2').attr('class', 'grey');
+                $('#id-company-text').attr('class', 'blue');
+
+                e.preventDefault();
+            });
+            $('#btn-login-blur').on('click', function (e) {
+                $('body').attr('class', 'login-layout blur-login');
+                $('#id-text2').attr('class', 'white');
+                $('#id-company-text').attr('class', 'light-blue');
+
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>

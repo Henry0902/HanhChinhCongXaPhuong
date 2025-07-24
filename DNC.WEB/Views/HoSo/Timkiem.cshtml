@@ -1,0 +1,418 @@
+﻿@{
+    ViewBag.Title = "Timkiem";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/ScriptController/HoSoTimKiemJs.js"></script>
+<div class="main-content-inner" ng-controller="HoSoTimKiemJs">
+    <div class="panel-default">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="../Home/Index">Trang chủ</a>
+                </li>
+                <li class="active">Tìm kiếm hồ sơ</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search"></form>
+            </div>
+        </div>
+        <div class="page-header panel-body">
+            <div class="p-table ptdv-pding">
+                <div class="panel-body">
+                    <div class="col-md-12 col-xs-12 no-padding">
+                        <div class="col-md-1 Pding-div">
+                            <select class="form-control" ng-model="namID" ng-change="reload()">
+                                <option value="-1">-- Năm --</option>
+                                <option ng-repeat="item in lstNam" value="{{item}}" ng-selected="namID == item">{{item}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <select class="form-control" ng-model="khoID" ng-change="getKeGiabyKhoID_Search(khoID)">
+                                <option value="-1">--- Chọn kho ---</option>
+                                <option ng-repeat="item in lstKho" value="{{item.kho_id}}">{{item.kho_ten}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <select class="form-control" ng-model="kegiaID" ng-change="getHopCapbyKegiaID_Search(kegiaID)">
+                                <option value="-1">--- Chọn kệ giá ---</option>
+                                <option ng-repeat="item in lstKeGia_Search" value="{{item.kegia_id}}">{{item.kegia_ten}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <select class="form-control" ng-model="hopcapID" ng-change="reload()">
+                                <option value="-1">--- Chọn hộp cặp ---</option>
+                                <option ng-repeat="item in lstHopCap_Search" value="{{item.hopcap_id}}">{{item.hopcap_ten}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <input type="text" id="Keyword" ng-model="Keyword" class="form-control" placeholder="Nhập mã dự án, mã hồ sơ, tên hồ sơ ..." />
+                        </div>
+                        <div class="col-md-3 Pding-div text-right">
+                            <a ng-click="reload()" class="btn btn-sm btn-primary">
+                                <i class="fa fa-search"></i>
+                            </a>
+                            <a class="accordion-toggle collapsed btn btn-sm btn-info" data-toggle="collapse" data-parent="#accordion" ng-click="TimNangCaoHoSo()" aria-expanded="false">
+                                <i class="fa fa-search-plus"></i>
+                                <span>Tìm kiếm nâng cao</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+                    <div id="accordion" class="accordion-style1">
+                        <div class="collapse panel-search-adv row" id="collapseOne" aria-expanded="false">
+                            <div class="col-md-2">
+                                <div class="input-group form-group-option date date-picker btn-tkhoso">
+                                    <input id="ktbaoquanTu" class="adv-date date-picker" size="16" ng-model="ngay_baoquan_from" type="text" placeholder="Bảo quản từ:">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                                <div class="input-group form-group-option date date-picker btn-tkhoso">
+                                    <input id="ktbaoquanden" class="adv-date date-picker" size=" 16" ng-model="ngay_baoquan_to" type="text" placeholder="Bảo quản đến:" />
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                </div>
+                                <label class="help-block" id="lblbaoquansearch" ng-model="lblbaoquansearch" style="display: none"></label>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="input-group form-group-option date date-picker btn-tkhoso">
+                                    <input id="ktluutruTu" class="adv-date date-picker" size="16" ng-model="ngay_luutru_from" type="text" placeholder="Lưu trữ từ:">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                </div>
+                                <div class="input-group form-group-option date date-picker btn-tkhoso">
+                                    <input id="ktluutruDen" class="adv-date date-picker" size="16" ng-model="ngay_luutru_to" type="text" placeholder="Lưu trữ đến:">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                </div>
+                                <label class="help-block" id="lblluutrusearch" ng-model="lblluutrusearch" style="display: none"></label>
+                            </div>
+                            <div class="col-md-2 col-xs-12">
+                                <div class="btn-tkhoso">
+                                    <select class="form-control input-sm" ng-model="departmentID" ng-change="reload()">
+                                        <option value="-1">--- Phòng ban ---</option>
+                                        <option ng-repeat="item in lstDepartments_Search" value="{{item.Id}}">{{item.Name}}</option>
+                                    </select>
+                                </div>
+                                <div class="btn-tkhoso">
+                                    <select class="form-control input-sm" ng-model="loaihsID" ng-change="reload()">
+                                        <option value="-1">--- Chọn loại hồ sơ ---</option>
+                                        <option ng-repeat="item in lstLoaiHoSo" value="{{item.loaihs_id}}">{{item.loaihs_ten}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-12 ">
+                                <div class="btn-tkhoso">
+                                    <select class="form-control input-sm" ng-model="domatID" ng-change="reload()">
+                                        <option value="-1">--- Độ mật ---</option>
+                                        <option ng-repeat="item in lstDoMat" value="{{item.domat_id}}">{{item.domat_ten}}</option>
+                                    </select>
+                                </div>
+                                <div class="btn-tkhoso">
+                                    <select class="form-control input-sm" ng-model="tinhtrangvlID" ng-change="reload()">
+                                        <option value="-1">--- Tình trạng vật lý ---</option>
+                                        <option ng-repeat="item in lstTinhTrangVL" value="{{item.ttvl_id}}">{{item.ttvl_ten}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-12 ">
+                                <div class="btn-tkhoso">
+                                    <select class="form-control input-sm" ng-model="hoso_type" ng-change="reload()">
+                                        <option value="-1">--- Kiểu lưu hành hồ sơ ---</option>
+                                        <option value="0">Nội bộ phòng ban / riêng tư</option>
+                                        <option value="1">Công khai</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-xs-4">
+                <div class="widget-box">
+                    <div class="widget-header">
+                        <h4 class="widget-title">
+                            <i class="ace-icon fa fa-list orange"></i>
+                            Danh sách hồ sơ
+                        </h4>
+                    </div>
+                    <div class="widget-body">
+                        <div class="widget-main">
+                            <table class="table table-bordered table-hover" border="1">
+                                <tbody>
+                                    <tr ng-repeat="item in lstHoSo">
+                                        <td class="text-left"><a href="" ng-click="show(item.hoso_id);">{{formatText(item.hoso_ten,50)}}</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="show-paging col-md-12 no-padding">
+                                <div class="paging">
+                                    <span>Hiển thị</span>
+                                    <select ng-model="pageSize" ng-change="reload()">
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="200">200</option>
+                                    </select>
+                                    <span> tổng số <span class="totalrecord">{{totalRecords}}</span> bản ghi</span>
+                                </div>
+                                <div class="pagination no-padding">
+                                    <ul class="pagination pull-right" style="margin:0" ng-hide="pageCount==0">
+                                        <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(1)"><a href="javascript:void(0)"><i class="fa fa-fast-backward"></i></a></li>
+                                        <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(pageIndex-1)"><a href="javascript:void(0)"><i class="fa fa-backward"></i></a></li>
+                                        <li ng-repeat="page in lstPage track by $index"><a href="javascript:void(0)" ng-click="selectPage(page)" ng-style="activepage(page)">{{page}}</a></li>
+                                        <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageIndex+1)"><a href="javascript:void(0)"><i class="fa fa-forward"></i></a></li>
+                                        <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageCount)"><a href="javascript:void(0)"><i class="fa fa-fast-forward"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div style="clear: both"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-8">
+                <div class="widget-box">
+                    <div class="widget-header">
+                        <h4 class="widget-title">
+                            <i class="ace-icon fa fa-info orange"></i>
+                            Thông tin hồ sơ: <span class="style_cole">{{HoSo.hoso_ma}} - {{HoSo.hoso_ten}}</span>
+                        </h4>
+                    </div>
+                    <div class="widget-body">
+                        <div class="widget-main">
+                            <div class="col-xs-6 no-padding">
+                                <div class="profile-user-info profile-user-info-striped dv-name">
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Kho :</div>
+                                        <div class="profile-info-value">
+                                            <span class="editable" ng-repeat="item in lstKho" ng-if="HoSo.kho_id == item.kho_id">{{item.kho_ten}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Kệ giá :</div>
+                                        <div class="profile-info-value">
+                                            <span class="editable" ng-repeat="item in lstKeGia" ng-if="HoSo.kegia_id == item.kegia_id">{{item.kegia_ten}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Hộp cặp :</div>
+                                        <div class="profile-info-value">
+                                            <span class="editable" ng-repeat="item in lstHopCap" ng-if="HoSo.hopcap_id == item.hopcap_id">{{item.hopcap_ten}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Phòng ban quản lý :</div>
+                                        <div class="profile-info-value">
+                                            <span class="editable" ng-repeat="item in lstDepartments_Search" ng-if="HoSo.donvi_id == item.Id">{{item.Name}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Loại hồ sơ :</div>
+                                        <div class="profile-info-value">
+                                            <span class="editable" ng-repeat="item in lstLoaiHoSo" ng-if="HoSo.loaihs_id == item.loaihs_id">{{item.loaihs_ten}}</span>
+                                        </div>
+                                    </div>                                    
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Độ mật :</div>
+                                        <div class="profile-info-value">
+                                            <span class="editable" ng-repeat="item in lstDoMat" ng-if="HoSo.domat_id == item.domat_id">{{item.domat_ten}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Tình trạng vật lý :</div>
+                                        <div class="profile-info-value">
+                                            <span class="editable" ng-repeat="item in lstTinhTrangVL" ng-if="HoSo.ttvl_id == item.ttvl_id">{{item.ttvl_ten}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Mức độ truy cập :</div>
+                                        <div class="profile-info-value">
+                                            <span class="editable" ng-repeat="item in lstMucDoTruyCap" ng-if="HoSo.mdtc_id == item.mdtc_id">{{item.mdtc_ten}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Kiểu lưu hành hồ sơ :</div>
+                                        <div class="profile-info-value">
+                                            <span class="editable" ng-if="HoSo.hoso_type == 0">Nội bộ phòng ban/Riêng tư</span>
+                                            <span class="editable" ng-if="HoSo.hoso_type == 1">Công khai</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row" ng-if="HoSo.ngay_baoquan_to == null">
+                                        <div class="profile-info-name"> Bảo quản vĩnh viễn: </div>
+                                        <div class="profile-info-value">
+                                            <span class="editable ">Có</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row" ng-if="HoSo.ngay_baoquan_to != null">
+                                        <div class="profile-info-name"> Bảo quản: </div>
+                                        <div class="profile-info-value">
+                                            <span class="editable ">từ ngày {{HoSo.ngay_baoquan_from}} đến ngày {{HoSo.ngay_baoquan_to}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row" ng-if="HoSo.ngay_luutru_to != null">
+                                        <div class="profile-info-name"> Lưu trữ: </div>
+                                        <div class="profile-info-value">
+                                            <span class="editable ">từ ngày {{HoSo.ngay_luutru_from}} đến ngày {{HoSo.ngay_luutru_to}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-6 no-padding">
+                                <div class="profile-user-info profile-user-info-striped dv-name">
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Mã dự án:</div>
+                                        <div class="profile-info-value">
+                                            <span class="editable">{{HoSo.duan_ma}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Mã hồ sơ:</div>
+                                        <div class="profile-info-value">
+                                            <span class="editable">{{HoSo.hoso_ma}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Tên hồ sơ: </div>
+                                        <div class="profile-info-value">
+                                            <span class="editable">{{HoSo.hoso_ten}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Số hiệu hồ sơ: </div>
+                                        <div class="profile-info-value">
+                                            <span class="editable">{{HoSo.hoso_sohieu}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Hồ sơ số: </div>
+                                        <div class="profile-info-value">
+                                            <span class="editable">{{HoSo.hoso_number}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Nội dung: </div>
+                                        <div class="profile-info-value">
+                                            <span class="editable">{{HoSo.noidung}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Chú giải: </div>
+                                        <div class="profile-info-value">
+                                            <span class="editable">{{HoSo.chugiai}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Bút tích: </div>
+                                        <div class="profile-info-value">
+                                            <span class="editable">{{HoSo.buttich}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Ngày tạo :</div>
+                                        <div class="profile-info-value">
+                                            <span class="editable">{{ HoSo.ngay_tao | date:"dd/MM/yyyy" }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 no-padding" ng-if="CheckHoSoType(HoSo.donvi_id, HoSo.hoso_type);">
+                                <a class=" btn btn-success btn-xs tooltip-success" data-toggle="modal" data-target="#myModalXem" data-placement="top"><i class="fa fa-list"></i> Danh sách văn bản tài liệu</a>
+                            </div>
+                            <div style="clear: both"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Modal Xem*@
+    <div id="myModalXem" class="modal fade" role="dialog" tabindex="-1">
+        <input type="text" id="crud" style="display:none;" />
+        <div class="modal-dialog modal-style modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" data-dismiss="modal" tabindex="7">&times;</button>
+                    <h4 class="modal-title" ng-show="HoSo.hoso_id != null"><i class="ace-icon fa fa-eye"> </i> Xem tài liệu hồ sơ: <span class="style_cole">{{HoSo.hoso_ma}} - {{HoSo.hoso_ten}}</span></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xs-12 no-padding">
+                        <table class="table table-bordered table-hover" border="1">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 5%">STT</th>
+                                    <th class="text-center" style="width: 10%">SỐ HIỆU</th>
+                                    <th class="text-center">THÔNG TIN VĂN BẢN</th>
+                                    @*<th class="text-center" style="width: 15%">NGÀY PHÁT HÀNH</th>*@
+                                    <th class="text-center" style="width: 20%">ĐÍNH KÈM</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in lstDocs">
+                                    <td class="text-center">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                                    <td class="text-left">{{item.doc_sohieu}}</td>
+                                    <td class="text-left">{{item.doc_ten}}</td>
+                                    @*<td class="text-right">{{ item.ngay_ban_hanh | date:"dd/MM/yyyy" }}</td>*@
+                                    <td class="text-left">
+                                        <span ng-repeat="sf in item.listSubfile" style="padding: 5px;">
+                                            <div class="dropdown" style="float: left; padding-right: 5px;">
+                                                @*<img src="{{sf.icon}}" alt="{{sf.file_original}}" title="{{sf.file_original}}" style="width: 30px; height: 30px; cursor: pointer; margin-bottom: 5px; " data-toggle="modal" data-target="#ModalToViewFile" ng-click="viewFilePlugin(sf.file_id,sf.file_url);" id="{{sf.file_id}}">*@
+                                                <img src="{{sf.icon}}" alt="{{sf.file_original}}" title="{{sf.file_original}}" style="width: 20px; height: 20px; cursor: pointer; margin-bottom: 5px; " data-toggle="dropdown" id="{{sf.file_id}}">
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="#" data-toggle="modal" data-target="#ModalToViewFile" ng-click="viewFileByDocId(sf.file_extension,sf.file_url);">Xem tài liệu</a></li>
+                                                    <li><a href="{{sf.file_url}}">Tải tài liệu</a></li>
+                                                </ul>
+                                            </div>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-danger" data-dismiss="modal" tabindex="6"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal View File*@
+    <div class="modal fade" id="ModalToViewFile" role="dialog">
+        <div class="modal-dialog modal-lg modal-style" style="width:98%">
+            <div class="modal-content">
+                <div class="modal-header" style="border-bottom:none;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" style="max-height: calc(100vh - 50px);">
+                    <div class="col-md-12 no-padding">
+                        <iframe id="iframe_viewfile" style="width: 100%; height: 500px; background-color: gray;" src=" "></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    });
+    $('#DateOfBirth').datepicker();
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+</script>
+

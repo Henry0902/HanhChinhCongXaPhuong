@@ -1,0 +1,738 @@
+﻿@{
+    ViewBag.Title = "DonThuTiepNhan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .form-group {
+        margin-bottom: 5px;
+    }
+
+    #myModalXem .form-control {
+        border: 1px solid white;
+        text-decoration: underline #6e6c6c dotted;
+        color: #393939;
+    }
+
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+    .highlight-chuyen-don {
+        background-color: #ffebcc; /* Màu nền vàng nhạt */
+    }
+
+    .btn-file input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        font-size: 100px;
+        text-align: right;
+        filter: alpha(opacity=0);
+        opacity: 0;
+        outline: none;
+        background: white;
+        cursor: inherit;
+        display: block;
+    }    
+</style>
+
+<script src="~/ScriptController/DonThuTiepNhanJs.js"></script>
+<div class="main-content-inner" ng-controller="DonThuTiepNhanJs">
+    <div class="panel-default">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="../Home/Index">Trang chủ</a>
+                </li>
+                <li class="active">Xử lý hồ sơ</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                @*<form class="form-search">
+                        <a class=" btn btn-primary btn-xs tooltip-success" data-toggle="modal" data-target="#myModal" data-placement="top" ng-click="show('')" ng-if="checkFunctionRoles('2')"><i class="fa fa-print"></i> In sổ tiếp dân</a>
+                    </form>*@
+            </div>
+        </div>
+        <div class="page-header panel-body">
+            <div class="p-table ptdv-pding">
+                <div class="panel-body">
+                    <div class="col-md-12 col-xs-12 no-padding">
+                        <div class="col-md-2 Pding-div">
+                            <select class="form-control" id="ddlNguonDon" ng-model="NguonDonId" ng-change="reload()">
+                                <option value="-1">--- Chọn Nguồn đơn ---</option>
+                                <option ng-repeat="item in lstNguonDon" value="{{item.Id}}">{{item.TenNguonDon}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <div class="input-group form-group-option date date-picker">
+                                <input id="TuNgay" class=" form-control date-picker" ng-model="TuNgay" type="text" placeholder="Từ ngày:">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <div class="input-group form-group-option date date-picker">
+                                <input id="DenNgay" class="form-control date-picker" size=" 16" ng-model="DenNgay" type="text" placeholder="Đến ngày:" />
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-5 Pding-div">
+                            <input type="text" id="Keyword" ng-model="Keyword" prevent-autofill class="form-control" placeholder="Họ tên, nội dung hồ sơ ..." />
+                        </div>
+                        <div class="col-md-1 Pding-div text-right">
+                            <a ng-click="reload()" class="btn btn-xs btn-primary">
+                                <i class="fa fa-search">Tìm kiếm</i>
+                            </a>
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+                    <div class="hr dotted"></div>
+                    <div class="col-md-12 no-padding">
+                        <div class="col-md-9 col-sm-8 col-xs-12 no-padding">
+                            <span>
+                                <span class="red"><i class="ace-icon fa fa-star orange2"></i></span>  Bạn đang xem danh sách:
+                                <span class="red bolder ">{{totalRecords}}</span> hồ sơ;
+
+                                năm: <span ng-hide="namID != -1" class="red bolder">tất cả</span>
+                                <span ng-repeat="item in lstNam" ng-show="item == namID" class="red bolder">{{item}}</span>;
+
+                                nguồn đơn: <span ng-hide="NguonDonId != -1" class="red bolder">tất cả</span>
+                                <span ng-repeat="item in lstNguonDon" ng-show="item.Id == NguonDonId" class="red bolder">{{item.TenNguonDon}}</span>;
+
+                                từ ngày: <span class="red bolder">{{TuNgay}}</span> <span ng-hide="TuNgay != ''" class="red bolder">tất cả</span>
+                                - đến ngày: <span class="red bolder">{{DenNgay}}</span> <span ng-hide="DenNgay != ''" class="red bolder">tất cả</span>;
+
+                                từ khóa: <span class="red bolder" ng-show="Keyword == ''">trống</span>
+                                <span class="red bolder">{{Keyword}}</span>
+                            </span>
+                        </div>
+                        @*<div class=" bt-timkiem col-md-3 col-sm-4 col-xs-12 no-padding-right no-padding-left text-right">
+                                <span>
+                                    <a class=" btn btn-success btn-xs tooltip-success" data-toggle="modal" data-target="#myModal" data-placement="top" ng-click="show('')" ng-if="checkFunctionRoles('1')"><i class="fa fa-plus-circle"></i> Thêm mới</a>
+                                </span>
+                            </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="p-table">
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover" border="1">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 3%">STT</th>
+                                @*<th class="text-center" style="width: 3%">MÃ ĐƠN</th>*@
+                                <th class="text-center" style="width: 8%">Nguồn đơn</th>
+                                <th class="text-center" style="width: 8%">Ngày nhập</th>
+                                <th class="text-center" style="width: 10%">Loại đối tượng / Số người</th>
+                                <th class="text-center" style="width: 20%">Tên chủ đơn / Địa chỉ</th>
+                                <th class="text-center">Nội dung hồ sơ</th>
+                                <th class="text-center" style="width: 15%">Trạng thái / Hướng xử lý</th>
+                                @*<th class="text-center" style="width: 10%">Cán bộ nhập</th>*@
+                                <th class="text-center" style="width: 5%">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in lstDonThu" ng-class="{'highlight-chuyen-don': item.IsChuyenDon == 1 && !item.IsViewed}">
+                                <td class="text-center">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                                @*<td class="text-center">{{item.Id}}</td>*@
+                                <td>{{item.TenNguonDon}}</td>
+                                <td class="text-center">{{ item.NgayNhap | date:"dd/MM/yyyy" }}</td>
+                                <td class="text-center"> {{item.TenDoiTuong}} <hr style="width: 100%; margin: 5px 0; border-color: #b7b7b7; border-bottom: none; "> {{item.SoNguoi}}</td>
+                                <td>
+                                    @*<b class="blue"><a href="" data-toggle="modal" data-target="#myModalXem" ng-click="show(item.IdDonThuGoc);">{{item.HoTen}}</a> </b>*@
+                                    @*<b class="blue"><a href="" data-toggle="modal" data-target="#myModalXem" ng-click="show(item);">{{item.HoTen}}</a> </b>*@
+                                    <b class="blue">
+                                        <a href="javascript:void(0)" data-toggle="modal" data-target="#myModalXem" ng-click="markAsViewed(item);">
+                                            {{item.HoTen}}
+                                        </a>
+                                    </b>
+
+                                    <hr style="width: 100%; margin: 5px 0; border-color: #b7b7b7; border-bottom: none; ">
+                                    {{item.DiaChi}}, {{item.TenPhuongXa}}, {{item.TenQuanHuyen}}, {{item.TenTinhThanh}}
+                                </td>
+                                <td style="white-space:pre-wrap;">{{item.NoiDungDonThu}}</td>
+                                <td>
+                                    <span ng-if="item.IdTrangThai==2 || item.IdTrangThai==4 || item.IdTrangThai==5 || item.IdTrangThai==7" class="label label-sm label-success">{{item.TenTrangThai}}</span>
+                                    <span ng-if="item.IdTrangThai==3 || item.IdTrangThai==6" class="label label-sm label-warning">{{item.TenTrangThai}}</span>
+                                    <span ng-if="item.IdTrangThai==99" class="label label-sm label-info">{{item.TenTrangThai}}</span>
+                                    <hr style="width: 100%; margin: 5px 0; border-color: #b7b7b7; border-bottom: none; ">{{item.TenHuongXuLy}}
+                                </td>
+                                @*<td>{{item.TenNguoiNhap}}</td>*@
+                                <td class="text-center">
+                                    <span class="text-center control-btn action-buttons">
+                                        <a class="red" data-toggle="modal" data-target="#myModal" ng-click="ShowHuongXuLy(item.Id)" id="{{item.Id}}" ng-if="checkFunctionRoles('1')" data-placement=" top" title="Xử lý hồ sơ">
+                                            <i class="ace-icon fa fa-tasks bigger-180"></i>
+                                        </a>
+                                        <a class="blue" ng-click="update(item.Id);" id="{{item.Id}}" ng-if="checkFunctionRoles('1')" data-placement="top" title="Sửa">
+                                            <i class="ace-icon fa fa-pencil bigger-180"></i>
+                                        </a>
+                                        <a class="green" data-toggle="modal" data-target="#myModalPrint" ng-click="ShowPrint(item.Id)" title="In văn bản theo mẫu">
+                                            <i class="ace-icon fa fa-print bigger-180"></i>
+                                        </a>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="show-paging col-md-12 no-padding">
+                        <div class="paging">
+                            <span>Hiển thị</span>
+                            <select ng-model="pageSize" ng-change="reload()">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                            </select>
+                            <span> tổng số <span class="totalrecord">{{totalRecords}}</span> bản ghi</span>
+                        </div>
+                        <div class="pagination no-padding">
+                            <ul class="pagination pull-right" style="margin:0" ng-hide="pageCount==0">
+                                <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(1)"><a href="javascript:void(0)"><i class="fa fa-fast-backward"></i></a></li>
+                                <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(pageIndex-1)"><a href="javascript:void(0)"><i class="fa fa-backward"></i></a></li>
+                                <li ng-repeat="page in lstPage track by $index"><a href="javascript:void(0)" ng-click="selectPage(page)" ng-style="activepage(page)">{{page}}</a></li>
+                                <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageIndex+1)"><a href="javascript:void(0)"><i class="fa fa-forward"></i></a></li>
+                                <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageCount)"><a href="javascript:void(0)"><i class="fa fa-fast-forward"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: transparent; z-index: 30001; opacity: .8; filter: alpha(opacity=70); display: none">
+        <p style="position: absolute; top: 5%; left: 50%; color: #ff6a00; text-align: center">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-spin fa-fw margin-bottom"></i><br />
+            Vui lòng đợi...
+        </p>
+    </div>
+    @*Modal Xem*@
+    <div id="myModalXem" class="modal fade" role="dialog" tabindex="-1">
+        <input type="text" id="crud" style="display:none;" />
+        <div class="modal-dialog modal-style" style="width:95%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" data-dismiss="modal" tabindex="7">&times;</button>
+                    <h4 class="modal-title" ng-show="DonThu.Id != null"><i class="ace-icon fa fa-eye"> </i> Xem thông tin hồ sơ: <span class="style_cole">{{DonThu.HoTen}}</span></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs" id="myTab">
+                            <li class="active">
+                                <a data-toggle="tab" href="#ThongTinTiepDan" aria-expanded="true">
+                                    <i class="orange2 ace-icon fa fa-info bigger-120"></i>
+                                    Thông tin tiếp dân - hồ sơ
+                                </a>
+                            </li>
+
+                            <li class="">
+                                <a data-toggle="tab" href="#XuLyDonThu" aria-expanded="false">
+                                    <i class="green ace-icon fa fa-tasks bigger-120"></i>
+                                    Thông tin xử lý hồ sơ
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div id="ThongTinTiepDan" class="tab-pane fade active in">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Số thứ tự hồ sơ: </div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{DonThu.Id}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Ngày nhập đơn:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{DonThu.NgayNhap}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*<div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Nguồn hồ sơ: </div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{DonThu.TenNguonDon}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Số văn bản: </div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{DonThu.SoVanBan}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>*@
+                                <div style="clear: both"></div>
+                                <div class="hr1 dotted"></div>
+                                @*<div class="page-header">*@
+                                <h5 class="col-sm-12">
+                                    <b> Thông tin người nộp hồ sơ</b>
+                                </h5>
+                                @*</div>*@
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Người nộp hồ sơ: </div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{DonThu.TenDoiTuong}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Số người: </div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{DonThu.SoNguoi}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-8">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-3 control-label no-padding-right bolder"> Họ và tên:</div>
+                                                <div class="col-sm-9">
+                                                    <span class="form-control">{{DonThu.HoTen}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Giới tính:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control" ng-show="DonThu.GioiTinh == 0">Nam</span>
+                                                    <span class="form-control" ng-show="DonThu.GioiTinh == 1">Nữ</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> CMTND / Thẻ CCCD:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{DonThu.SoGiayTo}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Ngày cấp:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{DonThu.NgayCap}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Nơi cấp:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{DonThu.NoiCap}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-12">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-2 control-label no-padding-right bolder"> Địa chỉ:</div>
+                                                <div class="col-sm-10">
+                                                    <span class="form-control">{{DonThu.DiaChi}}, {{DonThu.TenPhuongXa}}, {{DonThu.TenQuanHuyen}}, {{DonThu.TenTinhThanh}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                
+
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Quốc tịch:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{DonThu.TenQuocTich}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Dân tộc: </div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{DonThu.TenDanToc}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="clear: both"></div>
+                                <div class="hr1 dotted"></div>
+                                <h5 class="col-sm-12">
+                                    <b> Thông tin hồ sơ</b>
+                                </h5>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Phòng ban: </div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{DonThu.TenLoaiDonThu}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Lĩnh vực:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{DonThu.TenLoaiKNTC}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Loại hồ sơ : </div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{DonThu.TenLoaiKNTCChiTiet}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-12">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-2 control-label no-padding-right bolder"> Nội dung hồ sơ: </div>
+                                                <div class="col-sm-10">
+                                                    <span class="form-control">{{DonThu.NoiDungDonThu}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-12">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-2 control-label no-padding-right bolder"> Hồ sơ đính kèm: </div>
+                                                <div class="col-sm-10">
+                                                    <div class="dropdown" ng-repeat="sf in DonThu.FileUpload" style="padding-right: 5px;">
+                                                        <img src="{{sf.icon}}" style="width: 20px; height: 20px; cursor: pointer; margin-bottom: 5px;" data-toggle="dropdown">&nbsp;{{sf.file_original}}
+                                                        <ul class="dropdown-menu">
+                                                            <li><a href="javascript:void(0)" data-toggle="modal" data-target="#ModalToViewFile" id="{{sf.file_id}}" ng-click="viewFileByDocId(sf.file_extension,sf.file_url,sf.file_original);">Xem tài liệu</a></li>
+                                                            <li><a href="{{sf.file_url}}">Tải tài liệu</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="XuLyDonThu" class="tab-pane fade">
+                                <h5 class="col-sm-12">
+                                    <b> Thông tin xử lý hồ sơ</b>
+                                </h5>
+                                <div class="col-sm-12">
+                                    <div class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <div class="col-sm-2 control-label no-padding-right bolder"> Trạng thái hồ sơ: </div>
+                                            <div class="col-sm-10">
+                                                <span class="form-control">{{DonThu.TenTrangThai}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <div class="col-sm-2 control-label no-padding-right bolder"> Hướng xử lý hồ sơ: </div>
+                                            <div class="col-sm-10">
+                                                <span class="form-control">{{DonThu.TenHuongXuLy}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="clear: both"></div>
+                                <div class="hr1 dotted"></div>
+                                <h5 class="col-sm-12">
+                                    <b> Thông tin quá trình xử lý </b>
+                                </h5>
+                                <table class="table table-bordered table-hover" border="1">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center" style="width: 3%">STT</th>
+                                            <th class="text-center" style="width: 15%">Tên bước thực hiện</th>
+                                            <th class="text-center" style="width: 20%">Đơn vị / Người thực hiện </th>
+                                            <th class="text-center">Ý kiến xử lý / Nội dung thụ lý giải quyết </th>
+                                            <th class="text-center" style="width: 15%">File đính kèm</th>
+                                            <th class="text-center" style="width: 10%">Ngày thực hiện</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in lstXuLyDonThu">
+                                            <td class="text-center">{{$index+1}}</td>
+                                            <td>{{item.TenTrangThai}}</td>
+                                            <td>{{item.TenDonVi}} / {{item.TenNguoiTao}}</td>
+                                            <td>{{item.NoiDung}}</td>
+                                            <td>
+                                                <div class="dropdown" ng-repeat="sf in item.FileUpload" style="padding-right: 5px;">
+                                                    <img src="{{sf.icon}}" style="width: 20px; height: 20px; cursor: pointer; margin-bottom: 5px;" data-toggle="dropdown">&nbsp;{{sf.file_original}}
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="javascript:void(0)" data-toggle="modal" data-target="#ModalToViewFile" id="{{sf.file_id}}" ng-click="viewFileByDocId(sf.file_extension,sf.file_url,sf.file_original);">Xem tài liệu</a></li>
+                                                        <li><a href="{{sf.file_url}}">Tải tài liệu</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">{{ item.NgayTao | date:"HH:mm dd/MM/yyyy"}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-danger" data-dismiss="modal" tabindex="6"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal Insert Update*@
+    <div id="myModal" class="modal fade" role="dialog" tabindex="-1">
+        <input type="text" id="crud" style="display:none;" />
+        <div class="modal-dialog modal-lg modal-style">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" id="closeNQ" data-dismiss="modal" tabindex="6">&times;</button>
+                    <h4 class="modal-title" ng-show="DonThu.Id != null"><i class="fa fa-tasks bigger-100"> </i> Hướng xử lý hồ sơ: {{DonThu.HoTen}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 no-padding">
+                        <div class="profile-user-info profile-user-info-striped dv-name">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name">Hướng xử lý<b class="red">(*)</b>:</div>
+                                <div class="profile-info-value">
+                                    <select name="ddlHuongXuLy" id="ddlHuongXuLy" ng-model="HuongXuLy.IdHuongXuLy" tabindex="1" class="form-control input-sm" ng-change="ChangeHuongXuLy()">
+                                        <option value="-1">--- Chọn hướng xử lý ---</option>
+                                        <option ng-repeat="item in lstHuongXuLy" ng-selected="HuongXuLy.IdHuongXuLy == item.Id" value="{{item.Id}}">{{item.TenHuongXuLy}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="profile-info-row" ng-if="HuongXuLy.IdHuongXuLy == 1">
+                                <div class="profile-info-name"> Cơ quan được giao nhiệm vụ xác minh<b class="red">(*)</b>:</div>
+                                <div class="profile-info-value">
+                                    <select style="padding: 0px; border: 0px" ui-select2 class="form-control" id="ddlCoQuanXacMinh" ng-model="HuongXuLy.IdDonViXacMinh">
+                                        <option value="-1">--- Chọn cơ quan được giao nhiệm vụ xác minh ---</option>
+                                        <option ng-repeat="item in lstDepartments" value="{{item.Id}}"  ng-if="item.Id != 1">{{item.Name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="profile-info-row" ng-if="HuongXuLy.IdHuongXuLy == 2 || HuongXuLy.IdHuongXuLy == 3">
+                                <div class="profile-info-name"> Cơ quan tiếp nhận<b class="red">(*)</b>:</div>
+                                <div class="profile-info-value">
+                                    <select style="padding: 0px; border: 0px" ui-select2 class="form-control" id="ddlCoQuanTiepNhan" ng-model="HuongXuLy.IdDonViTiepNhan">
+                                        <option value="-1">--- Chọn cơ quan tiếp nhận ---</option>
+                                        <option ng-repeat="item in lstDepartments" value="{{item.Id}}">{{item.Name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="profile-info-row" ng-show="HuongXuLy.IdHuongXuLy == 1 || HuongXuLy.IdHuongXuLy == 2">
+                                <div class="profile-info-name"> Thời hạn thụ lý giải quyết:</div>
+                                <div class="profile-info-value">
+                                    <div class="input-group form-group-option date date-picker">
+                                        <input id="txtNgayThoiHanThuLy" class=" form-control date-picker" ng-model="HuongXuLy.NgayThoiHanThuLy" type="text">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Ý kiến xử lý:</div>
+                                <div class="profile-info-value">
+                                    <textarea id="txtNoiDung" ng-model="HuongXuLy.NoiDung" class="form-control input-sm" maxlength="2500" tabindex="13"></textarea>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> File đính kèm :</div>
+                                <div class="profile-info-value">
+                                    <span class="btn btn-info btn-file" id="files" style="padding: inherit;" tabindex="23">
+                                        <i class="ace-icon fa fa-upload"></i>Tải File từ máy tính<input type="file" id="file" accept=".doc,.docx,.pdf,.xls,.xlsx,.jpg" name="file" multiple onchange="angular.element(this).scope().selectFileforUpload(this)" />
+                                    </span>
+                                    Định dạng cho phép: doc, docx, pdf, xls, xlsx, jpg, jpeg, png. Kích cỡ tối đa 10mb
+                                    <table>
+                                        <tbody ng-if="lstDataForPlugin.length == 0">
+                                            <tr ng-repeat="items in fileList track by $index" style="height: 25px">
+                                                <td class="text-center">{{$index+1}}.</td>
+                                                <td>&nbsp;&nbsp;&nbsp;{{items.file.name.split('.')[0]}}</td>
+                                                <td>
+                                                    <span class="text-center control-btn">
+                                                        <a class="red" ng-click="removeFile(items);" data-placement="top" title="Xóa" style="margin-left: 10px;">
+                                                            <i class="ace-icon fa fa-remove bigger-150"></i>
+                                                        </a>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-success" id="btnCreate" ng-click="preCreateHuongXuLy(HuongXuLy)" tabindex="3"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;&nbsp;Lưu</a>
+                    <a class="btn btn-xs btn-danger" id="btnHuy" data-dismiss="modal" tabindex="4"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal In Mẫu văn bản*@
+    <div id="myModalPrint" class="modal fade" role="dialog" tabindex="-1">
+        <input type="text" id="crud" style="display:none;" />
+        <div class="modal-dialog modal-lg modal-style">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" id="closeNQ" data-dismiss="modal" tabindex="6">&times;</button>
+                    <h4 class="modal-title" ng-show="DonThu.Id != null"><i class="fa fa-tasks bigger-100"> </i> In văn bản theo mẫu hồ sơ: {{DonThu.HoTen}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 no-padding">
+                        <div class="profile-user-info profile-user-info-striped dv-name">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Đơn thư khiếu nại:</div>
+                                <div class="profile-info-value">
+                                    <ul class="list-unstyled spaced">
+                                        <li>
+                                            <i class="ace-icon fa fa-file-word-o bigger-110 green"></i>
+                                            <a ng-click="PrintMau14(DonThu.Id)" class="bolder">Mẫu 14 - PHIẾU ĐỀ XUẤT THỤ LÝ ĐƠN</a><br />
+                                            <iframe id="PrintMau14" style="display: none;"></iframe>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-file-word-o bigger-110 green"></i>
+                                            <a ng-click="PrintMau21(DonThu.Id)" class="bolder">Mẫu 21 - HƯỚNG DẪN NGƯỜI KHIẾU NẠI</a><br />
+                                            <iframe id="PrintMau21" style="display: none;"></iframe>
+                                        </li>    
+                                        <li>
+                                            <i class="ace-icon fa fa-file-word-o bigger-110 green"></i>
+                                            <a ng-click="PrintMau22(DonThu.Id)" class="bolder">Mẫu 22 - TRẢ LẠI ĐƠN CHUYỂN KHÔNG ĐÚNG THẨM QUYỀN</a><br />
+                                            <iframe id="PrintMau22" style="display: none;"></iframe>
+                                        </li>                                      
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name">Đơn thư tố cáo:</div>
+                                <div class="profile-info-value">  
+                                    <ul class="list-unstyled spaced">
+                                        <li>
+                                            <i class="ace-icon fa fa-file-word-o bigger-110 green"></i>
+                                            <a ng-click="PrintMau23(DonThu.Id)" class="bolder">Mẫu 23 - PHIẾU ĐỀ XUẤT THỤ LÝ GIẢI QUYẾT TỐ CÁO</a><br />
+                                            <iframe id="PrintMau23" style="display: none;"></iframe>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-file-word-o bigger-110 green"></i>
+                                            <a ng-click="PrintMau30(DonThu.Id)" class="bolder">Mẫu 30 - CHUYỂN ĐƠN TỐ CÁO</a><br />
+                                            <iframe id="PrintMau30" style="display: none;"></iframe>
+                                        </li>
+                                    </ul>
+                                             
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">                    
+                    <a class="btn btn-xs btn-danger" id="btnHuy" data-dismiss="modal" tabindex="4"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal View File*@
+    <div class="modal fade" id="ModalToViewFile" role="dialog">
+        <div class="modal-dialog modal-lg modal-style" style="width:98%">
+            <div class="modal-content">
+                <div class="modal-header" style="border-bottom:none;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"> Xem nội dung file: {{FileView.file_original}}</h4>
+                </div>
+                <div class="modal-body" style="max-height: calc(100vh - 50px);">
+                    <div class="col-md-12 no-padding">
+                        <iframe id="IframeViewFile" style="width: 100%; height: 500px; background-color: gray;" src=" "></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    });
+    $('#DateOfBirth').datepicker();
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+</script>
+

@@ -1,0 +1,1072 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5648A4A3-247F-464B-AB83-FC77C148329D}</ProjectGuid>
+    <ProjectTypeGuids>{E3E379DF-F4C6-4180-9B81-6769533ABE47};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DNC.WEB</RootNamespace>
+    <AssemblyName>DNC.WEB</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <Use64BitIISExpress />
+    <UseGlobalApplicationHostFile />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Aspose.BarCode, Version=16.10.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Aspose.BarCode.dll</HintPath>
+    </Reference>
+    <Reference Include="Aspose.Cells, Version=4.7.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\CODE-WEB-Project\ThanhTra\ThanhTra\bin\Aspose.Cells.dll</HintPath>
+    </Reference>
+    <Reference Include="Aspose.Words, Version=15.12.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Aspose.Words.dll</HintPath>
+    </Reference>
+    <Reference Include="DNC.CM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\DNC.CM.dll</HintPath>
+    </Reference>
+    <Reference Include="DNC.WEB, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\DNC.WEB.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Log" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Mvc.FixedDisplayModes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.FixedDisplayModes.1.0.0\lib\net40\Microsoft.Web.Mvc.FixedDisplayModes.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.30506.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.30506.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.4.0.30506.0\lib\net40\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.30506.0\lib\net40\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.0.0\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Providers">
+      <HintPath>..\packages\Microsoft.AspNet.Providers.Core.1.2\lib\net40\System.Web.Providers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.3.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.3.0\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Common\CommonFunc.cs" />
+    <Compile Include="Common\CommonFunction.cs" />
+    <Compile Include="Common\Constants.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\APIChucVuController.cs" />
+    <Compile Include="Controllers\BaoCaoController.cs" />
+    <Compile Include="Controllers\ConstantsController.cs" />
+    <Compile Include="Controllers\DmDiaDiemTiepDanController.cs" />
+    <Compile Include="Controllers\EmailController.cs" />
+    <Compile Include="Controllers\DmPhienTiepCongDanController.cs" />
+    <Compile Include="Controllers\TaiKhoanCongDanController.cs" />
+    <Compile Include="Controllers\DepartmentController.cs" />
+    <Compile Include="Controllers\DepartmentUserController.cs" />
+    <Compile Include="Controllers\DmTrangThaiController.cs" />
+    <Compile Include="Controllers\DmHuongXuLy.cs" />
+    <Compile Include="Controllers\DmNguonDonController.cs" />
+    <Compile Include="Controllers\DmChucVuController.cs" />
+    <Compile Include="Controllers\DmDanTocController.cs" />
+    <Compile Include="Controllers\DmLoaiDoiTuongController.cs" />
+    <Compile Include="Controllers\DmLoaiDonThuController.cs" />
+    <Compile Include="Controllers\DmLoaiKNTCController.cs" />
+    <Compile Include="Controllers\DmLoaiKNTCCTController.cs" />
+    <Compile Include="Controllers\DmPhuongXaController.cs" />
+    <Compile Include="Controllers\DmQuanHuyenController.cs" />
+    <Compile Include="Controllers\DmQuocTichController.cs" />
+    <Compile Include="Controllers\DmTinhThanhController.cs" />
+    <Compile Include="Controllers\KetLuanGiaiQuyetController.cs" />
+    <Compile Include="Controllers\DangKyTiepDanController.cs" />
+    <Compile Include="Controllers\UsersTempController.cs" />
+    <Compile Include="Controllers\VanBanMauController.cs" />
+    <Compile Include="Controllers\XuLyDonThuController.cs" />
+    <Compile Include="Controllers\DonThuController.cs" />
+    <Compile Include="Controllers\DuAnController.cs" />
+    <Compile Include="Controllers\FilesController.cs" />
+    <Compile Include="Controllers\FunctionController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HoSoController.cs" />
+    <Compile Include="Controllers\MenuLinkController.cs" />
+    <Compile Include="Controllers\PagesController.cs" />
+    <Compile Include="Controllers\RoleController.cs" />
+    <Compile Include="Controllers\TiepCongDanController.cs" />
+    <Compile Include="Controllers\SystemConfigsController.cs" />
+    <Compile Include="Controllers\SystemLogsController.cs" />
+    <Compile Include="Controllers\Ultils.cs" />
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\UserServiceController.cs" />
+    <Compile Include="Controllers\UsersRolesController.cs" />
+    <Compile Include="DMSService\DocumentService.asmx.cs">
+      <DependentUpon>DocumentService.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Dto\DocumentDto.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="License.cs" />
+    <Compile Include="LogException\ActiveLog.cs" />
+    <Compile Include="LogException\ProviderConfig.cs" />
+    <Compile Include="Models\BaoCao.cs" />
+    <Compile Include="Models\Captcha\CaptchaModel.cs" />
+    <Compile Include="Models\DangKyTiepDanFile.cs" />
+    <Compile Include="Models\DbConnectContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\DepartmentRoles.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\DataResponse.cs" />
+    <Compile Include="Models\Departments.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\DepartmentUsers.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\DmCoQuan.cs" />
+    <Compile Include="Models\DmDiaDiemTiepDan.cs" />
+    <Compile Include="Models\Email\EmailModel.cs" />
+    <Compile Include="Models\DmLoaiKetQua.cs" />
+    <Compile Include="Models\DmPhienTiepCongDan.cs" />
+    <Compile Include="Models\DmTrangThai.cs" />
+    <Compile Include="Models\DmHuongXuLy.cs" />
+    <Compile Include="Models\DmNguonDon.cs" />
+    <Compile Include="Models\DmChucVu.cs" />
+    <Compile Include="Models\DmDanToc.cs" />
+    <Compile Include="Models\DmLoaiDoiTuong.cs" />
+    <Compile Include="Models\DmLoaiDonThu.cs" />
+    <Compile Include="Models\DmLoaiKNTC.cs" />
+    <Compile Include="Models\DmLoaiKNTCCT.cs" />
+    <Compile Include="Models\DmPhuongXa.cs" />
+    <Compile Include="Models\DmQuanHuyen.cs" />
+    <Compile Include="Models\DmQuocTich.cs" />
+    <Compile Include="Models\DmTinhThanh.cs" />
+    <Compile Include="Models\KetLuanGiaiQuyet.cs" />
+    <Compile Include="Models\DangKyTiepDan.cs" />
+    <Compile Include="Models\UsersHistory.cs" />
+    <Compile Include="Models\UsersQuenMatKhau.cs" />
+    <Compile Include="Models\UsersTemp.cs" />
+    <Compile Include="Models\VuViec.cs" />
+    <Compile Include="Models\XuLyDonThu.cs" />
+    <Compile Include="Models\DuAn.cs" />
+    <Compile Include="Models\FileUpload.cs" />
+    <Compile Include="Models\Functions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\DonThu.cs" />
+    <Compile Include="Models\TiepCongDan.cs" />
+    <Compile Include="Models\HoSo.cs" />
+    <Compile Include="Models\PageFunctionRoles.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\PageFunctions.cs" />
+    <Compile Include="Models\Pages.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Roles.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\SystemConfigs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\SystemLogs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\UserFolderFunctions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\Users.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\UserService.cs" />
+    <Compile Include="Models\UsersRoles.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\AccountRp.cs" />
+    <Compile Include="Repository\BaoCaoRp.cs" />
+    <Compile Include="Repository\Cls_xacthutaptrung.cs" />
+    <Compile Include="Repository\DmDiaDiemTiepDanRp.cs" />
+    <Compile Include="Repository\DmNguonDonRp.cs" />
+    <Compile Include="Repository\DmHuongXuLyRp.cs" />
+    <Compile Include="Repository\DmPhienTiepCongDanRp.cs" />
+    <Compile Include="Repository\TaiKhoanCongDanRp .cs" />
+    <Compile Include="Repository\DepartmentsRp.cs" />
+    <Compile Include="Repository\DepartmentUsersRp.cs" />
+    <Compile Include="Repository\DmChucVuRp.cs" />
+    <Compile Include="Repository\DmDanTocRp.cs" />
+    <Compile Include="Repository\DmLoaiDoiTuongRp.cs" />
+    <Compile Include="Repository\DmLoaiDonThuRp.cs" />
+    <Compile Include="Repository\DmLoaiKNTCCTRp.cs" />
+    <Compile Include="Repository\DmLoaiKNTCRp.cs" />
+    <Compile Include="Repository\DmPhuongXaRp.cs" />
+    <Compile Include="Repository\DmQuanHuyenRp.cs" />
+    <Compile Include="Repository\DmQuocTichRp.cs" />
+    <Compile Include="Repository\DmTinhThanhRp.cs" />
+    <Compile Include="Repository\DuAnRp.cs" />
+    <Compile Include="Repository\FunctioncRp.cs" />
+    <Compile Include="Repository\GenericRepository.cs" />
+    <Compile Include="Repository\DonThuRp.cs" />
+    <Compile Include="Repository\DangKyTiepDanRp.cs" />
+    <Compile Include="Repository\UsersTempRp.cs" />
+    <Compile Include="Repository\VuViecRp.cs" />
+    <Compile Include="Repository\XuLyDonThuRp.cs" />
+    <Compile Include="Repository\TiepCongDanRp.cs" />
+    <Compile Include="Repository\HoSoRp.cs" />
+    <Compile Include="Repository\PageFunctionRoleRp.cs" />
+    <Compile Include="Repository\PagesRp.cs" />
+    <Compile Include="Repository\RolesRp.cs" />
+    <Compile Include="Repository\SystemConfigsRp.cs" />
+    <Compile Include="Repository\SystemLogsRp.cs" />
+    <Compile Include="Repository\UserRoleRp.cs" />
+    <Compile Include="Repository\UserServiceRp.cs" />
+    <Compile Include="Repository\UsersRp.cs" />
+    <Compile Include="Services\EmailService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Antlr3.Runtime.dll" />
+    <Content Include="bin\Aspose.BarCode.dll" />
+    <Content Include="bin\Aspose.Cells.dll" />
+    <Content Include="bin\Aspose.Words.dll" />
+    <Content Include="bin\DNC.CM.dll" />
+    <Content Include="bin\DNC.CM.pdb" />
+    <Content Include="bin\DNC.WEB.dll" />
+    <Content Include="bin\DNC.WEB.pdb" />
+    <Content Include="bin\EntityFramework.dll" />
+    <Content Include="bin\EntityFramework.SqlServer.dll" />
+    <Content Include="bin\log4net.dll" />
+    <Content Include="bin\Microsoft.Web.Infrastructure.dll" />
+    <Content Include="bin\Microsoft.Web.Mvc.FixedDisplayModes.dll" />
+    <Content Include="bin\Newtonsoft.Json.dll" />
+    <Content Include="bin\System.Net.Http.Formatting.dll" />
+    <Content Include="bin\System.Web.Http.dll" />
+    <Content Include="bin\System.Web.Http.WebHost.dll" />
+    <Content Include="bin\System.Web.Mvc.dll" />
+    <Content Include="bin\System.Web.Optimization.dll" />
+    <Content Include="bin\System.Web.Providers.dll" />
+    <Content Include="bin\System.Web.Razor.dll" />
+    <Content Include="bin\System.Web.WebPages.Deployment.dll" />
+    <Content Include="bin\System.Web.WebPages.dll" />
+    <Content Include="bin\System.Web.WebPages.Razor.dll" />
+    <Content Include="bin\WebGrease.dll" />
+    <Content Include="Content\admin\ajax.googleapis.com\ajax\libs\jquery\2.1.1\jquery.min.js" />
+    <Content Include="Content\admin\ajax.googleapis.com\ajax\libs\jquery\2.1.4\jquery.min.js" />
+    <Content Include="Content\admin\maxcdn.bootstrapcdn.com\font-awesome\4.2.0\css\font-awesome.min.css" />
+    <Content Include="Content\admin\maxcdn.bootstrapcdn.com\font-awesome\4.5.0\css\font-awesome.min.css" />
+    <Content Include="Content\admin\netdna.bootstrapcdn.com\bootstrap\3.3.1\js\bootstrap.min.js" />
+    <Content Include="Content\admin\netdna.bootstrapcdn.com\bootstrap\3.3.6\js\bootstrap.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\autosize\dist\autosize.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\bootbox.js\bootbox.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\bootstrap-datepicker\dist\css\bootstrap-datepicker3.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\bootstrap-datepicker\dist\js\bootstrap-datepicker.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\bootstrap-daterangepicker\daterangepicker.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\bootstrap-daterangepicker\daterangepicker.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\bootstrap-duallistbox\dist\bootstrap-duallistbox.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\bootstrap-markdown\js\bootstrap-markdown.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\bootstrap-multiselect\dist\css\bootstrap-multiselect.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\bootstrap-timepicker\css\bootstrap-timepicker.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\bootstrap-timepicker\js\bootstrap-timepicker.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\chosen\chosen-sprite%402x.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\chosen\chosen-sprite.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\chosen\chosen.jquery.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\chosen\chosen.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\datatables.net-buttons-swf\index.html" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\datatables.net-buttons\js\buttons.colVis.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\datatables.net-buttons\js\buttons.flash.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\datatables.net-buttons\js\buttons.html5.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\datatables.net-buttons\js\buttons.print.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\datatables.net-buttons\js\dataTables.buttons.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\datatables.net-select\js\dataTables.select.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\datatables\media\js\jquery.dataTables.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\dropzone\dist\min\dropzone.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\dropzone\dist\min\dropzone.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\eonasdan-bootstrap-datetimepicker\build\css\bootstrap-datetimepicker.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\eonasdan-bootstrap-datetimepicker\build\js\bootstrap-datetimepicker.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\Flot\jquery.flot.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\Flot\jquery.flot.pie.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\Flot\jquery.flot.resize.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\fuelux\js\spinbox.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\fuelux\js\wizard.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\fullcalendar\dist\fullcalendar.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\fullcalendar\dist\fullcalendar.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\holderjs\holder.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jqGrid\js\jquery.jqGrid.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jqGrid\js\minified\i18n\grid.locale-en.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery-colorbox\example1\colorbox.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery-colorbox\example1\images\border.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery-colorbox\example1\images\controls.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery-colorbox\example1\images\loading.gif" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery-colorbox\example1\images\loading_background.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery-colorbox\example1\images\overlay.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery-colorbox\jquery.colorbox.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery-inputlimiter\jquery.inputlimiter.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery-knob\dist\jquery.knob.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery-ui\jquery-ui.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery-validation\dist\additional-methods.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery-validation\dist\jquery.validate.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery.gritter\css\jquery.gritter.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery.gritter\images\gritter-light.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery.gritter\images\gritter.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery.gritter\images\ie-spacer.gif" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery.gritter\js\jquery.gritter.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery.hotkeys\index.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery.maskedinput\dist\jquery.maskedinput.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jquery.sparkline\index.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\jqueryui-touch-punch\jquery.ui.touch-punch.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\markdown\lib\markdown.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\mjolnic-bootstrap-colorpicker\dist\css\bootstrap-colorpicker.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\mjolnic-bootstrap-colorpicker\dist\img\bootstrap-colorpicker\alpha-horizontal.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\mjolnic-bootstrap-colorpicker\dist\img\bootstrap-colorpicker\alpha.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\mjolnic-bootstrap-colorpicker\dist\img\bootstrap-colorpicker\hue-horizontal.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\mjolnic-bootstrap-colorpicker\dist\img\bootstrap-colorpicker\hue.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\mjolnic-bootstrap-colorpicker\dist\img\bootstrap-colorpicker\saturation.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\mjolnic-bootstrap-colorpicker\dist\js\bootstrap-colorpicker.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\moment\moment.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\raty\lib\jquery.raty.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\select2\dist\css\select2.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\select2\dist\js\select2.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\spin.js\spin.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\typeahead.js\dist\typeahead.jquery.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\bootstrap-duallistbox\jquery.bootstrap-duallistbox.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\bootstrap-multiselect\bootstrap-multiselect.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\bootstrap-tag\bootstrap-tag.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\bootstrap-wysiwyg\bootstrap-wysiwyg.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\datatables\jquery.dataTables.bootstrap.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\easypiechart\jquery.easypiechart.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\fuelux\tree.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\google-code-prettify\prettify.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\img\clear.html" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\img\loading.html" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\jqgrid\ui.jqgrid.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\jquery-ui.custom\jquery-ui.custom.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\jquery-ui.custom\jquery-ui.custom.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\jquery-ui\jquery-ui.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\jquery.mobile.custom\jquery.mobile.custom.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\jquery.nestable\jquery.nestable.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\x-editable\ace-editable.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\x-editable\bootstrap-editable.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\_mod\x-editable\bootstrap-editable.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\avatars\avatar.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\avatars\avatar1.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\avatars\avatar2.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\avatars\avatar3.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\avatars\avatar4.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\avatars\avatar5.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\avatars\profile-pic.jpg" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\avatars\user.jpg" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\ace-rtl.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\ace-skins.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\ace.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\bootstrap-datetimepicker.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\bootstrap-duallistbox.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\bootstrap-editable.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\bootstrap-multiselect.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\bootstrap-timepicker.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\bootstrap.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\chosen-sprite%402x.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\chosen-sprite.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\chosen.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\colorbox.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\colorpicker.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\datepicker.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\daterangepicker.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\dropzone.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\fullcalendar.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\images\border.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\images\controls.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\images\loading.gif" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\images\loading_background.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\images\meteorshower2.jpg" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\images\overlay.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\images\pattern.jpg" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\img\alpha.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\img\hue.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\img\saturation.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\jquery-ui.custom.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\jquery-ui.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\jquery.gritter.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\prettify.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\select2-spinner.gif" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\select2.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\select2.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\select2x2.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\sss.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\css\ui.jqgrid.min.css" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\fonts\glyphicons-halflings-regulard41d.eot" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\img\clear.png" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\img\loading.gif" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\ace-elements.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\ace-extra.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\ace.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\additional-methods.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\bootbox.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\bootstrap-colorpicker.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\bootstrap-multiselect.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\bootstrap-tag.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\bootstrap-wysiwyg.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\chosen.jquery.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\dataTables\extensions\ColVis\js\dataTables.colVis.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\dataTables\extensions\TableTools\js\dataTables.tableTools.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\dataTables\jquery.dataTables.bootstrap.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\dataTables\jquery.dataTables.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\date-time\bootstrap-datepicker.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\date-time\bootstrap-datetimepicker.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\date-time\bootstrap-timepicker.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\date-time\daterangepicker.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\date-time\moment.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\dropzone.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\flot\jquery.flot.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\flot\jquery.flot.pie.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\flot\jquery.flot.resize.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\fuelux\fuelux.spinner.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\fuelux\fuelux.tree.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\fuelux\fuelux.wizard.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\fullcalendar.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jqGrid\i18n\grid.locale-en.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jqGrid\jquery.jqGrid.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery-ui.custom.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery-ui.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.autosize.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.bootstrap-duallistbox.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.colorbox.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.easypiechart.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.gritter.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.hotkeys.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.inputlimiter.1.3.1.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.knob.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.maskedinput.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.mobile.custom.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.nestable.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.raty.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.sparkline.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.ui.touch-punch.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\jquery.validate.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\markdown\bootstrap-markdown.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\markdown\markdown.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\prettify.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\select2.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\spin.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\typeahead.jquery.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\x-editable\ace-editable.min.js" />
+    <Content Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\js\x-editable\bootstrap-editable.min.js" />
+    <Content Include="Content\angucomplete-alt.css" />
+    <Content Include="Content\assets\checktree_icon.png" />
+    <Content Include="Content\assets\css\ace-ie.min.css" />
+    <Content Include="Content\assets\css\ace-part2.min.css" />
+    <Content Include="Content\assets\css\ace-rtl.min.css" />
+    <Content Include="Content\assets\css\ace-skins.min.css" />
+    <Content Include="Content\assets\css\ace.min.css" />
+    <Content Include="Content\assets\css\bootstrap-colorpicker.min.css" />
+    <Content Include="Content\assets\css\bootstrap-datepicker3.min.css" />
+    <Content Include="Content\assets\css\bootstrap-datetimepicker.min.css" />
+    <Content Include="Content\assets\css\bootstrap-duallistbox.min.css" />
+    <Content Include="Content\assets\css\bootstrap-editable.min.css" />
+    <Content Include="Content\assets\css\bootstrap-multiselect.min.css" />
+    <Content Include="Content\assets\css\bootstrap-timepicker.min.css" />
+    <Content Include="Content\assets\css\bootstrap.css" />
+    <Content Include="Content\assets\css\bootstrap.min.css" />
+    <Content Include="Content\assets\css\chosen.min.css" />
+    <Content Include="Content\assets\css\colorbox.min.css" />
+    <Content Include="Content\assets\css\datepicker.min.css" />
+    <Content Include="Content\assets\css\daterangepicker.min.css" />
+    <Content Include="Content\assets\css\dropzone.min.css" />
+    <Content Include="Content\assets\css\font-awesome.min.css" />
+    <Content Include="Content\assets\css\fonts.googleapis.com.css" />
+    <Content Include="Content\assets\css\fullcalendar.min.css" />
+    <Content Include="Content\assets\css\jquery-ui.custom.min.css" />
+    <Content Include="Content\assets\css\jquery-ui.min.css" />
+    <Content Include="Content\assets\css\jquery.gritter.min.css" />
+    <Content Include="Content\assets\css\prettify.min.css" />
+    <Content Include="Content\assets\css\select2.min.css" />
+    <Content Include="Content\assets\css\Style_Cus.css" />
+    <Content Include="Content\assets\css\ui.jqgrid.min.css" />
+    <Content Include="Content\assets\font-awesome\4.5.0\css\font-awesome.min.css" />
+    <Content Include="Content\assets\font-awesome\4.5.0\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\assets\font-awesome\4.5.0\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\assets\font-awesome\4.5.0\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\assets\font-awesome\4.5.0\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\assets\font-awesome\4.5.0\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\assets\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\assets\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\assets\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\assets\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\assets\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\assets\highCheckTree.css" />
+    <Content Include="Content\assets\highchecktree.js" />
+    <Content Include="Content\assets\images\avatars\avatar.png" />
+    <Content Include="Content\assets\images\avatars\avatar1.png" />
+    <Content Include="Content\assets\images\avatars\avatar2.png" />
+    <Content Include="Content\assets\images\avatars\avatar3.png" />
+    <Content Include="Content\assets\images\avatars\avatar4.png" />
+    <Content Include="Content\assets\images\avatars\avatar5.png" />
+    <Content Include="Content\assets\images\avatars\profile-pic.jpg" />
+    <Content Include="Content\assets\images\avatars\user.png" />
+    <Content Include="Content\assets\images\avatars\user1.jpg" />
+    <Content Include="Content\assets\images\bootstrap-colorpicker\alpha-horizontal.png" />
+    <Content Include="Content\assets\images\bootstrap-colorpicker\alpha.png" />
+    <Content Include="Content\assets\images\bootstrap-colorpicker\hue-horizontal.png" />
+    <Content Include="Content\assets\images\bootstrap-colorpicker\hue.png" />
+    <Content Include="Content\assets\images\bootstrap-colorpicker\saturation.png" />
+    <Content Include="Content\assets\images\btn_back.png" />
+    <Content Include="Content\assets\images\btn_batdautiepdan.png" />
+    <Content Include="Content\assets\images\btn_congdanhuy.png" />
+    <Content Include="Content\assets\images\btn_dongy.png" />
+    <Content Include="Content\assets\images\btn_edit.png" />
+    <Content Include="Content\assets\images\btn_gui_xu_ly.png" />
+    <Content Include="Content\assets\images\btn_huy.png" />
+    <Content Include="Content\assets\images\btn_tuchoi.png" />
+    <Content Include="Content\assets\images\btn_xuly.png" />
+    <Content Include="Content\assets\images\can_cap_nhat.png" />
+    <Content Include="Content\assets\images\cho_dang_ky.png" />
+    <Content Include="Content\assets\images\email\email1.png" />
+    <Content Include="Content\assets\images\email\email2.png" />
+    <Content Include="Content\assets\images\email\email3.png" />
+    <Content Include="Content\assets\images\email\email4.png" />
+    <Content Include="Content\assets\images\gallery\image-1.jpg" />
+    <Content Include="Content\assets\images\gallery\image-2.jpg" />
+    <Content Include="Content\assets\images\gallery\image-3.jpg" />
+    <Content Include="Content\assets\images\gallery\image-4.jpg" />
+    <Content Include="Content\assets\images\gallery\image-5.jpg" />
+    <Content Include="Content\assets\images\gallery\image-6.jpg" />
+    <Content Include="Content\assets\images\gallery\thumb-1.jpg" />
+    <Content Include="Content\assets\images\gallery\thumb-2.jpg" />
+    <Content Include="Content\assets\images\gallery\thumb-3.jpg" />
+    <Content Include="Content\assets\images\gallery\thumb-4.jpg" />
+    <Content Include="Content\assets\images\gallery\thumb-5.jpg" />
+    <Content Include="Content\assets\images\gallery\thumb-6.jpg" />
+    <Content Include="Content\assets\images\icon\doc.png" />
+    <Content Include="Content\assets\images\icon\jpg.png" />
+    <Content Include="Content\assets\images\icon\pdf.png" />
+    <Content Include="Content\assets\images\icon\ppt.png" />
+    <Content Include="Content\assets\images\icon\rar.png" />
+    <Content Include="Content\assets\images\icon\xlsx.png" />
+    <Content Include="Content\assets\images\icon_batdautiepdan.png" />
+    <Content Include="Content\assets\images\icon_changepass.png" />
+    <Content Include="Content\assets\images\icon_congdanhuy.png" />
+    <Content Include="Content\assets\images\icon_da_kich_hoat.png" />
+    <Content Include="Content\assets\images\icon_delete.png" />
+    <Content Include="Content\assets\images\icon_dongy2.png" />
+    <Content Include="Content\assets\images\icon_edit.png" />
+    <Content Include="Content\assets\images\icon_gui_dang_ky.png" />
+    <Content Include="Content\assets\images\icon_huy_dang_ky.png" />
+    <Content Include="Content\assets\images\icon_lock.png" />
+    <Content Include="Content\assets\images\icon_pheduyet.png" />
+    <Content Include="Content\assets\images\icon_resend.png" />
+    <Content Include="Content\assets\images\icon_search.png" />
+    <Content Include="Content\assets\images\icon_tuchoi.png" />
+    <Content Include="Content\assets\images\icon_tuchoi2.png" />
+    <Content Include="Content\assets\images\icon_unlock.png" />
+    <Content Include="Content\assets\images\icon_vohieuhoa.png" />
+    <Content Include="Content\assets\images\icon_xuly.png" />
+    <Content Include="Content\assets\images\logo_lao_cai.png" />
+    <Content Include="Content\assets\images\placeholder\165x90.png" />
+    <Content Include="Content\assets\images\placeholder\255x150.png" />
+    <Content Include="Content\assets\images\placeholder\530x270.png" />
+    <Content Include="Content\assets\images\placeholder\550x280.png" />
+    <Content Include="Content\assets\images\profile-pic.jpg" />
+    <Content Include="Content\assets\images\quochuy.png" />
+    <Content Include="Content\assets\images\upload_file.png" />
+    <Content Include="Content\assets\js\ace-editable.min.js" />
+    <Content Include="Content\assets\js\ace-elements.min.js" />
+    <Content Include="Content\assets\js\ace-extra.min.js" />
+    <Content Include="Content\assets\js\ace.min.js" />
+    <Content Include="Content\assets\js\autosize.min.js" />
+    <Content Include="Content\assets\js\bootbox.js" />
+    <Content Include="Content\assets\js\bootstrap-colorpicker.min.js" />
+    <Content Include="Content\assets\js\bootstrap-datepicker.min.js" />
+    <Content Include="Content\assets\js\bootstrap-datetimepicker.min.js" />
+    <Content Include="Content\assets\js\bootstrap-editable.min.js" />
+    <Content Include="Content\assets\js\bootstrap-markdown.min.js" />
+    <Content Include="Content\assets\js\bootstrap-multiselect.min.js" />
+    <Content Include="Content\assets\js\bootstrap-tag.min.js" />
+    <Content Include="Content\assets\js\bootstrap-timepicker.min.js" />
+    <Content Include="Content\assets\js\bootstrap-wysiwyg.min.js" />
+    <Content Include="Content\assets\js\bootstrap.min.js" />
+    <Content Include="Content\assets\js\buttons.colVis.min.js" />
+    <Content Include="Content\assets\js\buttons.flash.min.js" />
+    <Content Include="Content\assets\js\buttons.html5.min.js" />
+    <Content Include="Content\assets\js\buttons.print.min.js" />
+    <Content Include="Content\assets\js\chosen.jquery.min.js" />
+    <Content Include="Content\assets\js\dataTables.buttons.min.js" />
+    <Content Include="Content\assets\js\dataTables.select.min.js" />
+    <Content Include="Content\assets\js\daterangepicker.min.js" />
+    <Content Include="Content\assets\js\dropzone.min.js" />
+    <Content Include="Content\assets\js\excanvas.min.js" />
+    <Content Include="Content\assets\js\fullcalendar.min.js" />
+    <Content Include="Content\assets\js\grid.locale-en.js" />
+    <Content Include="Content\assets\js\holder.min.js" />
+    <Content Include="Content\assets\js\html5shiv.min.js" />
+    <Content Include="Content\assets\js\jquery-1.11.3.min.js" />
+    <Content Include="Content\assets\js\jquery-2.1.4.min.js" />
+    <Content Include="Content\assets\js\jquery-additional-methods.min.js" />
+    <Content Include="Content\assets\js\jquery-typeahead.js" />
+    <Content Include="Content\assets\js\jquery-ui.custom.min.js" />
+    <Content Include="Content\assets\js\jquery-ui.min.js" />
+    <Content Include="Content\assets\js\jquery.bootstrap-duallistbox.min.js" />
+    <Content Include="Content\assets\js\jquery.colorbox.min.js" />
+    <Content Include="Content\assets\js\jquery.dataTables.bootstrap.min.js" />
+    <Content Include="Content\assets\js\jquery.dataTables.min.js" />
+    <Content Include="Content\assets\js\jquery.easypiechart.min.js" />
+    <Content Include="Content\assets\js\jquery.flot.min.js" />
+    <Content Include="Content\assets\js\jquery.flot.pie.min.js" />
+    <Content Include="Content\assets\js\jquery.flot.resize.min.js" />
+    <Content Include="Content\assets\js\jquery.gritter.min.js" />
+    <Content Include="Content\assets\js\jquery.hotkeys.index.min.js" />
+    <Content Include="Content\assets\js\jquery.inputlimiter.min.js" />
+    <Content Include="Content\assets\js\jquery.jqGrid.min.js" />
+    <Content Include="Content\assets\js\jquery.knob.min.js" />
+    <Content Include="Content\assets\js\jquery.maskedinput.min.js" />
+    <Content Include="Content\assets\js\jquery.mobile.custom.min.js" />
+    <Content Include="Content\assets\js\jquery.nestable.min.js" />
+    <Content Include="Content\assets\js\jquery.raty.min.js" />
+    <Content Include="Content\assets\js\jquery.sparkline.index.min.js" />
+    <Content Include="Content\assets\js\jquery.ui.touch-punch.min.js" />
+    <Content Include="Content\assets\js\jquery.validate.min.js" />
+    <Content Include="Content\assets\js\kendo.all.min.js" />
+    <Content Include="Content\assets\js\markdown.min.js" />
+    <Content Include="Content\assets\js\moment.min.js" />
+    <Content Include="Content\assets\js\prettify.min.js" />
+    <Content Include="Content\assets\js\respond.min.js" />
+    <Content Include="Content\assets\js\select2.min.js" />
+    <Content Include="Content\assets\js\spin.js" />
+    <Content Include="Content\assets\js\spinbox.min.js" />
+    <Content Include="Content\assets\js\tree.min.js" />
+    <Content Include="Content\assets\js\wizard.min.js" />
+    <Content Include="Content\assets\styles\fonts\glyphs\KendoUIGlyphs.svg" />
+    <Content Include="Content\assets\styles\fonts\glyphs\WebComponentsIcons.svg" />
+    <Content Include="Content\assets\styles\images\back.png" />
+    <Content Include="Content\assets\styles\images\kendoui.svg" />
+    <Content Include="Content\assets\styles\images\wp8_icons.png" />
+    <Content Include="Content\assets\styles\images\wp8_inverseicons.png" />
+    <Content Include="Content\assets\styles\kendo.common.min.css" />
+    <Content Include="Content\assets\styles\kendo.default.min.css" />
+    <Content Include="Content\assets\styles\kendo.rtl.min.css" />
+    <Content Include="Content\assets\swf\flashExport.swf" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Css\custom.css" />
+    <Content Include="Content\Css\select2-spinner.gif" />
+    <Content Include="Content\Css\select2.min.css" />
+    <Content Include="Content\Css\select2.png" />
+    <Content Include="Content\jsTree\angular-ui-tree.css" />
+    <Content Include="Content\jsTree\angular-ui-tree.js" />
+    <Content Include="Content\jsTree\demos.js" />
+    <Content Include="Content\jsTree\docs.css" />
+    <Content Include="Content\jsTree\jquery-1.11.1.min.js" />
+    <Content Include="Content\jsTree\jquery-1.11.2.js" />
+    <Content Include="Content\jsTree\jqx.base.css" />
+    <Content Include="Content\jsTree\jqxbuttons.js" />
+    <Content Include="Content\jsTree\jqxcheckbox.js" />
+    <Content Include="Content\jsTree\jqxcore.js" />
+    <Content Include="Content\jsTree\jqxcustom.js" />
+    <Content Include="Content\jsTree\jqxmenu.js" />
+    <Content Include="Content\jsTree\jqxpanel.js" />
+    <Content Include="Content\jsTree\jqxscrollbar.js" />
+    <Content Include="Content\jsTree\jqxtree.js" />
+    <Content Include="Content\jsTree\themes\default-dark\32px.png" />
+    <Content Include="Content\jsTree\themes\default-dark\40px.png" />
+    <Content Include="Content\jsTree\themes\default-dark\style.css" />
+    <Content Include="Content\jsTree\themes\default-dark\style.min.css" />
+    <Content Include="Content\jsTree\themes\default-dark\throbber.gif" />
+    <Content Include="Content\jsTree\themes\default\32px.png" />
+    <Content Include="Content\jsTree\themes\default\40px.png" />
+    <Content Include="Content\jsTree\themes\default\style.css" />
+    <Content Include="Content\jsTree\themes\default\style.min.css" />
+    <Content Include="Content\jsTree\themes\default\throbber.gif" />
+    <Content Include="Content\js\select2.min.js" />
+    <Content Include="Content\PageIndex.css" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Content\TreeCss.css" />
+    <Content Include="DMSService\DocumentService.asmx" />
+    <Content Include="Global.asax" />
+    <Content Include="Images\bg-login 1.jpg" />
+    <Content Include="Images\bg1.png" />
+    <Content Include="Images\header_vnpt.jpg" />
+    <Content Include="Images\icon.png" />
+    <Content Include="Images\logo.png" />
+    <Content Include="Images\logo_tt.png" />
+    <Content Include="Images\meteorshower2.jpg" />
+    <Content Include="Properties\PublishProfiles\TiepDanCommon.pubxml.user" />
+    <Content Include="ScriptController\BaoCaoTongHopKetQuaTiepCongDan01Js.js" />
+    <Content Include="ScriptController\BaoCaoTongHopKetQuaXuLyDonKienNghiPhanAnhJs.js" />
+    <Content Include="ScriptController\BaoCaoTongHopKetQuaXuLyDonToCaoJs.js" />
+    <Content Include="ScriptController\BaoCaoTongHopKetQuaXuLyDonKhieuNaiJs.js" />
+    <Content Include="ScriptController\BaoCaoTongHopKetQuaXuLyDon01Js.js" />
+    <Content Include="ScriptController\DmPhienTiepCongDanJs.js" />
+    <Content Include="ScriptController\DmNguonDonJs.js" />
+    <Content Include="ScriptController\DmHuongXuLyJs.js" />
+    <Content Include="ScriptController\ProfileEditJs.js" />
+    <Content Include="ScriptController\CitizenDetailJs.js" />
+    <Content Include="ScriptController\DmDiaDiemTiepDanJs.js" />
+    <Content Include="ScriptController\ForgotPasswordJs.js" />
+    <Content Include="ScriptController\RegisterDetailAdminJs.js" />
+    <Content Include="ScriptController\RegisterDetailJs.js" />
+    <Content Include="ScriptController\RegisterEditJs.js" />
+    <Content Include="ScriptController\RegisterAddJs.js" />
+    <Content Include="ScriptController\CitizenListJs.js" />
+    <Content Include="ScriptController\RegisterListAdminJs.js" />
+    <Content Include="ScriptController\RegisterListJs.js" />
+    <Content Include="ScriptController\ProfileJs.js" />
+    <Content Include="ScriptController\RegisterAccountJs.js" />
+    <Content Include="ScriptController\AccountJs.js" />
+    <Content Include="ScriptController\BaoCaoDonThuTheoDiaBanJs.js" />
+    <Content Include="ScriptController\BaoCaoTongHopKetQuaTiepCongDanJs.js" />
+    <Content Include="ScriptController\BaoCaoTongHopKetQuaXuLyDonJs.js" />
+    <Content Include="ScriptController\BaoCaoTongHopDonThuJs.js" />
+    <Content Include="ScriptController\BaoCaoTongHopTiepCongDanJs.js" />
+    <Content Include="ScriptController\ReportsJs.js" />
+    <Content Include="ScriptController\ChartsJs.js" />
+    <Content Include="ScriptController\crud.js" />
+    <Content Include="ScriptController\DepartmentsCtrl.js" />
+    <Content Include="ScriptController\DmChucVuJs.js" />
+    <Content Include="ScriptController\DmDanTocJs.js" />
+    <Content Include="ScriptController\DmLoaiDoiTuongJs.js" />
+    <Content Include="ScriptController\DmLoaiDonThuJs.js" />
+    <Content Include="ScriptController\DmLoaiKNTCCTJs.js" />
+    <Content Include="ScriptController\DmLoaiKNTCJs.js" />
+    <Content Include="ScriptController\DmPhuongXaJs.js" />
+    <Content Include="ScriptController\DmQuanHuyenJs.js" />
+    <Content Include="ScriptController\DmQuocTichJs.js" />
+    <Content Include="ScriptController\DmTinhThanhJs.js" />
+    <Content Include="ScriptController\DonThuDuyetGiaiQuyetJs.js" />
+    <Content Include="ScriptController\DonThuKetLuanJs.js" />
+    <Content Include="ScriptController\DonThuDuyetXuLyJs.js" />
+    <Content Include="ScriptController\DonThuHuyJs.js" />
+    <Content Include="ScriptController\TraCuuDonThuJs.js" />
+    <Content Include="ScriptController\DonThuTraKetQuaJs.js" />
+    <Content Include="ScriptController\DonThuGiaiQuyetJs.js" />
+    <Content Include="ScriptController\HomeJs.js" />
+    <Content Include="ScriptController\DonThuTiepNhanJs.js" />
+    <Content Include="ScriptController\TiepNhanDonThuJs.js" />
+    <Content Include="ScriptController\TiepCongDanJs.js" />
+    <Content Include="ScriptController\SoTiepDanJs.js" />
+    <Content Include="ScriptController\HoSoJs.js" />
+    <Content Include="ScriptController\MenuLinkJs.js" />
+    <Content Include="ScriptController\PagesJs.js" />
+    <Content Include="ScriptController\RolesJs.js" />
+    <Content Include="ScriptController\SystemConfigsJs.js" />
+    <Content Include="ScriptController\SystemLogsJs.js" />
+    <Content Include="ScriptController\DuAnJs.js" />
+    <Content Include="ScriptController\UserServiceJs.js" />
+    <Content Include="ScriptController\UsersInfoJS.js" />
+    <Content Include="ScriptController\UsersJs.js" />
+    <Content Include="Exports\Templates\PhieuMuon.xls" />
+    <Content Include="Exports\Templates\HDSD_HoSoLuuTru_TongHop.doc" />
+    <Content Include="Content\assets\styles\fonts\glyphs\KendoUIGlyphs.eot" />
+    <Content Include="Content\assets\styles\fonts\glyphs\KendoUIGlyphs.ttf" />
+    <Content Include="Content\assets\styles\fonts\glyphs\KendoUIGlyphs.woff" />
+    <Content Include="Content\assets\styles\fonts\glyphs\WebComponentsIcons.eot" />
+    <Content Include="Content\assets\styles\fonts\glyphs\WebComponentsIcons.ttf" />
+    <Content Include="Content\assets\styles\fonts\glyphs\WebComponentsIcons.woff" />
+    <Content Include="Content\assets\styles\images\kendoui.ttf" />
+    <Content Include="Content\assets\styles\images\kendoui.woff" />
+    <Content Include="Exports\Templates\BC_SOTIEPCONGDAN.xls" />
+    <Content Include="Exports\Templates\BC_SOTIEPNHANDONTHU.xls" />
+    <Content Include="Exports\Templates\Mau14.doc" />
+    <Content Include="Exports\Templates\Mau21.doc" />
+    <Content Include="Exports\Templates\Mau22.doc" />
+    <Content Include="Exports\Templates\Mau23.doc" />
+    <Content Include="Exports\Templates\Mau30.doc" />
+    <None Include="bin\DNC.WEB.dll.config" />
+    <Content Include="Exports\Templates\BC_DONTHUTHEODIABAN.xls" />
+    <Content Include="Exports\Templates\BC_KETQUATIEPCONGDAN.xls" />
+    <Content Include="Exports\Templates\BC_KETQUAXULYDON.xls" />
+    <Content Include="Exports\Templates\BC_TONGHOPTIEPCONGDAN.xls" />
+    <Content Include="Exports\Templates\BC_TONGHOPKETQUAXULYDON01.xls" />
+    <Content Include="Exports\Templates\BC_TONGHOPKETQUAXULYDONKHIEUNAI.xls" />
+    <Content Include="Exports\Templates\BC_TONGHOPKETQUAXULYDONTOCAO.xls" />
+    <Content Include="Exports\Templates\BC_TONGHOPKETQUATIEPCONGDAN01.xls" />
+    <Content Include="Exports\Templates\BC_TONGHOPKETQUAXULYDONKIENNGHIPHANANH.xls" />
+    <None Include="Properties\PublishProfiles\TiepDanCommon.pubxml" />
+    <None Include="Properties\PublishProfiles\TiepDanLCI.pubxml" />
+    <None Include="Properties\PublishProfiles\VTLT.pubxml" />
+    <Content Include="Scripts\angucomplete-alt.min.js" />
+    <Content Include="Scripts\angular-chart\fusioncharts.charts.js" />
+    <Content Include="Scripts\angular-chart\fusioncharts.js" />
+    <Content Include="Scripts\angular-chart\zune-theme.js" />
+    <Content Include="Scripts\angular-cookie\angular-cookies.js" />
+    <Content Include="Scripts\angular-fusioncharts.min.js" />
+    <Content Include="Scripts\angular-io-barcode.js" />
+    <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Scripts\angular-resource.js" />
+    <Content Include="Scripts\angular-route.js" />
+    <Content Include="Scripts\angular-route.min.js" />
+    <Content Include="Scripts\angular-ui-tree.js" />
+    <Content Include="Scripts\angular-ui\select2.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap-tpls.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap-tpls.min.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap.js" />
+    <Content Include="Scripts\angular-ui\ui-bootstrap.min.js" />
+    <Content Include="Scripts\angular.js" />
+    <Content Include="Scripts\angular.min.js" />
+    <Content Include="Scripts\angularer\console-sham.js" />
+    <Content Include="Scripts\angularer\console-sham.min.js" />
+    <Content Include="Scripts\angularer\controllers.js" />
+    <Content Include="Scripts\angularer\directives.js" />
+    <Content Include="Scripts\angularer\dist\angular-file-upload.js" />
+    <Content Include="Scripts\angularer\dist\angular-file-upload.min.js" />
+    <Content Include="Scripts\angularer\image-preview\controllers.js" />
+    <Content Include="Scripts\angularer\image-preview\directives.js" />
+    <Content Include="Scripts\angularer\image-preview\index.html" />
+    <Content Include="Scripts\angularer\image-preview\uploads\gap.txt" />
+    <Content Include="Scripts\angularer\myControllers.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\fusioncharts.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\notify.min.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Account\SignOutCallback.cshtml" />
+    <Content Include="Views\Users\Index.cshtml" />
+    <Content Include="Views\Roles\Index.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\_MainMenu.cshtml" />
+    <Content Include="Views\SystemConfigs\Index.cshtml" />
+    <Content Include="Views\SystemLogs\Index.cshtml" />
+    <Content Include="Views\MenuLink\Index.cshtml" />
+    <Content Include="Views\Departments\Index.cshtml" />
+    <Content Include="Views\Files\Index.cshtml" />
+    <Content Include="Views\HoSo\Index.cshtml" />
+    <Content Include="Views\BaoCao\Index.cshtml" />
+    <Content Include="Views\BaoCao\Charts.cshtml" />
+    <Content Include="Views\DuAn\Index.cshtml" />
+    <Content Include="Views\HoSo\Timkiem.cshtml" />
+    <Content Include="Views\UserService\Index.cshtml" />
+    <Content Include="Views\DmChucVu\Index.cshtml" />
+    <Content Include="Views\DmDanToc\Index.cshtml" />
+    <Content Include="Views\DmLoaiDoiTuong\Index.cshtml" />
+    <Content Include="Views\DmLoaiDonThu\Index.cshtml" />
+    <Content Include="Views\DmLoaiKNTCCT\Index.cshtml" />
+    <Content Include="Views\DmLoaiKNTC\Index.cshtml" />
+    <Content Include="Views\DmPhuongXa\Index.cshtml" />
+    <Content Include="Views\DmQuanHuyen\Index.cshtml" />
+    <Content Include="Views\DmQuocTich\Index.cshtml" />
+    <Content Include="Views\DmTinhThanh\Index.cshtml" />
+    <Content Include="Views\TiepCongDan\SoTiepDan.cshtml" />
+    <Content Include="Views\TiepCongDan\TiepCongDan.cshtml" />
+    <Content Include="Views\DonThu\DonThuTiepNhan.cshtml" />
+    <Content Include="Views\DonThu\TiepNhanDonThu.cshtml" />
+    <Content Include="Views\DonThu\DonThuGiaiQuyet.cshtml" />
+    <Content Include="Views\DonThu\DonThuTraKetQua.cshtml" />
+    <Content Include="Views\DonThu\DonThuKetLuan.cshtml" />
+    <Content Include="Views\DonThu\TraCuuDonThu.cshtml" />
+    <Content Include="Views\DonThu\DonThuDuyetXuLy.cshtml" />
+    <Content Include="Views\DonThu\DonThuDuyetGiaiQuyet.cshtml" />
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <None Include="Scripts\_references.js" />
+    <Content Include="Views\BaoCao\BaoCaoTongHopDonThu.cshtml" />
+    <Content Include="Views\BaoCao\BaoCaoTongHopTiepCongDan.cshtml" />
+    <Content Include="Views\BaoCao\BaoCaoDonThuTheoDiaBan.cshtml" />
+    <Content Include="Views\DonThu\DonThuHuy.cshtml" />
+    <Content Include="Views\BaoCao\BaoCaoTongHopKetQuaXuLyDon.cshtml" />
+    <Content Include="Views\BaoCao\BaoCaoTongHopKetQuaTiepCongDan.cshtml" />
+    <Content Include="Views\Shared\_Layout2.cshtml" />
+    <Content Include="Views\DangKyTiepDan\RegisterList.cshtml" />
+    <Content Include="Views\DangKyTiepDan\RegisterAdd.cshtml" />
+    <Content Include="Views\Users\RegisterAccount.cshtml" />
+    <Content Include="Views\Users\EditProfile.cshtml" />
+    <Content Include="Views\Users\Profile.cshtml" />
+    <Content Include="Views\DangKyTiepDan\RegisterEdit.cshtml" />
+    <Content Include="Views\DangKyTiepDan\RegisterDetail.cshtml" />
+    <Content Include="Views\TaiKhoanCongDan\CitizenList.cshtml" />
+    <Content Include="Views\TaiKhoanCongDan\CitizenDetail.cshtml" />
+    <Content Include="Views\DangKyTiepDan\RegisterListAdmin.cshtml" />
+    <Content Include="Views\DangKyTiepDan\RegisterDetailAdmin.cshtml" />
+    <Content Include="Views\DmDiaDiemTiepDan\Index.cshtml" />
+    <Content Include="Views\DmNguonDon\Index.cshtml" />
+    <Content Include="Views\DmHuongXuLy\Index.cshtml" />
+    <Content Include="Views\DmPhienTiepCongDan\Index.cshtml" />
+    <Content Include="Views\Users\ForgotPassword.cshtml" />
+    <Content Include="Views\BaoCao\BaoCaoTongHopKetQuaXuLyDon01.cshtml" />
+    <Content Include="Views\BaoCao\BaoCaoTongHopKetQuaXuLyDonKhieuNai.cshtml" />
+    <Content Include="Views\BaoCao\BaoCaoTongHopKetQuaXuLyDonToCao.cshtml" />
+    <Content Include="Views\BaoCao\BaoCaoTongHopKetQuaXuLyDonKienNghiPhanAnh.cshtml" />
+    <Content Include="Views\BaoCao\BaoCaoTongHopKetQuaTiepCongDan01.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\build\demo\" />
+    <Folder Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\components\google-code-prettify\" />
+    <Folder Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dist\images\gallery\" />
+    <Folder Include="Content\admin\responsiweb.com\themes\preview\ace\1.3.3\dropzone\lib\" />
+    <Folder Include="DATA\Docs\" />
+    <Folder Include="Exports\Files\" />
+    <Folder Include="FilesUpload\" />
+    <Folder Include="Scripts\duallistBootstrap\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>55795</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:55795/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

@@ -1,0 +1,307 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/ScriptController/SystemLogsJs.js"></script>
+<div class="main-content-inner" ng-controller="SystemLogsJs">
+    <div class="panel-default">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="../Home/Index">Trang chủ</a>
+                </li>
+                <li><a>Quản lý hệ thống</a></li>
+                <li>Nhật ký hệ thống</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search">
+                    <select id="cbtime" class="input-sm">
+                        <option value="1">1 tháng</option>
+                        <option value="3">3 tháng</option>
+                        <option value="6">6 tháng</option>
+                        <option value="12">12 tháng</option>
+                        <option value="100000">Xóa tất cả</option>
+                    </select>
+                    <a class="btn btn-danger btn-xs" data-toggle="modal" data-target="#confirm-deletebytime" ng-if="checkFunctionRoles('3')" data-placement="top" title="Xóa nhiều">
+                        <i class="fa fa-trash"></i> Xóa nhiều
+                    </a>
+                </form>
+            </div>
+        </div>
+        <div class="page-header panel-body">
+            <div class="p-table ptdv-pding">
+                <div class="panel-body">
+                    <div class="col-md-12 col-xs-12 no-padding">
+                        <div class="col-md-2 Pding-div">
+                            <h4>Số lượng: <span class="red">{{totalRecords}}</span></h4>
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <input type="text" id="txtKeyword" ng-model="keyword" class="form-control" placeholder="Từ khóa tìm kiếm..." />
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <div class="input-group form-group-option date date-picker">
+                                <input id="txtDateFrom" class="adv-date " size="16" type="text" placeholder="Từ ngày...">
+                                <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <div class="input-group form-group-option date date-picker">
+                                <input id="txtDateTo" class="adv-date" size="16" type="text" placeholder="Đến ngày...">
+                                <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                            </div>
+                        </div>
+                        <div class="col-md-1 Pding-div">
+                            <select ng-model="type" class="form-control" ng-change="reload()">
+                                <option value="-1">---- Loại nhật ký ----</option>
+                                <option value="1">LOGIN</option>
+                                <option value="2">LOGOUT</option>
+                                <option value="3">ADD</option>
+                                <option value="4">UPDATE</option>
+                                <option value="5">DELETE</option>
+                                <option value="6">GET</option>
+                                <option value="10">SETTING</option>
+                                <option value="11">REPORT</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <div class="hidden-xs dropdown-search">
+                                <select class="form-control" ng-model="status" ng-change="reload()">
+                                    <option value="-1">---- Trạng thái ----</option>
+                                    <option value="1">Thành công</option>
+                                    <option value="0">Thất bại</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-1 Pding-div text-right">
+                            <a ng-click="Search()" class="btn btn-primary btn-sm" title="Tìm kiếm">
+                                <i class="fa fa-search"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="p-table">
+                <div class="panel-body">
+                    <input type="hidden" id="selectedActiveLogIds" name="selectedActiveLogIds" />
+                    <table id="simple-table" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width: 2%">
+                                    <input type="checkbox" id="checkAll" ng-click="CheckAllCb()" />
+                                    <a style="color: red; cursor: pointer; font-size: 18px" class="hidden" id="btnDel" data-toggle="modal" data-target="#confirm-multidelete" data-placement="top" title="Xóa nhiều">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </th>
+                                <th style="width: 3%" class="text-center">STT</th>
+                                <th class="text-center" style="width: 10%">Tài khoản</th>
+                                <th class="text-center">Hoạt động</th>
+                                <th class="text-center" style="width: 15%">Thời gian</th>
+                                <th style="width: 7%" class="text-center">Loại</th>
+                                <th style="width: 2%;" class="text-center">#</th>
+                            </tr>
+                        </thead>
+                        <tbody ng-repeat="sp in lstSystemLogs">
+                            <tr>
+                                <td><input type="checkbox" name="chActiveLog" class="chActiveLog" id="{{sp.Id}}" ng-click="checkDelete(sp.Id)" /></td>
+                                <td class="text-center">{{((currentPage-1)*pageSize)+$index+1}}</td>
+                                <td class="center">
+                                    <div class="action-buttons">
+                                        <a href="javascript:void(0);" ng-click="GetDataById(sp.Id)" class="show-details-btn" title="Xem chi tiết">
+                                            {{sp.UserName}}
+                                        </a>
+                                    </div>
+                                </td>
+                                <td>{{formatText(sp.ActionName,50)}}</td>
+                                <td class="text-right"><span>{{sp.ActionDate|date:'dd/MM/yyyy - HH:mm:ss'}}</span></td>
+                                <td class="text-center">
+                                    <span class="label label-lg arrowed-right">{{setTypeLogs(sp.Type)}}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="text-center control-btn action-buttons">
+                                        <a class="red" ng-if="checkFunctionRoles('3')" data-toggle="modal" data-target="#confirm-delete" ng-click="checkremove(sp.Id,sp.ActionName);" data-placement="top" title="Xóa">
+                                            <i class="ace-icon fa fa-trash bigger-150"></i>
+                                        </a>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="detail-row hide">
+                                <td colspan="8">
+                                    <div class="table-detail">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12">
+                                                <div class="space visible-xs"></div>
+                                                <div class="profile-user-info profile-user-info-striped">
+                                                    <div class="profile-info-row">
+                                                        <div class="profile-info-name"> Tài khoản:</div>
+                                                        <div class="profile-info-value">
+                                                            <span>{{SystemLogs.UserName}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-info-row">
+                                                        <div class="profile-info-name"> Thời gian: </div>
+                                                        <div class="profile-info-value">
+                                                            <span>{{SystemLogs.ActionDate|date:'dd/MM/yyyy - HH:mm:ss'}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-info-row">
+                                                        <div class="profile-info-name"> Hoạt động: </div>
+                                                        <div class="profile-info-value">
+                                                            <span>{{SystemLogs.ActionName}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-info-row">
+                                                        <div class="profile-info-name"> Địa chỉ IP: </div>
+                                                        <div class="profile-info-value">
+                                                            <span>{{SystemLogs.IPAddress}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-info-row">
+                                                        <div class="profile-info-name"> Địa chỉ MAC: </div>
+                                                        <div class="profile-info-value">
+                                                            <span>{{SystemLogs.MacAddress}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-info-row">
+                                                        <div class="profile-info-name"> Kiểu Log: </div>
+                                                        <div class="profile-info-value">
+                                                            <span>{{setTypeLogs(sp.Type)}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-info-row">
+                                                        <div class="profile-info-name"> Message: </div>
+                                                        <div class="profile-info-value">
+                                                            <span>{{SystemLogs.Message}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-info-row">
+                                                        <div class="profile-info-name"> InnerException: </div>
+                                                        <div class="profile-info-value">
+                                                            <span>{{SystemLogs.InnerException}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-info-row">
+                                                        <div class="profile-info-name"> UserAgent: </div>
+                                                        <div class="profile-info-value">
+                                                            <span>{{SystemLogs.UserAgent}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-info-row">
+                                                        <div class="profile-info-name"> RawURL: </div>
+                                                        <div class="profile-info-value">
+                                                            <span>{{SystemLogs.RawURL}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-info-row">
+                                                        <div class="profile-info-name"> Method: </div>
+                                                        <div class="profile-info-value">
+                                                            <span>{{SystemLogs.Method}}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="show-paging col-md-12 no-padding">
+                        <div class="paging">
+                            <span>Hiển thị</span>
+                            <select ng-model="pageSize" ng-change="reload()">
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                            </select>
+                            <span> tổng số <span class="totalrecord">{{totalRecords}}</span> bản ghi</span>
+                        </div>
+                        <div class="pagination no-padding">
+                            <ul class="pagination pull-right" ng-hide="pageCount==0">
+                                <li ng-class="isDisable(currentPage,1)" ng-click="selectPage(1)"><a href="javascript:void(0)"><i class="fa fa-fast-backward"></i></a></li>
+                                <li ng-class="isDisable(currentPage,1)" ng-click="selectPage(currentPage-1)"><a href="javascript:void(0)"><i class="fa fa-backward"></i></a></li>
+                                <li ng-repeat="page in lstPage"><a ng-click="selectPage(page)" ng-style="activepage(page)">{{page}}</a></li>
+                                <li ng-class="isDisable(currentPage,pageCount)" ng-click="selectPage(currentPage+1)"><a href="javascript:void(0)"><i class="fa fa-forward"></i></a></li>
+                                <li ng-class="isDisable(currentPage,pageCount)" ng-click="selectPage(pageCount)"><a href="javascript:void(0)"><i class="fa fa-fast-forward"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal Delete*@
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm dv-modal">
+            <div class="modal-content modal-xoa">
+                <div class="tab-content tab-content_xoa">
+                    <div class="modal-header no-padding widget-header-small">
+                        <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;</button>
+                        <p class="title-ct uppercase no-margin"><i class="ace-icon fa fa-exclamation-triangle red"></i>Thông báo</p>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn thực hiện thao tác này?
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-danger btn-xs btn-ok" ng-click="remove(Id)"><i class="fa fa-check-square-o"></i> Có</a>
+                        <a class="btn btn-xs btn-info" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Modal Delete*@
+    <div class="modal fade" id="confirm-multidelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm dv-modal">
+            <div class="modal-content modal-xoa">
+                <div class="tab-content tab-content_xoa">
+                    <div class="modal-header no-padding widget-header-small">
+                        <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;</button>
+                        <p class="title-ct uppercase no-margin"><i class="ace-icon fa fa-exclamation-triangle red"></i>Thông báo</p>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn thực hiện thao tác này?
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-danger btn-xs btn-ok" ng-click="DeleteAll()"><i class="fa fa-check-square-o"></i> Có</a>
+                        <a class="btn btn-xs btn-info" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Modal Delete by Time*@
+    <div class="modal fade" id="confirm-deletebytime" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm dv-modal">
+            <div class="modal-content modal-xoa">
+                <div class="tab-content tab-content_xoa">
+                    <div class="modal-header no-padding widget-header-small">
+                        <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;</button>
+                        <p class="title-ct uppercase no-margin"><i class="ace-icon fa fa-exclamation-triangle red"></i>Thông báo</p>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn thực hiện thao tác này?
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-danger btn-xs btn-ok" ng-click="DeleteByTime()"><i class="fa fa-check-square-o"></i> Có</a>
+                        <a class="btn btn-xs btn-info" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    })
+</script>
+

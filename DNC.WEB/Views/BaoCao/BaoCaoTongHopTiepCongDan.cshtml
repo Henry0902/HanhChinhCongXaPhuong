@@ -1,0 +1,230 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .grid-container {
+        display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
+        overflow: auto;
+        width: 100%;
+    }
+
+    .grid {
+        /*display: flex;*/
+        flex-wrap: nowrap;
+    }
+
+    .table tbody tr td:last-child {
+        min-width: 10px;
+    }
+</style>
+
+<script src="~/ScriptController/BaoCaoTongHopTiepCongDanJs.js"></script>
+<div class="main-content-inner" ng-controller="BaoCaoTongHopTiepCongDanJs">
+    <div class="panel-default border-no-radius">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="../Home/Index">Trang chủ</a>
+                </li>
+                <li class="active">Báo cáo tổng hợp Tiếp công dân</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search"></form>
+            </div>
+        </div>
+        <div class="hrt-dinhhuong hr-dott"></div>
+        <div class="box-scrol">
+            <div class="get-height1">
+                <div class="page-header panel-body">
+                    <div class="col-md-12 no-padding">
+                        <div class="col-md-12 no-padding p-table">
+                            <div class="col-md-12 no-padding" id="Report1">
+                                <div class="panel-body">
+                                    <div class="col-md-12 col-xs-12 no-padding">
+                                        <div class="col-md-3 Pding-div">
+                                            <select class="form-control input-sm" id="ddlDonVi" ng-model="IdDonVi" ng-change="reloadReport1()">
+                                                @*<option value="-1">--- Chọn cơ quan nhận ---</option>*@
+                                                <option ng-repeat="item in lstDepartments" ng-if="DeparmentId != item.Id" value="{{item.Id}}">{{item.Name}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 Pding-div">
+                                            <div class="input-group form-group-option date date-picker">
+                                                <input id="TuNgay" class=" form-control date-picker" ng-model="TuNgay" type="text" placeholder="Từ ngày:">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 Pding-div">
+                                            <div class="input-group form-group-option date date-picker">
+                                                <input id="DenNgay" class="form-control date-picker" size=" 16" ng-model="DenNgay" type="text" placeholder="Đến ngày:" />
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 Pding-div text-right">
+                                            <a ng-click="reloadReport1()" class="btn btn-xs btn-primary">
+                                                <i class="fa fa-tasks">&nbsp;Tạo báo cáo</i>
+                                            </a>
+                                            <a style="margin-left: 8px" class="btn btn-success btn-xs tooltip-success pull-right" data-toggle="modal" data-target="#myModal" data-placement="top" ng-click="Export_TongHopTiepCongDan()"><i class="fa fa-print"></i> Xuất excel</a>
+                                        </div>
+                                    </div>
+                                    <div class="grid-container">
+                                        <div class="grid">
+                                            <table class="table table-bordered table-hover" border="1" style="width:3000px">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 2%; background-color: #f2f2f2; border-color: #ddd; left: 0; {{position}}" rowspan="3">STT</th>
+                                                        <th class="text-center" style="background-color: #f2f2f2; border-color: #ddd; left: 4%; {{position}}" rowspan="3">Tên đơn vị</th>
+                                                        <th class="text-center" colspan="3">Tổng số</th>
+                                                        <th class="text-center" colspan="14">Kết quả tiếp công dân</th>
+
+                                                        <th class="text-center" colspan="3">Đối tượng tiếp công dân</th>
+
+                                                        <th class="text-center" colspan="13">Nội dung tiếp công dân</th>
+
+                                                        <th class="text-center" colspan="3">Kết quả phân loại, xử lý</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 2.5%" rowspan="2">Số lượt</th>
+                                                        <th class="text-center" style="width: 2.5%" rowspan="2">Số người</th>
+                                                        <th class="text-center" style="width: 2.5%" rowspan="2">Số vụ</th>
+                                                        <th class="text-center" colspan="2">Thường trực Tỉnh ủy - Huyện ủy - Đảng ủy Xã</th>
+                                                        <th class="text-center" colspan="2">Thường trực Văn phòng HĐND, Đoàn ĐBQH (Tỉnh, Huyện, Xã)</th>
+                                                        <th class="text-center" colspan="2">Thường trực Ban TCD (Tỉnh, Huyện, Xã)</th>
+                                                        <th class="text-center" colspan="2">Phiên tiếp định kỳ của HĐND (Tỉnh, Huyện, Xã)</th>
+                                                        <th class="text-center" colspan="2">Phiên tiếp định kỳ của Đoàn ĐBQH tỉnh</th>
+                                                        <th class="text-center" colspan="2">Phiên tiếp định kỳ của Chủ tịch UBND (Tỉnh, Huyện, Xã)</th>
+                                                        <th class="text-center" colspan="2">Phiên tiếp định kỳ của Bí thư Tỉnh ủy - Huyện ủy - Đảng ủy Xã</th>
+
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Cá nhân</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Đoàn đông người</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Cơ quan, tổ chức</th>
+
+                                                        <th class="text-center" colspan="4">Khiếu nại</th>
+                                                        <th class="text-center" colspan="4">Tố cáo</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Tranh chấp</th>
+                                                        <th class="text-center" colspan="4">Phản ánh, kiến nghị, khác</th>
+
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Chưa được giải quyết</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Đã được giải quyết lần đầu</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Đã được giải quyết nhiều lần</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 2%">Số lượt</th>
+                                                        <th class="text-center" style="width: 2.5%; ">Số người</th>
+
+                                                        <th class="text-center" style="width: 2%">Số lượt</th>
+                                                        <th class="text-center" style="width: 2.5%">Số người</th>
+
+                                                        <th class="text-center" style="width: 2%">Số lượt</th>
+                                                        <th class="text-center" style="width: 2.5%">Số người</th>
+
+                                                        <th class="text-center" style="width: 2%">Số lượt</th>
+                                                        <th class="text-center" style="width: 2.5%">Số người</th>
+
+                                                        <th class="text-center" style="width: 2%">Số lượt</th>
+                                                        <th class="text-center" style="width: 2.5%">Số người</th>
+
+                                                        <th class="text-center" style="width: 2%">Số lượt</th>
+                                                        <th class="text-center" style="width: 2.5%">Số người</th>
+
+                                                        <th class="text-center" style="width: 2%">Số lượt</th>
+                                                        <th class="text-center" style="width: 2.5%">Số người</th>
+
+                                                        <th class="text-center" style="width: 2.5%">Hành chính</th>
+                                                        <th class="text-center" style="width: 2.5%">Tư pháp</th>
+                                                        <th class="text-center" style="width: 2.5%">Chính sách</th>
+                                                        <th class="text-center" style="width: 2.5%">Đất đai</th>
+
+                                                        <th class="text-center" style="width: 2.5%">Hành chính</th>
+                                                        <th class="text-center" style="width: 2.5%">Tư pháp</th>
+                                                        <th class="text-center" style="width: 2.5%">Tham nhũng</th>
+                                                        <th class="text-center" style="width: 2.5%">Đất đai</th>
+
+                                                        <th class="text-center" style="width: 2.5%">Chính sách</th>
+                                                        <th class="text-center" style="width: 2.5%">Đất đai</th>
+                                                        <th class="text-center" style="width: 2.5%">Tư pháp</th>
+                                                        <th class="text-center" style="width: 2.5%">Khác</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="item in lstReport1">
+                                                        <td class="text-center" style="background-color:#fff; border-color:#ddd; left: 0; {{position}}">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                                                        <td style="background-color:#fff; border-color:#ddd; left: 4%; {{position}}">{{item.TenDonVi}}</td>
+                                                        <td class="text-center">{{item.TTiepDan}}</td>
+                                                        <td class="text-center">{{item.TSoNguoi}}</td>
+                                                        <td class="text-center">{{item.TSoVu}}</td>
+
+                                                        <td class="text-center">{{item.TTTinhUyTD}}</td>
+                                                        <td class="text-center">{{item.TTTinhUySN}}</td>
+                                                        <td class="text-center">{{item.TTHdndTD}}</td>
+                                                        <td class="text-center">{{item.TTHdndSN}}</td>
+                                                        <td class="text-center">{{item.TTBantcdTD}}</td>
+                                                        <td class="text-center">{{item.TTBantcdSN}}</td>
+                                                        <td class="text-center">{{item.HdndTD}}</td>
+                                                        <td class="text-center">{{item.HdndSN}}</td>
+                                                        <td class="text-center">{{item.DbqdTD}}</td>
+                                                        <td class="text-center">{{item.DbqdSN}}</td>
+                                                        <td class="text-center">{{item.CTUbndTD}}</td>
+                                                        <td class="text-center">{{item.CTUbndSN}}</td>
+                                                        <td class="text-center">{{item.BTTinhUyTD}}</td>
+                                                        <td class="text-center">{{item.BTTinhUySN}}</td>
+
+                                                        <td class="text-center">{{item.CaNhan}}</td>
+                                                        <td class="text-center">{{item.DoanDongNguoi}}</td>
+                                                        <td class="text-center">{{item.CoQuanToChuc}}</td>
+
+                                                        <td class="text-center">{{item.KhieuNaiHanhChinh}}</td>
+                                                        <td class="text-center">{{item.KhieuNaiTuPhap}}</td>
+                                                        <td class="text-center">{{item.KhieuNaiChinhSach}}</td>
+                                                        <td class="text-center">{{item.KhieuNaiDatDai}}</td>
+                                                        <td class="text-center">{{item.ToCaoHanhChinh}}</td>
+                                                        <td class="text-center">{{item.ToCaoTuPhap}}</td>
+                                                        <td class="text-center">{{item.ToCaoThamNhung}}</td>
+                                                        <td class="text-center">{{item.ToCaoDatDai}}</td>
+                                                        <td class="text-center">{{item.TranhChap}}</td>
+                                                        <td class="text-center">{{item.PhanAnhChinhSach}}</td>
+                                                        <td class="text-center">{{item.PhanAnhDatDai}}</td>
+                                                        <td class="text-center">{{item.PhanAnhTuPhap}}</td>
+                                                        <td class="text-center">{{item.PhanAnhKhac}}</td>
+
+                                                        <td class="text-center">{{item.ChuaGiaiQuyet}}</td>
+                                                        <td class="text-center">{{item.GiaiQuyetLanDau}}</td>
+                                                        <td class="text-center">{{item.GiaiQuyetNhieuLan}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <iframe id="BC_TongHopTiepCongDan" style="display: none;"></iframe>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    });
+    $('#DateOfBirth').datepicker();
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+</script>

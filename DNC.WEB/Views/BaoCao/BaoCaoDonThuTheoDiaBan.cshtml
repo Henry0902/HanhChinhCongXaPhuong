@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .grid-container {
+        display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
+        overflow: auto;
+        width: 100%;
+    }
+
+    .grid {
+        /*display: flex;*/
+        flex-wrap: nowrap;
+    }
+
+    .table tbody tr td:last-child {
+        min-width: 10px;
+    }
+</style>
+
+<script src="~/ScriptController/BaoCaoDonThuTheoDiaBanJs.js"></script>
+<div ng-controller="BaoCaoDonThuTheoDiaBanJs">
+    <div class="panel-default border-no-radius">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="../Home/Index">Trang chủ</a>
+                </li>
+                <li class="active">Báo cáo hồ sơ theo địa bàn</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search"></form>
+            </div>
+        </div>
+        <div class="hrt-dinhhuong hr-dott"></div>
+        <div class="box-scrol">
+            <div class="get-height1">
+                <div class="page-header panel-body">
+                    <div class="col-md-12 no-padding">
+                        <div class="col-md-12 no-padding p-table">
+                            <div class="col-md-12 no-padding" id="Report1">
+                                <div class="panel-body">
+                                    <div class="col-md-12 col-xs-12 no-padding">
+                                        <div class="col-md-3 Pding-div">
+                                            <select class="form-control input-sm" id="ddlTinhThanh" ng-model="IdTinhThanh" ng-change="reloadReport1()" disabled>
+                                                <option ng-repeat="item in lstTinhThanh" value="{{item.Id}}" ng-selected="item.Id==IdTinhThanh">{{item.Name}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 Pding-div">
+                                            <div class="input-group form-group-option date date-picker">
+                                                <input id="TuNgay" class=" form-control date-picker" ng-model="TuNgay" type="text" placeholder="Từ ngày:">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 Pding-div">
+                                            <div class="input-group form-group-option date date-picker">
+                                                <input id="DenNgay" class="form-control date-picker" size=" 16" ng-model="DenNgay" type="text" placeholder="Đến ngày:" />
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 Pding-div text-right">
+                                            <a ng-click="reloadReport1()" class="btn btn-xs btn-primary">
+                                                <i class="fa fa-tasks">&nbsp;Tạo báo cáo</i>
+                                            </a>
+                                            <a style="margin-left: 8px" class="btn btn-success btn-xs tooltip-success pull-right" data-toggle="modal" data-target="#myModal" data-placement="top" ng-click="Export_DonThuTheoDiaBan()"><i class="fa fa-print"></i> Xuất excel</a>
+                                        </div>
+                                    </div>
+                                    <div class="grid-container">
+                                        <div class="grid">
+                                            <table class="table table-bordered table-hover" border="1">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 5%">STT</th>
+                                                        <th class="text-center">Đơn vị</th>
+                                                        <th class="text-center" style="width: 15%">Tổng đơn</th>
+                                                        <th class="text-center" style="width: 15%">Vụ việc</th>
+                                                        <th class="text-center" style="width: 15%">Đơn đủ điều kiện</th>
+                                                        <th class="text-center" style="width: 15%">Đơn không đủ điều kiện</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="item in lstReport1">
+                                                        <td class="text-center" style="background-color:#fff; border-color:#ddd; left: 0; {{position}}">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                                                        <td>{{item.TenQuanHuyen}}</td>
+                                                        <td class="text-center">{{item.TongDT}}</td>
+                                                        <td class="text-center">{{item.TongVu}}</td>
+                                                        <td class="text-center">{{item.DTDuDieuKien}}</td>
+                                                        <td class="text-center">{{item.DTKhongDuDieuKien}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <iframe id="BC_DonThuTheoDiaBan" style="display: none;"></iframe>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    });
+    $('#DateOfBirth').datepicker();
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+</script>

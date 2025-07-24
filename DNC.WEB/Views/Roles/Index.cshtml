@@ -1,0 +1,310 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .page-header h1 {
+        margin: 5px 0px 0px 0px !important;
+    } 
+</style>
+
+<script src="~/ScriptController/RolesJs.js"></script>
+<div class="main-content-inner" ng-controller="RoleJs">
+    <div class="panel-default border-no-radius">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-cogs"></i>
+                    <a href="#">Quản lý hệ thống</a>
+                </li>
+                <li class="active">Nhóm quyền</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search">
+                    <a class="btn btn-success btn-xs tooltip-success pull-right" data-toggle="modal" data-target="#myModal" data-placement="top" ng-click="show('')" ng-if="checkFunctionRoles('2')"><i class="fa fa-plus-circle"></i> Thêm mới</a>
+                </form>
+            </div>            
+        </div>
+        <div class="hrt-dinhhuong hr-dott"></div>
+        <div class="page-header panel-body">
+            <div class="p-table ptdv-pding">
+                <div class="panel-body">
+                    <div class="col-md-12 col-xs-12 no-padding">
+                        <div class="col-md-3 Pding-div">
+                            <h4>Số lượng: <span class="red">{{total}}</span></h4>
+                        </div>
+                        <div class="col-md-6 Pding-div">
+                            <input type="text" id="txtFilter" ng-model="Searchnhomquyen" class="form-control " placeholder="Nhập tên nhóm quyền để tìm kiếm ..." />
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <select class="form-control " ng-model="trangthai" ng-change="reload()">
+                                <option value="-1">--- Trạng thái ---</option>
+                                <option value="1">Sử dụng</option>
+                                <option value="0">Vô hiệu hóa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 Pding-div">
+                            <a ng-click="Search()" class="btn btn-sm btn-primary pull-right">
+                                <i class="fa fa-search"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="p-table">
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width: 2%" class="text-center">STT</th>
+                                <th class="text-center">Tên nhóm quyền</th>
+                                <th class="text-center" style="width: 8%">Số chức năng</th>
+                                <th class="text-center" style="width: 10%">Số người dùng</th>
+                                <th style="width: 8%" class="text-center">Người tạo </th>
+                                <th style="width: 8%" class="text-center">Ngày tạo </th>
+                                <th style="width: 12%" class="text-center">Chức năng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="sp in lstRole" title="{{sp.Description}}">
+                                <td class="text-center">{{$index+1+(pageSize*(currentPage-1))}}</td>
+                                <td class="text-left"><a href="" data-toggle="modal" data-target="#myModalXem" ng-click="show(sp.Id);">{{formatText(sp.Name,30)}}</a></td>
+                                <td class="text-center">{{sp.CountPageRoles}}</td>
+                                <td class="text-center"><a href="" id="{{sp.Id}}" ng-click="SearchUserbyRole(sp.Id)">{{sp.CountUserRoles}}</a></td>
+                                <td style="display:none" ng-init="(sp.CountUserRoles)"></td>
+                                <td class="text-left">{{sp.UserName}}</td>
+                                <td class="text-center">{{sp.CreatedDate |date:"dd/MM/yyyy"}}</td>
+                                <td class="text-center">
+                                    <span class="text-center control-btn action-buttons">
+                                        <a class="blue" data-toggle="modal" data-target="#myModal" ng-click="show(sp.Id);" id="{{sp.Id}}" data-placement="top" title="Sửa" ng-if="checkFunctionRoles('2')">
+                                            <i class="ace-icon fa fa-pencil bigger-150"></i>
+                                        </a>
+                                        <a class="orange" data-toggle="modal" ng-click="SetFunctionRole(sp)" data-placement="top" title="Phân quyền chức năng" ng-if="checkFunctionRoles('2')">
+                                            <i class="ace-icon fa fa-cogs bigger-150"></i>
+                                        </a>                                        
+                                        <a class="purple" ng-show="sp.Status" ng-click="checkStatus(sp)" data-toggle="tooltip" data-placement="top" title="Vô hiệu hóa " ng-if="checkFunctionRoles('2')">
+                                            <i class="ace-icon fa fa-lock bigger-150"></i>
+                                        </a>
+                                        <a class="green" ng-hide="sp.Status" ng-click="checkStatus(sp)" data-toggle="tooltip" data-placement="top" title="Sử dụng" ng-if="checkFunctionRoles('2')">
+                                            <i class="ace-icon fa fa-unlock bigger-150"></i>
+                                        </a>
+                                        <a class="red" data-toggle="modal" data-target="#confirm-delete" ng-click="checkremove(sp);" data-placement="top" title="Xóa" ng-if="checkFunctionRoles('3')">
+                                            <i class="ace-icon fa fa-trash bigger-150"></i>
+                                        </a>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="show-paging col-md-12 no-padding">
+                        <div class="paging">
+                            <span>Hiển thị</span>
+                            <select ng-model="pageSize" ng-change="reload()">
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                            </select>
+                            <span> tổng số <span class="totalrecord">{{total}}</span> bản ghi</span>
+                        </div>
+                        <div class="pagination no-padding">
+                            <ul class="pagination pull-right" ng-hide="pageCount==0">
+                                <li ng-class="isDisable(currentPage,1)" ng-click="selectPage(1)"><a href="javascript:void(0)"><i class="fa fa-fast-backward"></i></a></li>
+                                <li ng-class="isDisable(currentPage,1)" ng-click="selectPage(currentPage-1)"><a href="javascript:void(0)"><i class="fa fa-backward"></i></a></li>
+                                <li ng-repeat="page in lstPage"><a ng-click="selectPage(page)" ng-style="activepage(page)">{{page}}</a></li>
+                                <li ng-class="isDisable(currentPage,pageCount)" ng-click="selectPage(currentPage+1)"><a href="javascript:void(0)"><i class="fa fa-forward"></i></a></li>
+                                <li ng-class="isDisable(currentPage,pageCount)" ng-click="selectPage(pageCount)"><a href="javascript:void(0)"><i class="fa fa-fast-forward"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Modal Xem*@
+    <div id="myModalXem" class="modal fade" role="dialog" tabindex="-1">
+        <input type="text" id="crud" style="display:none;" />
+        <div class="modal-dialog modal-style">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" data-dismiss="modal" tabindex="7">&times;</button>
+                    <h4 class="modal-title" ng-show="Role.Id != null"><i class="ace-icon fa fa-eye"> </i> Xem thông tin nhóm quyền: <span class="style_cole">{{Role.Name}}</span></h4>
+                </div>
+                <div class="modal-body">
+                    <div id="inputnumber" class="box-content">
+                        <form class="form-horizontal" role="form" id="createForm" name="createForm">
+                            <input type="text" class="form-control" id="ID" ng-model="Role.Id" placeholder="" value="" style="display: none;">
+                            <div class="col-xs-12 no-padding">
+                                <div class="profile-user-info profile-user-info-striped dv-name">
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Tên:</div>
+
+                                        <div class="profile-info-value">
+                                            <span class="editable">{{Role.Name}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Người tạo: </div>
+
+                                        <div class="profile-info-value">
+                                            <span class="editable">{{Role.UserName}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Ngày tạo :</div>
+
+                                        <div class="profile-info-value">
+                                            <span class="editable">{{Role.CreatedDate|date:"dd/MM/yyyy"}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Trạng thái:</div>
+
+                                        <div class="profile-info-value" ng-if="Role.Status ==true">
+                                            <span class="editable">Sử dụng</span>
+                                        </div>
+                                        <div class="profile-info-value" ng-if="Role.Status ==false">
+                                            <span class="editable">Vô hiệu hóa</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-danger" data-dismiss="modal" tabindex="6"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Modal Info*@
+    <div id="myModal" class="modal fade" role="dialog" tabindex="-1">
+        <input type="text" id="crud" style="display:none;" />
+        <div class="modal-dialog modal-style">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" id="closeNQ" data-dismiss="modal" tabindex="6">&times;</button>
+                    <h4 class="modal-title" ng-show="Role.Id != null"><i class="fa fa-pencil-square-o bigger-100"> </i> Sửa tin thông nhóm quyền : <span class="text-danger bolder" ng-show="Role.Name !=null">{{Role.Name}}</span></h4>
+                    <h4 class="modal-title" ng-show="Role.Id == null"><i class="fa fa-pencil-square-o bigger-100"> </i> Thêm mới nhóm quyền</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="createForm">
+                        <input type="text" class="form-control" id="ID" ng-model="Role.Id" placeholder="" value="" style="display: none;">
+                        <div class="widget-body">
+                            <div class="col-md-12 col-xs-12 no-padding">
+                                <div class="widget-body">
+                                    <div class="widget-main col-md-12 no-padding">
+                                        <div class="col-md-12 no-padding">
+                                            <div class="profile-user-info profile-user-info-striped dv-name">
+                                                <div class="profile-info-row">
+                                                    <div class="profile-info-name">Tên <i style="color: red">*</i>:</div>
+                                                    <div class="profile-info-value">
+                                                        <input name="name" maxlength="100" type="text" ng-blur="CheckvalidateNullthis($event)" class="form-control ng-pristine ng-invalid ng-invalid-required ng-touched" id="Name" ng-enter="EntnkyNQ('Description')" ng-change="checkNameInput()" ng-model="Role.Name" placeholder="" value="" required autofocus tabindex="1">
+
+                                                        <label class="help-block" id="lblName" ng-model="lblName" style="display: none"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="clear:both"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-success" id="btnCreate" ng-enter="EntnkyNQ('dongND')" ng-click="preCreate(Role)" tabindex="4" ng-show="Role.Id != null"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;&nbsp;Cập nhật</a>
+                    <a class="btn btn-xs btn-success" id="btnCreate" ng-enter="EntnkyNQ('dongND')" ng-click="preCreate(Role)" tabindex="5" ng-show="Role.Id == null"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;&nbsp;Lưu</a>
+                    <a class="btn btn-xs btn-danger" data-dismiss="modal" id="dongND" ng-enter="EntnkyNQ('closeNQ')" tabindex="6"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Modal Delete*@
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-style">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><i class="ace-icon fa fa-exclamation-triangle red"></i>Thông báo</h4>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa: <strong class="red">{{Role.Name}}</strong>?
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger btn-xs btn-ok" ng-click="remove(Role.Id)"><i class="fa fa-check-square-o"></i> Có</a>
+                    <a class="btn btn-xs btn-info" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Popup trạng thái*@
+    <div class="modal fade" id="confirm-status" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-style">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><i class="ace-icon fa fa-exclamation-triangle red"></i>Thông báo</h4>
+                </div>
+                <div class="modal-body">
+                    <span>
+                        Bạn có chắc chắn muốn {{actionStatus}}: <strong class="red">{{dataStatus.Name}}</strong>?
+                    </span>
+                </div>
+                <div class="modal-footer no-border">
+                    <a class="btn btn-danger btn-xs btn-ok" ng-click="UpdateStatus(dataStatus)"><i class="fa fa-check-square-o"></i> Có</a>
+                    <a class="btn btn-xs btn-info" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Modal Phân Quyền - Để nguyên chưa được xóa*@
+    <div class="modal fade" id="SetFunc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-style" style="width: 95%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><i class="fa fa-cogs"></i> Phân quyền cho nhóm người dùng: <span class="text-danger bolder">{{quyen.Name}}</span></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 no-padding" style="height:100%">
+                        <div class="col-md-4 " ng-repeat="link in lstallMenuLink" style="display:table;table-layout:fixed;height:100%">
+                            <a id="links{{link.id}}" data-toggle="collapse" data-target="#menurole{{link.id}}" ng-click="showSub(link.id)"><i class="fa fa-minus"></i></a>
+                            <input type="checkbox" id="linkselect{{link.id}}" ng-checked="setLinkchecked(link.id)" ng-click="setalllinkcheck(link.id)" />{{link.name}}
+                            &nbsp;&nbsp;&nbsp;
+                            <span id="menulinkrole{{link.id}}" style="padding-left: 25px">
+                                <span ng-repeat="func in lstallFunction" ng-if="CheckShowLinkFunction(func.Id,link)">
+                                    <input type="checkbox" id="fc{{func.Id}}" ng-checked="setFunctionchecked(link.id,func.Id)" ng-click="setLinkFunction(link.id,func.Id)" />{{func.Name}}
+                                </span>
+                                &nbsp;&nbsp;&nbsp;
+                            </span>
+                            <div id="submenu{{link.id}}" class="collapse in">
+                                <div class="col-md-12" ng-repeat="sub in link.items">
+                                    <a id="sub{{sub.id}}" data-toggle="collapse" data-target="#menurole{{sub.id}}" ng-click="showRole(sub.id)"><i class="fa fa-plus"></i></a>
+                                    <input type="checkbox" id="subselect{{sub.id}}" ng-checked="setLinkchecked(sub.id)" ng-click="setLinkselect(sub)" />{{sub.name}}
+                                    <div id="menurole{{sub.id}}" style="padding-left: 25px" class="collapse">
+                                        <div ng-repeat="func in lstallFunction" ng-if="CheckShowFunction(func.Id,sub)">
+                                            <input type="checkbox" id="fc{{func.Id}}" ng-checked="setFunctionchecked(sub.id,func.Id)" ng-click="setFunction(sub.id,func.Id)" />{{func.Name}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-success" ng-click="SaveMenuLinkFunction(quyen.Id)"><i class="fa fa-floppy-o"></i> Lưu lại</a>
+                    <a class="btn btn-danger btn-xs btn-ok" data-dismiss="modal"><i class="fa fa-times"></i> Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

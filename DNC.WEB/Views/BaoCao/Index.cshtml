@@ -1,0 +1,334 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .grid-container {
+        display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
+        overflow: auto;
+        width: 100%;
+    }
+
+    .grid {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+    .table tbody tr td:last-child {
+        min-width: 10px;
+    }
+</style>
+
+<script src="~/ScriptController/ReportsJs.js"></script>
+<div ng-controller="ReportsJs">
+    <div class="panel-default border-no-radius">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="../Home/Index">Trang chủ</a>
+                </li>
+                <li class="active">Báo cáo tổng hợp</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search"></form>
+            </div>
+        </div>
+        <div class="hrt-dinhhuong hr-dott"></div>
+        <div class="box-scrol">
+            <div class="get-height1">
+                <div class="page-header panel-body">
+                    <div class="col-md-12 no-padding">
+                        <div class="col-md-12 no-padding p-table">
+                            <div class="col-xs-12 col-md-12 no-padding TT-tailieu">
+                                <div>
+                                    <div class="col-md-12" style="line-height:25px">
+                                        <a style="margin-left:20px" ng-click="reloadReport1()" href=""><i class="fa fa-dot-circle-o"></i> Báo cáo tổng hợp tiếp công dân</a>
+                                        <a style="margin-left:20px" href="" ng-click="reloadReport2()"><i class="fa fa-dot-circle-o"></i> Báo cáo tổng hợp hồ sơ</a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="col-md-12 no-padding" id="Report1">
+                                <div class="panel-body">
+                                    <div class="col-md-12 col-xs-12 no-padding">
+                                        <div class="col-md-3 Pding-div">
+                                            <select class="form-control input-sm" id="ddlDonVi" ng-model="IdDonVi">
+                                                <option value="-1">--- Chọn cơ quan nhận ---</option>
+                                                <option ng-repeat="item in lstDepartments" ng-if="DeparmentId != item.Id" value="{{item.Id}}">{{item.Name}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 Pding-div">
+                                            <div class="input-group form-group-option date date-picker">
+                                                <input id="TuNgay" class=" form-control date-picker" ng-model="TuNgay" type="text" placeholder="Từ ngày:">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 Pding-div">
+                                            <div class="input-group form-group-option date date-picker">
+                                                <input id="DenNgay" class="form-control date-picker" size=" 16" ng-model="DenNgay" type="text" placeholder="Đến ngày:" />
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 Pding-div text-right">
+                                            <a ng-click="reloadReport1()" class="btn btn-xs btn-primary">
+                                                <i class="fa fa-tasks">&nbsp;Tạo báo cáo</i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="grid-container">
+                                        <div class="grid">
+                                            <table class="table table-bordered table-hover" border="1" style="width:2500px">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 2%; background-color: #f2f2f2; border-color: #ddd; left: 0; {{position}}" rowspan="3">STT</th>
+                                                        <th class="text-center" style="background-color: #f2f2f2; border-color: #ddd; left: 4%; {{position}}" rowspan="3">Tên đơn vị</th>
+                                                        <th class="text-center" colspan="2">Tổng số</th>
+                                                        <th class="text-center" colspan="14">Kết quả tiếp công dân</th>
+                                                        <th class="text-center" colspan="10">Nội dung tiếp công dân</th>
+                                                        <th class="text-center" colspan="3">Đối tượng tiếp công dân</th>
+                                                        <th class="text-center" colspan="3">Kết quả phân loại, xử lý</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số lượt</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Số người</th>
+                                                        <th class="text-center" colspan="2">Thường trực Tỉnh ủy</th>
+                                                        <th class="text-center" colspan="2">Thường trực Văn phòng HĐND tỉnh, Đoàn ĐBQH tỉnh</th>
+                                                        <th class="text-center" colspan="2">Thường trực Ban TCD</th>
+                                                        <th class="text-center" colspan="2">Phiên tiếp định kỳ của HĐND</th>
+                                                        <th class="text-center" colspan="2">Phiên tiếp định kỳ của Đoan ĐBQH</th>
+                                                        <th class="text-center" colspan="2">Phiên tiếp định kỳ của Chủ tịch UBND</th>
+                                                        <th class="text-center" colspan="2">Phiên tiếp định kỳ của Bí thư Tỉnh ủy</th>
+                                                        <th class="text-center" colspan="4">Khiếu nại</th>
+                                                        <th class="text-center" colspan="4">Tố cáo</th>
+
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Tranh chấp</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Phản ánh, kiến nghị, khác</th>
+
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Cá nhân</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Đoàn đông người</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Cơ quan, tổ chức</th>
+
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Chưa được giải quyết</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Đã được giải quyết lần đầu</th>
+                                                        <th class="text-center" style="width: 3%" rowspan="2">Đã được giải quyết nhiều lần</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 2%">Số lượt</th>
+                                                        <th class="text-center" style="width: 3%; ">Số người</th>
+
+                                                        <th class="text-center" style="width: 2%">Số lượt</th>
+                                                        <th class="text-center" style="width: 3%">Số người</th>
+
+                                                        <th class="text-center" style="width: 2%">Số lượt</th>
+                                                        <th class="text-center" style="width: 3%">Số người</th>
+
+                                                        <th class="text-center" style="width: 2%">Số lượt</th>
+                                                        <th class="text-center" style="width: 3%">Số người</th>
+
+                                                        <th class="text-center" style="width: 2%">Số lượt</th>
+                                                        <th class="text-center" style="width: 3%">Số người</th>
+
+                                                        <th class="text-center" style="width: 2%">Số lượt</th>
+                                                        <th class="text-center" style="width: 3%">Số người</th>
+
+                                                        <th class="text-center" style="width: 2%">Số lượt</th>
+                                                        <th class="text-center" style="width: 3%">Số người</th>
+
+                                                        <th class="text-center" style="width: 3%">Hành chính</th>
+                                                        <th class="text-center" style="width: 3%">Tư pháp</th>
+                                                        <th class="text-center" style="width: 3%">Chính sách</th>
+                                                        <th class="text-center" style="width: 3%">Đất đai</th>
+
+                                                        <th class="text-center" style="width: 3%">Hành chính</th>
+                                                        <th class="text-center" style="width: 3%">Tư pháp</th>
+                                                        <th class="text-center" style="width: 3%">Tham nhũng</th>
+                                                        <th class="text-center" style="width: 3%">Đất đai</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="item in lstReport1">
+                                                        <td class="text-center" style="background-color:#fff; border-color:#ddd; left: 0; {{position}}">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                                                        <td style="background-color:#fff; border-color:#ddd; left: 4%; {{position}}">{{item.TenDonVi}}</td>
+                                                        <td class="text-center">{{item.TTiepDan}}</td>
+                                                        <td class="text-center">{{item.TSoNguoi}}</td>
+
+                                                        <td class="text-center">{{item.TTTinhUyTD}}</td>
+                                                        <td class="text-center">{{item.TTTinhUySN}}</td>
+                                                        <td class="text-center">{{item.TTHdndTD}}</td>
+                                                        <td class="text-center">{{item.TTHdndSN}}</td>
+                                                        <td class="text-center">{{item.TTBantcdTD}}</td>
+                                                        <td class="text-center">{{item.TTBantcdSN}}</td>
+                                                        <td class="text-center">{{item.HdndTD}}</td>
+                                                        <td class="text-center">{{item.HdndSN}}</td>
+                                                        <td class="text-center">{{item.DbqdTD}}</td>
+                                                        <td class="text-center">{{item.DbqdSN}}</td>
+                                                        <td class="text-center">{{item.CTUbndTD}}</td>
+                                                        <td class="text-center">{{item.CTUbndSN}}</td>
+                                                        <td class="text-center">{{item.BTTinhUyTD}}</td>
+                                                        <td class="text-center">{{item.BTTinhUySN}}</td>
+
+                                                        <td class="text-center">{{item.KhieuNaiHanhChinh}}</td>
+                                                        <td class="text-center">{{item.KhieuNaiTuPhap}}</td>
+                                                        <td class="text-center">{{item.KhieuNaiChinhSach}}</td>
+                                                        <td class="text-center">{{item.KhieuNaiDatDai}}</td>
+                                                        <td class="text-center">{{item.ToCaoHanhChinh}}</td>
+                                                        <td class="text-center">{{item.ToCaoTuPhap}}</td>
+                                                        <td class="text-center">{{item.ToCaoThamNhung}}</td>
+                                                        <td class="text-center">{{item.ToCaoDatDai}}</td>
+                                                        <td class="text-center">{{item.TranhChap}}</td>
+                                                        <td class="text-center">{{item.PhanAnh}}</td>
+
+                                                        <td class="text-center">{{item.CaNhan}}</td>
+                                                        <td class="text-center">{{item.DoanDongNguoi}}</td>
+                                                        <td class="text-center">{{item.CoQuanToChuc}}</td>
+
+                                                        <td class="text-center">{{item.ChuaGiaiQuyet}}</td>
+                                                        <td class="text-center">{{item.GiaiQuyetLanDau}}</td>
+                                                        <td class="text-center">{{item.GiaiQuyetNhieuLan}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 no-padding" id="Report2">
+                                <div class="panel-body">
+                                    <div class="col-md-12 col-xs-12 no-padding">
+                                        <div class="col-md-3 Pding-div">
+                                            <select class="form-control input-sm" id="ddlDonVi" ng-model="IdDonVi">
+                                                <option value="-1">--- Chọn cơ quan nhận ---</option>
+                                                <option ng-repeat="item in lstDepartments" ng-if="DeparmentId != item.Id" value="{{item.Id}}">{{item.Name}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 Pding-div">
+                                            <div class="input-group form-group-option date date-picker">
+                                                <input id="TuNgay" class=" form-control date-picker" ng-model="TuNgay" type="text" placeholder="Từ ngày:">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 Pding-div">
+                                            <div class="input-group form-group-option date date-picker">
+                                                <input id="DenNgay" class="form-control date-picker" size=" 16" ng-model="DenNgay" type="text" placeholder="Đến ngày:" />
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 Pding-div text-right">
+                                            <a ng-click="reloadReport2()" class="btn btn-xs btn-primary">
+                                                <i class="fa fa-tasks">&nbsp;Tạo báo cáo</i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="grid-container">
+                                        <div class="grid">
+                                            <table class="table table-bordered table-hover" border="1" style="width:1800px">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 3%; background-color: #f2f2f2; border-color: #ddd; z-index: 9998; left: 0; {{position}}" rowspan="3">STT</th>
+                                                        <th class="text-center" style="background-color: #f2f2f2; border-color: #ddd; z-index: 9998; left: 4.3%; {{position}}" rowspan="3">Tên đơn vị</th>
+                                                        <th class="text-center" colspan="2">Tiếp nhận đơn</th>
+                                                        <th class="text-center" colspan="10">Nội dung hồ sơ</th>
+                                                        <th class="text-center" colspan="3">Trình tự giải quyết</th>
+                                                        <th class="text-center" colspan="6">Kết quả xử lý hồ sơ</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Tiếp nhận trong kỳ</th>
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Kỳ trước chuyển sang</th>
+
+                                                        <th class="text-center" colspan="4">Khiếu nại</th>
+                                                        <th class="text-center" colspan="4">Tố cáo</th>
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Tranh chấp</th>
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Phản ánh, kiến nghị, khác</th>
+
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Chưa được giải quyết</th>
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Đã được giải quyết lần đầu</th>
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Đã được giải quyết nhiều đầu</th>
+
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Đơn KN, TC thuộc thẩm quyền giải quyết</th>
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Hướng dẫn gửi đơn</th>
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Chuyển đơn đến cơ quan có thẩm quyền</th>
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Ban hành công văn đơn đốc giải quyết</th>                                                        
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Đơn đang xử lý</th>
+                                                        <th class="text-center" style="width: 4%" rowspan="2">Đơn không đủ điều kiện xử lý</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center" style="width: 4%">Hành chính</th>
+                                                        <th class="text-center" style="width: 4%">Tư pháp</th>
+                                                        <th class="text-center" style="width: 4%">Chính sách</th>
+                                                        <th class="text-center" style="width: 4%">Đất đai</th>
+
+                                                        <th class="text-center" style="width: 4%">Hành chính</th>
+                                                        <th class="text-center" style="width: 4%">Tư pháp</th>
+                                                        <th class="text-center" style="width: 4%">Tham nhũng</th>
+                                                        <th class="text-center" style="width: 4%">Đất đai</th>
+                                                        
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="item in lstReport2">
+                                                        <td class="text-center" style="background-color:#fff; border-color:#ddd; left: 0; z-index: 9998; {{position}}">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                                                        <td style="background-color:#fff; border-color:#ddd; left: 4.3%; z-index: 9998; {{position}}">{{item.TenDonVi}}</td>
+                                                        <td class="text-center">{{item.TNTrongKy}}</td>
+                                                        <td class="text-center"></td>
+
+                                                        <td class="text-center">{{item.KhieuNaiHanhChinh}}</td>
+                                                        <td class="text-center">{{item.KhieuNaiTuPhap}}</td>
+                                                        <td class="text-center">{{item.KhieuNaiChinhSach}}</td>
+                                                        <td class="text-center">{{item.KhieuNaiDatDai}}</td>
+                                                        <td class="text-center">{{item.ToCaoHanhChinh}}</td>
+                                                        <td class="text-center">{{item.ToCaoTuPhap}}</td>
+                                                        <td class="text-center">{{item.ToCaoThamNhung}}</td>
+                                                        <td class="text-center">{{item.ToCaoDatDai}}</td>
+                                                        <td class="text-center">{{item.TranhChap}}</td>
+                                                        <td class="text-center">{{item.PhanAnh}}</td>
+
+                                                        <td class="text-center">{{item.ChuaGiaiQuyet}}</td>
+                                                        <td class="text-center">{{item.GiaiQuyetLanDau}}</td>
+                                                        <td class="text-center">{{item.GiaiQuyetNhieuLan}}</td>
+
+                                                        <td class="text-center">{{item.ThuLyGiaiQuyet}}</td>
+                                                        <td class="text-center">{{item.HuongDan}}</td>
+                                                        <td class="text-center">{{item.ChuyenDon}}</td>
+                                                        <td class="text-center">{{item.DonDoc}}</td>
+                                                        <td class="text-center">{{item.DangXuLy}}</td>
+                                                        <td class="text-center">{{item.KhongXuLy}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    });
+    $('#DateOfBirth').datepicker();
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+</script>

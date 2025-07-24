@@ -1,0 +1,107 @@
+﻿@{
+    ViewBag.Title = "Charts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/ScriptController/ChartsJs.js"></script>
+<div ng-controller="Charts">
+    <div class="panel-default border-no-radius">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="../Home/Index">Trang chủ</a>
+                </li>
+                <li class="active">Thống kê số liệu</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search"></form>
+            </div>
+        </div>
+        <div class="hrt-dinhhuong hr-dott"></div>
+        <div class="box-scrol">
+            <div class="get-height1">
+                <div class="page-header panel-body">
+                    <div class="col-md-12 no-padding">
+                        <div class="col-md-3 no-padding">
+                            <div class="col-xs-12 col-md-12 no-padding TT-tailieu">
+                                <div class="p-table">
+                                    <div class="col-md-12" style="line-height:25px">
+                                        <a style="margin-left:20px" ng-click="reloadChart1()" href=""><i class="fa fa-dot-circle-o"></i> Thống kê hồ sơ tiếp nhận</a><br>
+                                        <a style="margin-left:20px" href="" ng-click="reloadChart2()"><i class="fa fa-dot-circle-o"></i> Thống kê hồ sơ giải quyết</a><br>
+                                        <a style="margin-left:20px" href="" ng-click="reloadChart3()"><i class="fa fa-dot-circle-o"></i> Thống kê kết quả tiếp dân</a><br>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        @*Chart 1*@
+                        <div class="col-md-9 no-padding-right">
+                            
+                            <div class="col-md-12 no-padding" id="chart1">
+                                <div class="col-md-2 no-padding">
+                                    <select class="form-control" id="ddlLoaiDoiTuong" ng-model="Year1" ng-change="reloadChart1()">
+                                        <option ng-repeat="item in lstYear" value="{{item}}">{{item}}</option>
+                                    </select>
+                                </div>                                
+                                <div class="p-table" style="padding-top:10px ">
+                                    <fusioncharts width="100%"
+                                                  height="450"
+                                                  type="mscolumn2d"
+                                                  dataformat="json"
+                                                  datasource={{dsChart1}}>
+                                    </fusioncharts>
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 no-padding" id="chart2">
+                                <div class="col-md-2 no-padding">
+                                    <select class="form-control" id="ddlLoaiDoiTuong" ng-model="Year2" ng-change="reloadChart2()">
+                                        <option ng-repeat="item in lstYear" value="{{item}}">{{item}}</option>
+                                    </select>
+                                </div>                      
+                                <div class="p-table" style="padding-top: 10px">
+                                    <fusioncharts width="100%"
+                                                  height="450"
+                                                  type="mscolumn2d"
+                                                  dataformat="json"
+                                                  datasource={{dsChart2}}>
+                                    </fusioncharts>
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 no-padding" id="chart3">
+                                <div class="col-md-2 no-padding">
+                                    <select class="form-control" id="ddlLoaiDoiTuong" ng-model="Year3" ng-change="reloadChart3()">
+                                        <option ng-repeat="item in lstYear" value="{{item}}">{{item}}</option>
+                                    </select>
+                                </div>                      
+                                <div class="p-table" style="padding-top:10px ">
+                                    <fusioncharts width="100%"
+                                                  height="450"
+                                                  type="mscolumn2d"
+                                                  dataformat="json"
+                                                  datasource={{dsChart3}}>
+                                    </fusioncharts>
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 no-padding" id="chart4">
+                                <div class="p-table" style="padding-top:10px ">
+                                    <fusioncharts width="100%"
+                                                  height="450"
+                                                  type="mscolumn2d"
+                                                  dataformat="json"
+                                                  datasource={{dsChart4}}>
+                                    </fusioncharts>
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

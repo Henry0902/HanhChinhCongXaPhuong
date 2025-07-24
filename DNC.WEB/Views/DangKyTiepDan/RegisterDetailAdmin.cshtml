@@ -1,0 +1,576 @@
+﻿@{
+    ViewBag.Title = "Chi tiết đăng ký tiếp dân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .form-group {
+        margin-bottom: 5px;
+    }
+
+    .modal .form-control {
+        border: 1px solid white;
+    }
+
+    .profile-info-value {
+        padding: 14px !important;
+    }
+
+    .note-container {
+        border: 1px solid #e5731b;
+        background-color: #fefaf5;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .note-header {
+        display: flex;
+        align-items: center;
+    }
+
+    .note-icon {
+        color: #e5731b;
+        font-weight: bold;
+        margin-right: 5px;
+    }
+
+    .note-text {
+        font-weight: bold;
+        color: #e5731b;
+    }
+
+    .note-description {
+        color: #e5731b;
+        font-weight: normal;
+    }
+
+    .update-btn {
+        background-color: #e5731b;
+        color: white;
+        padding: 6px 12px;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+        font-size: 14px;
+        border-radius: 4px;
+    }
+
+    .update-btn:hover {
+        background-color: #d56215;
+    }
+
+    .status-common {
+        padding: 4px;
+        min-width: 120px;
+        border-radius: 4px;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .status-dang-soan-thao {
+        background-color: #DBEAFE;
+        color: #3B82F6;
+    }
+
+    .status-cho-xu-ly {
+        background-color: #FFD6E7;
+        color: #EB2F96;
+    }
+
+    .status-dang-xu-ly {
+        background-color: #FFEDD5;
+        color: #EA580C;
+    }
+
+    .status-da-phan-hoi {
+        background-color: #B5F5EC;
+        color: #08979C;
+    }
+
+    .status-khong-tiep-nhan {
+        background-color: #F0F0F0;
+        color: #434343;
+    }
+
+    .status-cong-dan-huy {
+        background-color: #FECACA;
+        color: #DC2626;
+    }
+
+    .status-da-tiep-dan {
+        background-color: #DCFCE7;
+        color: #22C55E;
+    }
+
+    .f-w-600 {
+        font-weight: 600;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .btn-custom:hover {
+        opacity: 0.8;
+    }
+
+    .btn-custom {
+        padding: 7px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-save {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-submit {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .btn-common {
+        border-radius: 4px;
+        min-width: 100px;
+        height: 32px;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .btn-common:hover {
+        opacity: 0.8;
+    }
+
+    .btn-delete {
+        border: 1px solid #DC2626;
+        color: #DC2626;
+        background-color: #FFFFFF;
+    }
+
+    .btn-edit {
+        border: 1px solid #176697;
+        color: #FFFFFF;
+        background-color: #176697;
+    }
+
+    .btn-resend {
+        border: 1px solid #3B82F6;
+        color: #3B82F6;
+        background-color: #FFFFFF;
+    }
+
+    .btn-close {
+        background-color: #FF4D4F;
+        color: #FFFFFF;
+        border: 1px solid #FF4D4F;
+    }
+
+    .btn-resolve {
+        background-color: #F97316;
+        color: #FFFFFF;
+        border: 1px solid #F97316;
+    }
+
+    .btn-back {
+        background-color: #CA8A04;
+        color: #FFFFFF;
+        border: 1px solid #CA8A04;
+    }
+
+    .b-radius-3 {
+        border-radius: 3px !important;
+    }
+
+    .wrapper {
+        margin: auto;
+        background: white;
+        padding: 0 20px;
+        border-radius: 8px;
+    }
+
+    .t-left {
+        text-align: left !important;
+    }
+
+    .btn-congdanhuy {
+        background-color: #DC2626;
+        color: #FFF;
+        border: 1px solid #DC2626;
+    }
+
+    .btn-tuchoi {
+        background-color: #FF4D4F;
+        color: #FFFFFF;
+        border: 1px solid #FF4D4F;
+    }
+
+    .btn-dongy {
+        background-color: #22C55E;
+        color: #FFFFFF;
+        border: 1px solid #22C55E;
+    }
+
+    .btn-xuly {
+        background-color: #5d94ef;
+        color: #FFFFFF;
+        border: 1px solid #5d94ef;
+    }
+
+    .btn-batdautiepdan {
+        background-color: #34CF39;
+        color: #FFFFFF;
+        border: 1px solid #34CF39;
+    }
+
+    .time-slot-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    button {
+        background-color: #3d3d4e;
+        color: white;
+        padding: 6px 12px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background 0.3s;
+    }
+
+    button:hover {
+        background-color: #555;
+    }
+
+    button.selected {
+        background-color: #4a90e2;
+    }
+</style>
+
+<script src="~/ScriptController/RegisterDetailAdminJs.js"></script>
+<div class="main-content-inner" ng-controller="RegisterDetailAdminJs">
+    <div class="panel-default">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="/dang-ky-tiep-dan/danh-sach">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="#">Đăng ký tiếp dân</a>
+                </li>
+                <li class="active">Chi tiết đăng ký</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search">
+                    <div class="button-group">
+                        <button type="button" class="btn-common btn-congdanhuy" ng-show="formData.TrangThai == 3 && isExpired(formData.ThoiGianHenText)" ng-click="onShowClose()">
+                            <img src="~/Content/assets/images/btn_congdanhuy.png"> Công dân huỷ
+                        </button>
+                        <button type="button" class="btn-common btn-dongy" ng-show="formData.TrangThai == 2" ng-click="onShowAccept()">
+                            <img src="~/Content/assets/images/btn_dongy.png"> Đồng ý
+                        </button>
+                        <button type="button" class="btn-common btn-tuchoi" ng-show="formData.TrangThai == 2" ng-click="onShowRefuse()">
+                            <img src="~/Content/assets/images/btn_tuchoi.png"> Từ chối
+                        </button>
+                        <button type="button" class="btn-common btn-xuly" ng-show="formData.TrangThai == 1" ng-click="onShowResolve()">
+                            <img src="~/Content/assets/images/btn_xuly.png"> Xử lý
+                        </button>
+                        <button type="button" class="btn-common btn-batdautiepdan" ng-show="formData.TrangThai == 3" ng-click="onShowReceive()">
+                            <img src="~/Content/assets/images/btn_batdautiepdan.png"> Bắt đầu tiếp dân
+                        </button>
+                        <button type="button" class="btn-common btn-back" ng-click="onBack()">
+                            <img src="~/Content/assets/images/btn_back.png">Quay lại
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="page-header panel-body">
+            <div class="p-table ptdv-pding">
+                <div class="panel-body" style="margin-top: 14px;">
+                    <div class="row" style="margin: 0 !important">
+                        <div class="col-xs-12">
+                            <div id="user-profile-1" class="user-profile row">
+                                <div class="col-xs-12 col-sm-9">
+                                    <h4>Thông tin đăng ký tiếp dân</h4>
+                                    <div class="profile-user-info profile-user-info-striped">
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name t-left"> Trạng thái </div>
+                                            <div style="padding: 14px">
+                                                <span ng-show="formData.TrangThai == 0" class="status-common status-dang-soan-thao">Đang soạn thảo</span>
+                                                <span ng-show="formData.TrangThai == 1" class="status-common status-cho-xu-ly">Chờ xử lý</span>
+                                                <span ng-show="formData.TrangThai == 2" class="status-common status-dang-xu-ly">Đang xử lý</span>
+                                                <span ng-show="formData.TrangThai == 3" class="status-common status-da-phan-hoi">Đã phản hồi</span>
+                                                <span ng-show="formData.TrangThai == 4" class="status-common status-khong-tiep-nhan">Không tiếp nhận</span>
+                                                <span ng-show="formData.TrangThai == 5" class="status-common status-cong-dan-huy">Công dân huỷ</span>
+                                                <span ng-show="formData.TrangThai == 6" class="status-common status-da-tiep-dan">Đã tiếp dân</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name t-left"> Đơn vị tiếp nhận </div>
+                                            <div class="profile-info-value f-w-600" id="TenDonVi"> {{formData.TenDonVi}} </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name t-left"> Thời gian tạo </div>
+                                            <div class="profile-info-value f-w-600">
+                                                <span class="editable" id="NgayTao">{{formData.NgayTao}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name t-left"> Thời gian đăng ký </div>
+                                            <div class="profile-info-value f-w-600">
+                                                <span class="editable" id="NgayDangKy">{{formData.ThoiGianHen ? formData.ThoiGianHen : formData.NgayDangKy}} <span style="color: #DC6803" ng-show="formData.TrangThai == 3 && isExpired(formData.ThoiGianHenText)">(Quá hạn)</span></span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name t-left"> Nội dung </div>
+                                            <div class="profile-info-value f-w-600">
+                                                <span class="editable" id="ChuDe">{{formData.ChuDe}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="space-10"></div>
+                                    <div class="form-group">
+                                        <div style="display: flex; align-items: center; gap: 4px;">
+                                            <img src="~/Content/assets/images/upload_file.png"> <span>File đính kèm</span>
+                                        </div>
+                                        <ul style="list-style-type: none; margin: 0 !important">
+                                            <li ng-click="viewFile(file)" ng-repeat="file in formData.ListFile track by $index" style="padding: 3px 0; cursor: pointer;" title="{{file.TenTep}}">
+                                                <span>📄</span> {{ file.TenTep }} <span style="cursor: pointer; color: red;"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="user-profile-1" class="user-profile row" style="margin-top: 14px;" ng-show="[2,3,4].includes(formData.TrangThai)">
+                                <div class="col-xs-12 col-sm-9">
+                                    <h4>Thông tin xử lý</h4>
+                                    <div class="profile-user-info profile-user-info-striped">
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name t-left"> Người xử lý </div>
+                                            <div class="profile-info-value f-w-600" id="NguoiXuLy"> {{formData.NguoiXuLy ? formData.NguoiXuLy : "-"}} </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name t-left"> Ngày tiếp nhận </div>
+                                            <div class="profile-info-value f-w-600">
+                                                <span class="editable" id="NgayTiepNhan">{{formData.NgayTiepNhan ? formData.NgayTiepNhan : "-"}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row" ng-show="[3,4].includes(formData.TrangThai)">
+                                            <div class="profile-info-name t-left"> Ngày xử lý </div>
+                                            <div class="profile-info-value f-w-600">
+                                                <span class="editable" id="NgayXuLy">{{formData.NgayXuLy ? formData.NgayXuLy : "-"}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row" ng-show="[3].includes(formData.TrangThai)">
+                                            <div class="profile-info-name t-left"> Lịch hẹn được duyệt </div>
+                                            <div class="profile-info-value f-w-600">
+                                                <span class="editable" id="LichHen">{{formData.ThoiGianHenText ? formData.ThoiGianHenText : "-"}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row" ng-show="[4].includes(formData.TrangThai)">
+                                            <div class="profile-info-name t-left"> Kết quả </div>
+                                            <div class="profile-info-value f-w-600">
+                                                <span class="editable" id="KetQua">{{formData.KetQuaXuLy ? formData.KetQuaXuLy : "-"}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row" ng-show="[3].includes(formData.TrangThai)">
+                                            <div class="profile-info-name t-left"> Nơi tiếp dân </div>
+                                            <div class="profile-info-value f-w-600">
+                                                <span class="editable" id="DiaDiemTiepNhan">{{formData.NoiTiepText ? formData.NoiTiepText : "-"}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="space-10"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: transparent; z-index: 30001; opacity: .8; filter: alpha(opacity=70); display: none">
+        <p style="position: absolute; top: 5%; left: 50%; color: #ff6a00; text-align: center">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-spin fa-fw margin-bottom"></i><br />
+            Vui lòng đợi...
+        </p>
+    </div>
+
+    @*Modal xử lý*@
+    <div class="modal fade" id="resolveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" style="width: 500px">
+            <div class="modal-content" style="border-radius: 6px; border: none; overflow: hidden">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        Bắt đầu xử lý
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 24px 12px !important">
+                    Anh/chị có chắc chắn muốn xác nhận bắt đầu xử lý đăng ký tiếp dân của công dân <span style="font-weight: 600">{{formData.UserName}}</span> không?
+                </div>
+                <div class="modal-footer" style="padding-top: 12px; padding-bottom: 12px;">
+                    <a class="btn btn-xs btn-info b-radius-3" style="min-width: 80px" data-dismiss="modal"><i class="fa fa-times-circle"></i> Huỷ</a>
+                    <a class="btn btn-danger btn-xs btn-ok b-radius-3" style="min-width: 80px" ng-click="updateStatus(formData.Id, 2)"><i class="fa fa-check-square-o"></i> Xác nhận</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal tiếp dân*@
+    <div class="modal fade" id="receiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" style="width: 500px">
+            <div class="modal-content" style="border-radius: 6px; border: none; overflow: hidden">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        Xác nhận tiếp dân
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 24px 12px !important">
+                    Anh/chị có chắc chắn muốn xác nhận đã tiếp công dân <span style="font-weight: 600">{{formData.UserName}}</span> không?
+                </div>
+                <div class="modal-footer" style="padding-top: 12px; padding-bottom: 12px;">
+                    <a class="btn btn-xs btn-info b-radius-3" style="min-width: 80px" data-dismiss="modal"><i class="fa fa-times-circle"></i> Huỷ</a>
+                    <a class="btn btn-danger btn-xs btn-ok b-radius-3" style="min-width: 80px" ng-click="updateStatus(formData.Id, 6)"><i class="fa fa-check-square-o"></i> Xác nhận</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal từ chối*@
+    <div class="modal fade" id="refuseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" style="width: 600px">
+            <div class="modal-content" style="border-radius: 6px; border: none; overflow: hidden">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        Từ chối tiếp nhận đăng ký tiếp công dân
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 24px 12px !important">
+                    Anh/chị có chắc chắn muốn từ chối tiếp nhận đăng ký tiếp công dân của công dân <span style="font-weight: 600">{{formData.UserName}}</span> không?
+                    <form name="refuseForm" novalidate style="margin-top: 16px">
+                        <div class="form-group" style="display: flex; flex-direction: column;">
+                            <label style="font-size: 13px">Lý do từ chối<span class="red"> *</span></label>
+                            <textarea name="Content" rows="2" maxlength="2000" style="border-radius: 4px !important; margin-top: 0 !important" placeholder="Nhập..." ng-model="formRefuse.Content" required></textarea>
+                            <span class="red" style="font-style: italic" ng-show="refuseForm.Content.$touched && refuseForm.Content.$invalid">Trường dữ liệu này không được để trống</span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="padding-top: 12px; padding-bottom: 12px;">
+                    <a class="btn btn-xs btn-info b-radius-3" style="min-width: 80px" data-dismiss="modal"><i class="fa fa-times-circle"></i> Huỷ</a>
+                    <a class="btn btn-danger btn-xs btn-ok b-radius-3" style="min-width: 80px" ng-click="onHandleRefuse()"><i class="fa fa-check-square-o"></i> Xác nhận</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal huỷ*@
+    <div class="modal fade" id="closeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" style="width: 600px">
+            <div class="modal-content" style="border-radius: 6px; border: none; overflow: hidden">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        Xác nhận công dân huỷ lịch
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 24px 12px !important">
+                    Anh/chị có chắc chắn muốn huỷ đăng ký tiếp dân của công dân <span style="font-weight: 600">{{formData.UserName}}</span> tại đơn vị  <span style="font-weight: 600">{{formData.TenDonVi}}</span> không?
+                    <form name="closeForm" novalidate style="margin-top: 16px">
+                        <div class="form-group" style="display: flex; flex-direction: column;">
+                            <label style="font-size: 13px">Lý do<span class="red"> *</span></label>
+                            <textarea name="Content" rows="2" maxlength="2000" style="border-radius: 4px !important; margin-top: 0 !important" placeholder="Nhập..." ng-model="formClose.Content" required></textarea>
+                            <span class="red" style="font-style: italic" ng-show="closeForm.Content.$touched && closeForm.Content.$invalid">Trường dữ liệu này không được để trống</span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="padding-top: 12px; padding-bottom: 12px;">
+                    <a class="btn btn-xs btn-info b-radius-3" style="min-width: 80px" data-dismiss="modal"><i class="fa fa-times-circle"></i> Huỷ</a>
+                    <a class="btn btn-danger btn-xs btn-ok b-radius-3" style="min-width: 80px" ng-click="onHandleClose()"><i class="fa fa-check-square-o"></i> Xác nhận</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal đồng ý*@
+    <div class="modal fade" id="acceptModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" style="width: 600px">
+            <div class="modal-content" style="border-radius: 6px; border: none; overflow: hidden">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        Đồng ý tiếp nhận đăng ký tiếp công dân
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 24px 12px !important">
+                    <form name="acceptForm" novalidate>
+                        <div class="form-group">
+                            <label style="font-size: 13px">Lịch hẹn <span class="red">*</span></label>
+                            <div class="time-slot-container" style="margin-bottom: 4px;">
+                                <button ng-repeat="time in timeSlots"
+                                        ng-class="{'selected': time === selectedTime}"
+                                        ng-click="selectTime(time)">
+                                    {{ time }}
+                                </button>
+                            </div>
+                            <span class="red" style="font-style: italic;" ng-show="timeSlotError">Trường dữ liệu này không được để trống</span>
+                        </div>
+                        <div style="margin-top: 24px; display: flex; flex-direction: column" class="form-group">
+                            <label style="margin-bottom: 0">Nơi tiếp dân<span class="red"> *</span></label>
+                            <select name="NoiTiep" style="margin-bottom: 5px; margin-top: 4px" ng-model="formAccept.IdNoiTiep" required>
+                                <option value="" disabled selected>--- Chọn ---</option>
+                                <option ng-repeat="item in listNoiTiep" value="{{item.id}}">{{item.Ten}}</option>
+                            </select>
+                            <span class="red" style="font-style: italic" ng-show="acceptForm.NoiTiep.$touched && acceptForm.NoiTiep.$invalid">Trường dữ liệu này không được để trống</span>
+                        </div>
+                        <div class="form-group" style="display: flex; flex-direction: column; margin-top: 24px">
+                            <label style="font-size: 13px">Kết quả xử lý</label>
+                            <textarea name="Content" rows="2" maxlength="2000" style="border-radius: 4px !important; margin-top: 0 !important" placeholder="Nhập..." ng-model="formAccept.Content"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="padding-top: 12px; padding-bottom: 12px;">
+                    <a class="btn btn-xs btn-info b-radius-3" style="min-width: 80px" data-dismiss="modal"><i class="fa fa-times-circle"></i> Huỷ</a>
+                    <a class="btn btn-danger btn-xs btn-ok b-radius-3" style="min-width: 80px" ng-click="onHandleAccept()"><i class="fa fa-check-square-o"></i> Xác nhận</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    });
+    $('#DateOfBirth').datepicker();
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+</script>
+

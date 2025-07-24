@@ -1,0 +1,240 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/ScriptController/DuAnJs.js"></script>
+<div class="main-content-inner" ng-controller="DuAnJs">
+    <div class="panel-default">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="../Home/Index">Trang chủ</a>
+                </li>
+                <li><a>Quản lý danh mục</a></li>
+                <li class="active">Quản lý dự án</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search">
+                    <a class=" btn btn-success btn-xs tooltip-success" data-toggle="modal" data-target="#myModal" data-placement="top" ng-click="show('')" ng-if="checkFunctionRoles('2')"><i class="fa fa-plus-circle"></i> Thêm mới</a>
+                </form>
+            </div>
+        </div>
+        <div class="page-header panel-body">
+            <div class="p-table ptdv-pding">
+                <div class="panel-body">
+                    <div class="col-md-12 col-xs-12 no-padding">
+                        <div class="col-md-3 Pding-div">
+                            <h4>Số lượng: <span class="red">{{totalRecords}}</span></h4>
+                        </div>
+                        <div class="col-md-3 Pding-div">
+                        </div>
+                        <div class="col-md-3 Pding-div">
+                            <input type="text" id="txtThongtintimkiem" ng-model="thongtintimkiem" prevent-autofill class="form-control" placeholder="Nhập tên dự án..." />
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <select class="form-control" ng-model="trang_thai" ng-change="reload()">
+                                <option value="-1">--- Trạng thái sử dụng ---</option>
+                                <option value="0">Sử dụng</option>
+                                <option value="1">Vô hiệu hóa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 Pding-div text-right">
+                            <a ng-click="reload()" class="btn btn-sm btn-primary">
+                                <i class="fa fa-search"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="p-table">
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover" border="1">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">STT</th>
+                                <th class="text-center" style="width: 10%">MÃ DỰ ÁN</th>
+                                <th class="text-center">TÊN DỰ ÁN</th>
+                                <th class="text-center" style="width: 20%">MÔ TẢ</th>
+                                <th class="text-center" style="width: 10%">TRẠNG THÁI</th>
+                                <th class="text-center" style="width: 10%">NGÀY CẬP NHẬT</th>
+                                <th class="text-center" style="width: 15%">CHỨC NĂNG</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in lstDuAn">
+                                <td class="text-center">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                                <td class="text-left">{{item.duan_ma}}</td>
+                                <td class="text-left"><a href="" data-toggle="modal" data-target="#myModalXem" ng-click="show(item.duan_id);">{{formatText(item.duan_ten,50)}}</a></td>
+                                <td class="text-left">{{item.duan_mota}}</td>
+                                <td class="text-left">
+                                    <span ng-if="item.trang_thai==0"> Đang sử dụng</span>
+                                    <span ng-if="item.trang_thai==1"> Vô hiệu hóa</span>
+                                </td>
+                                <td class="text-right">{{ item.ngay_tao | date:"dd/MM/yyyy" }}</td>
+                                <td class="text-center">
+                                    <span class="text-center control-btn action-buttons">
+                                        <a class="blue" data-toggle="modal" data-target="#myModal" ng-click="show(item.duan_id);" id="{{item.duan_id}}" ng-if="checkFunctionRoles('2')" data-placement="top" title="Sửa">
+                                            <i class="ace-icon fa fa-pencil bigger-150"></i>
+                                        </a>
+                                        <a class="purple" ng-show="item.trang_thai==0" ng-click="UpdateStatus(item)" ng-if="checkFunctionRoles('2')" data-toggle="tooltip" data-placement="top" title="Vô hiệu hóa">
+                                            <i class="ace-icon fa fa-lock bigger-150"></i>
+                                        </a>
+                                        <a class="green" ng-show="item.trang_thai==1" ng-click="UpdateStatus(item)" ng-if="checkFunctionRoles('2')" data-toggle="tooltip" data-placement="top" title="Sử dụng">
+                                            <i class="ace-icon fa fa-unlock bigger-150"></i>
+                                        </a>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="show-paging col-md-12 no-padding">
+                        <div class="paging">
+                            <span>Hiển thị</span>
+                            <select ng-model="pageSize" ng-change="reload()">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                            </select>
+                            <span> tổng số <span class="totalrecord">{{totalRecords}}</span> bản ghi</span>
+                        </div>
+                        <div class="pagination no-padding">
+                            <ul class="pagination pull-right" style="margin:0" ng-hide="pageCount==0">
+                                <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(1)"><a href="javascript:void(0)"><i class="fa fa-fast-backward"></i></a></li>
+                                <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(pageIndex-1)"><a href="javascript:void(0)"><i class="fa fa-backward"></i></a></li>
+                                <li ng-repeat="page in lstPage track by $index"><a href="javascript:void(0)" ng-click="selectPage(page)" ng-style="activepage(page)">{{page}}</a></li>
+                                <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageIndex+1)"><a href="javascript:void(0)"><i class="fa fa-forward"></i></a></li>
+                                <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageCount)"><a href="javascript:void(0)"><i class="fa fa-fast-forward"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Modal Xem*@
+    <div id="myModalXem" class="modal fade" role="dialog" tabindex="-1">
+        <input type="text" id="crud" style="display:none;" />
+        <div class="modal-dialog modal-style">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" data-dismiss="modal" tabindex="7">&times;</button>
+                    <h4 class="modal-title" ng-show="DuAn.duan_id != null"><i class="ace-icon fa fa-eye"> </i> Xem thông tin dự án: <span class="style_cole">{{DuAn.duan_ten}}</span></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xs-12 no-padding">
+                        <div class="profile-user-info profile-user-info-striped dv-name">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Mã dự án: </div>
+                                <div class="profile-info-value">
+                                    <span class="editable">{{DuAn.duan_ma}}</span>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Tên dự án: </div>
+                                <div class="profile-info-value">
+                                    <span class="editable">{{DuAn.duan_ten}}</span>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Mô tả dự án: </div>
+                                <div class="profile-info-value">
+                                    <span class="editable">{{DuAn.duan_mota}}</span>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Ngày tạo :</div>
+                                <div class="profile-info-value">
+                                    <span class="editable">{{ DuAn.ngay_tao | date:"dd/MM/yyyy" }}</span>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Trạng thái:</div>
+                                <div class="profile-info-value" ng-if="DuAn.trang_thai == 0">
+                                    <span class="editable">Sử dụng</span>
+                                </div>
+                                <div class="profile-info-value" ng-if="DuAn.trang_thai == 1">
+                                    <span class="editable">Vô hiệu hóa</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-danger" data-dismiss="modal" tabindex="6"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal Insert Update*@
+    <div id="myModal" class="modal fade" role="dialog" tabindex="-1">
+        <input type="text" id="crud" style="display:none;" />
+        <div class="modal-dialog modal-style">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" id="closeNQ" data-dismiss="modal" tabindex="6">&times;</button>
+                    <h4 class="modal-title" ng-show="DuAn.duan_id != null"><i class="fa fa-pencil-square-o bigger-100"> </i> Sửa thông tin dự án: <span class="style_cole">{{DuAn.duan_ten}}</span></h4>
+                    <h4 class="modal-title" ng-show="DuAn.duan_id == null"><i class="fa fa-pencil-square-o bigger-100"> </i> Thêm mới dự án:</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 no-padding">
+                        <div class="profile-user-info profile-user-info-striped dv-name">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name">Mã dự án<i style="color: red">(*)</i>:</div>
+                                <div class="profile-info-value">
+                                    <input type="text" class="form-control input-sm" id="MaDuAn" ng-model="DuAn.duan_ma" tabindex="2">
+                                    <label class="help-block" id="lblmaduan" style="display: none"></label>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name">Tên dự án<i style="color: red">(*)</i>:</div>
+                                <div class="profile-info-value">
+                                    <input type="text" class="form-control input-sm" id="TenDuAn" ng-model="DuAn.duan_ten" tabindex="2">
+                                    <label class="help-block" id="lbltenduan" style="display: none"></label>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name">Mô tả</div>
+                                <div class="profile-info-value">
+                                    <input type="text" class="form-control input-sm" id="MoTaDuAn" ng-model="DuAn.duan_mota" ng-change="" tabindex="1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-success" id="btnCreate" ng-click="preCreate(DuAn)" tabindex="3"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;&nbsp;Lưu</a>
+                    <a class="btn btn-xs btn-danger" id="btnHuy" data-dismiss="modal" tabindex="4"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal Delete*@
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" style="width: 30%">
+            <div class="modal-content ">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        <i class="ace-icon fa fa-exclamation-triangle red"></i>Thông báo
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa: <strong class="red">{{DuAn.duan_ten}}</strong>?
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger btn-xs btn-ok" ng-click="remove(DuAn)"><i class="fa fa-check-square-o"></i> Có</a>
+                    <a class="btn btn-xs btn-info" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,181 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/ScriptController/SystemConfigsJs.js"></script>
+<div class="main-content-inner" ng-controller="SystemConfigsJs">
+    <div class="panel-default">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="../Home/Index">Trang chủ</a>
+                </li>
+                <li><a>Quản lý hệ thống</a></li>
+                <li> Thiết lập hệ thống </li>
+            </ul>
+        </div>
+        <div class="page-header panel-body">
+            <div class="p-table ptdv-pding">
+                <div class="panel-body">
+                    <div class="col-md-12 col-xs-12 no-padding">
+                        <div class="col-md-3 Pding-div">
+                            <h4>Số lượng: <span class="red">{{totalRecords}}</span></h4>
+                        </div>
+                        <div class="col-md-5 Pding-div">
+                        </div>
+                        <div class="col-md-3 Pding-div">
+                            <input type="text" id="txtKeyword" ng-model="SearchSeyetn" class="form-control" placeholder="Nhập từ khóa tìm kiếm..." />
+                        </div>
+                        <div class="col-md-1 Pding-div text-right">
+                            <a ng-click="Search()" class="btn btn-primary btn-sm" title="Tìm kiếm">
+                                <i class="fa fa-search"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="p-table">
+                <div class="panel-body">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 2%">STT</th>
+                                <th class="text-center" style="width: 18%">Mã</th>
+                                <th class="text-center">Tên</th>
+                                <th class="text-center" style="width: 40%">Giá trị</th>
+                                <th class="text-center" style="width: 8%">Chức năng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="sp in lstSystemConfigs">
+                                <td class="text-center">{{((currentPage-1)*pageSize)+$index+1}}</td>
+                                <td class="text-left">{{formatText(sp.Key,30)}}</td>
+                                <td class="text-left"><a href="" data-toggle="modal" data-target="#myModalXem" ng-click="showData(sp.Id);">{{formatText(sp.Name,30)}}</a></td>
+                                <td class="text-left">{{formatText(sp.Value,50)}}</td>
+                                <td class="text-center">
+                                    <span class="text-center control-btn action-buttons">
+                                        <a class="blue" data-toggle="modal" ng-if="checkFunctionRoles('2')" data-target="#myModal" ng-click="showData(sp.Id);" id="{{sp.Id}}" data-placement="top" title="Sửa">
+                                            <i class="ace-icon fa fa-pencil bigger-150"></i>
+                                        </a>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="show-paging col-md-12 no-padding">
+                        <div class="paging">
+                            <span>Hiển thị</span>
+                            <select ng-model="pageSize" ng-change="reload()">
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                            </select>
+                            <span> tổng số <span class="totalrecord">{{totalRecords}}</span> bản ghi</span>
+                        </div>
+                        <div class="pagination no-padding">
+                            <ul class="pagination pull-right" ng-hide="pageCount==0">
+                                <li ng-class="isDisable(currentPage,1)" ng-click="selectPage(1)"><a href="javascript:void(0)"><i class="fa fa-fast-backward"></i></a></li>
+                                <li ng-class="isDisable(currentPage,1)" ng-click="selectPage(currentPage-1)"><a href="javascript:void(0)"><i class="fa fa-backward"></i></a></li>
+                                <li ng-repeat="page in lstPage"><a ng-click="selectPage(page)" ng-style="activepage(page)">{{page}}</a></li>
+                                <li ng-class="isDisable(currentPage,pageCount)" ng-click="selectPage(currentPage+1)"><a href="javascript:void(0)"><i class="fa fa-forward"></i></a></li>
+                                <li ng-class="isDisable(currentPage,pageCount)" ng-click="selectPage(pageCount)"><a href="javascript:void(0)"><i class="fa fa-fast-forward"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Modal Xem*@
+   
+    <div id="myModalXem" class="modal fade" role="dialog" tabindex="-1">
+        <input type="text" id="crud" style="display:none;" />
+        <div class="modal-dialog modal-style">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" data-dismiss="modal" tabindex="7">&times;</button>
+                    <h4 class="modal-title" ng-show="SystemConfigs.Id != null"><i class="ace-icon fa fa-eye"> </i> Xem thông tin : <span class="style_cole">{{SystemConfigs.Name}}</span></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 no-padding">
+                        <div class="profile-user-info profile-user-info-striped dv-name">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Mã:</div>
+                                <div class="profile-info-value">
+                                    <span class="editable ">{{SystemConfigs.Key}}</span>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Tên:</div>
+                                <div class="profile-info-value">
+                                    <span class="editable ">{{SystemConfigs.Name}}</span>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Giá trị:</div>
+
+                                <div class="profile-info-value">
+                                    <span class="editable ">{{SystemConfigs.Value}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-danger" data-dismiss="modal" tabindex="6"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Modal Info*@    
+    <div id="myModal" class="modal fade" role="dialog" tabindex="-1">
+        <input type="text" id="crud" style="display:none;" />
+        <div class="modal-dialog modal-style">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" data-dismiss="modal" tabindex="7">&times;</button>
+                    <h4 class="modal-title" ng-show="SystemConfigs.Id != null"><i class="fa fa-pencil-square-o bigger-100"> </i> Sửa thông tin: <span class="style_cole">{{SystemConfigs.Name}}</span></h4>
+                    <h4 class="modal-title" ng-show="SystemConfigs.Id == null"><i class="fa fa-pencil-square-o bigger-100"> </i> Thêm mới</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 no-padding">
+                        <div class="profile-user-info profile-user-info-striped dv-name">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Mã<i style="color:red">*</i>:</div>
+                                <div class="profile-info-value">
+                                    <input name="ma" type="text" class="form-control" id="Key" ng-enter="EntnkyCH('Name')" ng-blur="checkNull($event)" ng-change="checkKeyInput()" ng-model="SystemConfigs.Key" required autofocus tabindex="1" maxlength="50">
+                                    <label class="help-block" id="lblKey" ng-model="lblKey" style="display: none"></label>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Tên:</div>
+                                <div class="profile-info-value">
+                                    <input name="name" type="text" class="form-control" id="Name" ng-enter="EntnkyCH('Value')" ng-model="SystemConfigs.Name" tabindex="2" maxlength="200">
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name"> Giá trị:</div>
+                                <div class="profile-info-value">
+                                    <textarea class="form-control" rows="2" id="Value" ng-model="SystemConfigs.Value" tabindex="3" maxlength="255"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-success" id="btnCreate" ng-enter="EntnkyCH('dongCH')" ng-click="preCreate(SystemConfigs)" ng-show="SystemConfigs.Id != null" tabindex="6"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;&nbsp;Cập nhật</a>
+                    <a class="btn btn-xs btn-success" id="btnCreate" ng-enter="EntnkyCH('dongCH')" ng-click="preCreate(SystemConfigs)" ng-show="SystemConfigs.Id == null" tabindex="6"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;&nbsp;Lưu</a>
+                    <a class="btn btn-xs btn-danger" data-dismiss="modal" id="dongCH" ng-enter="EntnkyCH('closech')" tabindex="7"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,456 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/ScriptController/UsersJs.js"></script>
+<div class="main-content-inner" ng-controller="UsersJs">
+    <div id="page-wrapper">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-cogs"></i>
+                    <a href="#">Quản lý hệ thống</a>
+                </li>
+                <li class="active">Người dùng</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search">
+                    <a class=" btn btn-success btn-xs tooltip-success" data-toggle="modal" data-target="#myModal" data-placement="top" ng-click="show('')" ng-if="checkFunctionRoles('2')"><i class="fa fa-plus-circle"></i> Thêm mới</a>
+                </form>
+            </div>
+        </div>
+        <div class="page-header panel-body">
+            <div class="p-table ptdv-pding">
+                <div class="panel-body">
+                    <div class="col-md-12 col-xs-12 no-padding">
+                        <div class="col-md-2 Pding-div">
+                            <h4>Số lượng: <span class="red">{{total}}</span></h4>
+                        </div>
+                        <div class="col-md-3 Pding-div">
+                            <input type="text" id="txtSearchByName" ng-model="name" trim-input prevent-autofill class="form-control" placeholder="Nhập tài khoản hoặc tên người dùng..." />
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <select class="form-control" ng-model="roleID" ng-change="reload()" id="ddlRoles">
+                                <option value="-1">---Chọn nhóm quyền ---</option>
+                                <option ng-repeat="rl in lstRoles" ng-selected="roleID == rl.Id" value="{{rl.Id}}">{{rl.Name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <select class="form-control" ng-model="islocked" ng-change="reload()">
+                                <option value="-1">--- Trạng thái sử dụng ---</option>
+                                <option value="0">Sử dụng</option>
+                                <option value="1">Vô hiệu hóa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <select class="form-control" ng-model="isdelete" ng-change="reload()">
+                                <option value="-1">--- Trạng thái xóa ---</option>
+                                <option value="0">Sử dụng</option>
+                                <option value="1">Đã xóa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 Pding-div text-right">
+                            <a ng-click="Search()" class="btn btn-primary btn-sm">
+                                <i class="fa fa-search"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="p-table">
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover" border="1">
+                        <thead>
+                            <tr>
+                                <th style="width: 2%" class="text-center">STT</th>
+                                <th style="width: 15%" class="text-center">Tài khoản</th>
+                                <th class="text-center">Họ và tên</th>
+                                <th style="width: 15%" class="text-center">Email</th>
+                                <th style="width: 10%" class="text-center">Điện thoại</th>
+                                <th style="width: 15%" class="text-center">Đơn vị</th>
+                                <th style="width: 14%" class="text-center">Chức năng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="sp in lstUser |filter: searchFilter">
+                                <td class="text-center">{{((pageIndex-1)*pageSize)+$index+1}}</td>
+                                <td class="text-left"><a href="" data-toggle="modal" data-target="#myModalView" ng-click="show(sp.Id);">{{sp.UserName}}</a></td>
+                                <td class="text-left">{{sp.DisplayName}}</td>
+                                <td class="text-left">{{sp.Email}}</td>
+                                <td class="text-right">{{sp.Mobile}}</td>
+                                <td class="text-left"><span ng-repeat="dep in lstLoadDepartment" ng-if="dep.Id == sp.DepartmentId">{{dep.Name}}</span></td>
+                                <td class="text-center">
+                                    <span class="text-center control-btn action-buttons">
+                                        <a class="blue" data-toggle="modal" data-target="#myModal" ng-click="show(sp.Id);" id="{{sp.Id}}" data-placement="top" title="Sửa" ng-show="checkFunctionRoles('2')">
+                                            <i class="ace-icon fa fa-pencil bigger-150"></i>
+                                        </a>
+                                        <a class="green" ng-show="sp.IsLocked==1" ng-click="UpdateStatus(sp)" data-toggle="tooltip" data-placement="top" title="Vô hiệu hóa" ng-if="checkFunctionRoles('2')">
+                                            <i class="ace-icon fa fa-unlock bigger-150"></i>
+                                        </a>
+                                        <a class="purple" ng-hide="sp.IsLocked==1" ng-click="UpdateStatus(sp)" data-toggle="tooltip" data-placement="top" title="Sử dụng" ng-if="checkFunctionRoles('2')">
+                                            <i class="ace-icon fa fa-lock bigger-150"></i>
+                                        </a>
+                                        @*<a class="orange" data-toggle="modal" data-target="#confirm-changepassword" ng-click="checkChangePassword(sp);" data-placement="top" title="Thay đổi mật khẩu" ng-show="checkFunctionRoles('2')">
+                                            <i class="ace-icon fa fa-key bigger-150"></i>
+                                        </a>*@
+                                        <a class="red" data-toggle="modal" data-target="#confirm-delete" ng-click="checkremove(sp);" data-placement="top" title="Xóa" ng-if="sp.IsDeleted==false" ng-show="checkFunctionRoles('3')">
+                                            <i class="ace-icon fa fa-trash bigger-150"></i>
+                                        </a>
+                                        <a class="orange2" data-toggle="modal" ng-click="repaired(sp);" data-placement="top" title="Khôi phục" ng-if="sp.IsDeleted==true" ng-show="checkFunctionRoles('3')">
+                                            <i class="ace-icon fa fa-undo bigger-150"></i>
+                                        </a>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="show-paging col-md-12 no-padding">
+                        <div class="paging">
+                            <span>Hiển thị</span>
+                            <select ng-model="pageSize" ng-change="reload()">
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                            </select>
+                            <span> tổng số <span class="totalrecord">{{total}}</span> bản ghi</span>
+                        </div>
+                        <div class="pagination no-padding">
+                            <ul class="pagination pull-right" ng-hide="pageCount==0">
+                                <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(1)"><a href="javascript:void(0)"><i class="fa fa-fast-backward"></i></a></li>
+                                <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(pageIndex-1)"><a href="javascript:void(0)"><i class="fa fa-backward"></i></a></li>
+                                <li ng-repeat="page in lstPage track by $index"><a ng-click="selectPage(page)" ng-style="activepage(page)">{{page}}</a></li>                                
+                                <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageIndex+1)"><a href="javascript:void(0)"><i class="fa fa-forward"></i></a></li>
+                                <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageCount)"><a href="javascript:void(0)"><i class="fa fa-fast-forward"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal Info*@
+    <div id="myModal" class="modal fade" role="dialog" tabindex="-1">
+        <input type="text" id="crud" style="display:none;" />
+        <div class="modal-dialog modal-lg modal-style">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title" ng-show="User.Id != null"><i class="fa fa-pencil-square-o bigger-120"></i> <span class="uppercase">Cập nhật tài khoản: </span><span class="text-danger bolder" ng-show="User.UserName !=null"> {{User.UserName}}</span></h4>
+                    <h4 class="modal-title" ng-show="User.Id == null"><i class="fa fa-pencil-square-o bigger-100"> </i> Thêm mới tài khoản </h4>
+                </div>
+                <form role="form" id="createForm">
+                    <input type="text" class="form-control" id="ID" ng-model="User.Id" style="display: none;">
+                    <div class="modal-body">
+                        <div class="col-md-8 no-padding padding-user">
+                            <div class="profile-user-info profile-user-info-striped dv-name">
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name">
+                                        Tài khoản<i style="color: red">(*)</i>:
+                                    </div>
+                                    <div class="profile-info-value">
+                                        <input type="tel" class="form-control input-sm" id="UserName" ng-enter="EntnkyND('Password')" ng-model="User.UserName" ng-change="checkExistUserName()" tabindex="1">
+                                        <label class="help-block" id="lbltaikhoan" ng-model="lbltaikhoan" style="display: none"></label>
+                                        <label class="help-block" id="lbltaikhoanfalse" style="display: none">Tài khoản đã tồn tại. Vui lòng nhập lại!</label>
+                                        <label class="success-block" id="lbltaikhoansuccess" style="display: none">Tài khoản khả dụng. Xin mời tiếp tục!</label>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name">
+                                        Mật khẩu<i style="color: red">(*)</i>:
+                                    </div>
+                                    <div class="profile-info-value">
+                                        <input type="password" class="form-control col-md-11 input-sm" id="Password" ng-enter="EntnkyND('DisplayName')" ng-model="User.Password" tabindex="2">
+                                        <label class="help-block" id="lblmatkhau" ng-model="lblmatkhau" style="display: none"></label>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Họ và tên<i style="color: red">(*)</i>:</div>
+                                    <div class="profile-info-value">
+                                        <input type="text" class="form-control input-sm" id="DisplayName" ng-enter="EntnkyND('DateOfBirth')" ng-model="User.DisplayName" tabindex="3">
+                                        <label class="help-block" id="lblDisplayName" style="display: none"></label>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Ngày sinh:</div>
+                                    <div class="profile-info-value">
+                                        <div class="input-group date date-picker">
+                                            <input class="adv-date date-picker ng-pristine ng-invalid ng-invalid-required ng-touched" ng-enter="EntnkyND('Email')" id="DateOfBirth" type="text" data-link-field="DateOfBirth" ng-model="User.DateOfBirth" data-date-format="dd-mm-yyyy" tabindex="4" />
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar bigger-110"></i>
+                                            </span>
+                                        </div>
+                                        <label class="help-block" id="lblngaysinh" style="display: none">Người dùng phải lớn hơn 18 tuổi!</label>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Email:</div>
+                                    <div class="profile-info-value">
+                                        <input type="text" class="form-control input-sm" id="EmailUser" ng-enter="EntnkyND('Mobile1')" ng-model="User.Email" required autofocus tabindex="5">
+                                        <label class="help-block" id="lblemail" ng-model="lblemail" style="display: none"></label>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Điện thoại:</div>
+                                    <div class="profile-info-value">
+                                        <input id="Mobile1" ng-enter="EntnkyND('Address')" onkeypress="return isNumber(event)" type="text" class="form-control input-sm" ng-model="User.Mobile" required autofocus tabindex="6">
+                                        <label class="help-block" id="lblsdt" ng-model="lblsdt" style="display: none"></label>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name">
+                                        Đơn vị<i style="color: red; font-size: small;">(*)</i>:
+                                    </div>
+                                    <div class="profile-info-value">
+                                        <select ng-model="User.DepartmentId" id="Department" tabindex="10" ng-enter="EntnkyND('Position')" class="form-control input-sm">
+                                            <option value="">--- Chọn đơn vị ---</option>
+                                            <option ng-repeat="x in lstDepartments" value="{{x.Id}}" ng-selected="DepartmentId == x.Id">{{x.Name}}</option>
+                                        </select>
+                                        <label class="help-block col-md-12 no-padding" id="lblphongban" ng-model="lblphongban" style="display: none"></label>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Chức vụ:</div>
+                                    <div class="profile-info-value">
+                                        <input type="text" class="form-control input-sm" id="Position" ng-enter="EntnkyND('Sex')" ng-model="User.Position" tabindex="7">
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name">Giới tính:</div>
+                                    <div class="profile-info-value">
+                                        <label>
+                                            <input name="switch-field-1" class="ace ace-switch ace-switch-7" type="checkbox" id="Sex" ng-enter="EntnkyND('vtphong')" ng-model="User.Gender" tabindex="8">
+                                            <span class="lbl" data-lbl="NỮ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAM"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding">
+                            <div class="profile-user-info profile-user-info-striped dv-name">
+                                <h4 class="widget-title" style="padding-left: 15px;">Phân quyền<i style="color: red; font-size: small;">(*)</i>:</h4>
+                                <div class="hr hr12 dotted"></div>
+                                <div class="widget-body widget-main">
+                                    <div ng-repeat="item in lstRoles">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="quyen" class="ace" id='role{{item.Id}}' ng-enter="EntnkyND('')" ng-checked="SetRole(item.Id)" tabindex="9" />
+                                                <span class="lbl"> {{item.Name}}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 no-padding" style="height: 15px">
+                                        <label class="help-block" id="lblquyen" ng-model="lblquyen" style="display: none"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-success" id="btnCreate" ng-enter="EntnkyND('btnHuy')" ng-click="preCreate(User)" tabindex="12"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;&nbsp;Lưu</a>
+                    <a class="btn btn-xs btn-danger" id="btnHuy" ng-enter="EntnkyND('closeuse')" data-dismiss="modal" tabindex="13"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* View details*@
+    <div id="myModalView" class="modal fade" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-style" style="width: 70%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title"><i class="ace-icon fa fa-eye"></i> <span class="uppercase">Xem thông tin tài khoản: </span><span class="success" style="color: #27c10d;"> {{User.UserName}}</span></h4>
+                </div>
+                <form name="infoForm" class="form-horizontal" role="form" id="infoForm">
+                    <div class="modal-body">
+                        <div class="col-md-8 no-padding padding-user">
+                            <div class="profile-user-info profile-user-info-striped dv-name">
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Tài khoản: </div>
+                                    <div class="profile-info-value">
+                                        <span class="text-danger"><strong style="font-size: 16px;">{{User.UserName}}</strong></span>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Họ và tên: </div>
+
+                                    <div class="profile-info-value">
+                                        <span class="editable" ng-model="User.DisplayName">{{User.DisplayName}}</span>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Ngày sinh: </div>
+                                    <div class="profile-info-value">
+                                        <span class="editable" ng-model="User.DateOfBirth">{{User.DateOfBirth}}</span>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Điện thoại: </div>
+
+                                    <div class="profile-info-value">
+                                        <span class="editable " ng-model="User.Mobile">{{User.Mobile}}</span>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Email: </div>
+
+                                    <div class="profile-info-value">
+                                        <span class="editable " ng-model="User.Email">{{User.Email}}</span>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Đơn vị:</div>
+                                    <div class="profile-info-value">
+                                        <span class="editable">{{depName}}</span>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name "> Chức vụ:</div>
+                                    <div class="profile-info-value">
+                                        <span class="editable " ng-model="User.Position"><span>{{User.Position}}</span></span>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Giới tính: </div>
+                                    <div class="profile-info-value" ng-if="User.Gender == true">
+                                        <span class="editable" ng-model="User.Gender">Nam</span>
+                                    </div>
+                                    <div class="profile-info-value" ng-if="User.Gender == false">
+                                        <span class="editable" ng-model="User.Gender">Nữ</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 no-padding padding-user">
+                            <div class="profile-user-info profile-user-info-striped dv-name">
+                                <h4 class="widget-title" style="padding-left: 15px;">Phân Quyền:</h4>
+                                <div class="hr hr12 dotted"></div>
+                                <div class="widget-body widget-main no-padding-top" id="quyen">
+                                    <div ng-repeat="item in lstRoles">
+                                        <div class="" ng-if="SetRole(item.Id)==true">
+                                            <label>
+                                                <i class="fa fa-arrow-right" aria-hidden="true"></i> <span class="center">{{item.Name}}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 no-padding" style="height: 15px">
+                                        <label class="help-block" id="lblquyen" ng-model="lblquyen" style="display: none"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-danger" data-dismiss="modal"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal Delete*@
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" style="width: 30%">
+            <div class="modal-content ">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        <i class="ace-icon fa fa-exclamation-triangle red"></i>Thông báo
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa: <strong class="red">{{User.UserName}}</strong>?
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-danger btn-xs btn-ok" ng-click="remove(User)"><i class="fa fa-check-square-o"></i> Có</a>
+                    <a class="btn btn-xs btn-info" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Thay đổi mật khẩu*@
+    <div id="confirm-changepassword" class="modal fade" role="dialog" tabindex="-1">
+        <input type="text" id="usID" ng-model="userCP.ID" style="display:none;" />
+        <div class="modal-dialog modal-xs">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        <i class="ace-icon fa fa-key"></i><span class="uppercase">Thay đổi mật khẩu cho tài khoản: </span><strong class="text-danger bolder">{{userCP.UserName}}</strong>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form name="registerForm" class="form-horizontal" role="form" id="registerForm">
+                        <input type="text" class="form-control" id="ID" style="display: none;">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <div class="col-md-3 control-label no-padding-right">
+                                        <label class="bolder">Mật khẩu mới</label>
+                                        <i style="color: red">(*)</i>:
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input name="password" type="password" ng-enter="EntnkyND('btnUpdatePw')" class="form-control" id="passwordcp" ng-model="userCP.password" required autofocus tabindex="1">
+                                        <label class="help-block" id="lblmatkhaucp" ng-model="lblmatkhaucp" style="display: none"></label>
+                                    </div>
+                                    <div class="col-md-1"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-success" id="btnUpdatePw" ng-enter="EntnkyND('btnCloseMD')" ng-click="changePasswordForUser(userCP)" tabindex="2"><i class="fa fa-key" aria-hidden="true"></i>&nbsp;&nbsp;Đổi mật khẩu</a>
+                    <a class="btn btn-xs btn-danger" id="btnCloseMD" ng-enter="EntnkyND('closeus')" data-dismiss="modal" tabindex="3"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal Destroy*@
+    <div class="modal fade" id="confirm-destroy" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm dv-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><i class="ace-icon fa fa-exclamation-triangle red"></i>Thông báo</h4>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn loại trừ: <strong class="red">{{User.UserName}}</strong>?
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-warning btn-xs btn-ok" ng-click="destroy(User)"><i class="fa fa-check-square-o"></i> Có</a>
+                    <a class="btn btn-xs btn-info" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    });
+    $('#DateOfBirth').datepicker();
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+</script>

@@ -1,0 +1,175 @@
+﻿@{
+    ViewBag.Title = "Thêm mới đăng ký tiếp dân";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<style>
+    .wrapper {
+        width: 50%;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+        height: 80px;
+    }
+
+    .title {
+        color: #007bff;
+    }
+
+    .form-group {
+        text-align: left;
+        margin-bottom: 15px;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        /*padding: 8px;*/
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .btn-custom:hover {
+        opacity: 0.8;
+    }
+
+    .btn-custom {
+        padding: 7px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-save {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-submit {
+        background-color: #28a745;
+        color: white;
+    }
+
+    select {
+        padding: 0 !important;
+        height: 32px !important;
+    }
+
+    .subtitle {
+        font-weight: bold;
+    }
+</style>
+
+<script src="~/ScriptController/RegisterAddJs.js"></script>
+<div class="main-content-inner" ng-controller="RegisterAddJs">
+    <div class="panel-default">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="/thong-tin-ca-nhan/chi-tiet">Trang chủ</a>
+                </li>
+                <li><a>Đăng ký tiếp dân</a></li>
+                <li class="active">Thêm mới</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+            </div>
+        </div>
+        <div class="panel-body" style="background-color: white">
+            <div class="wrapper">
+                <div style="display: flex; align-items: center; flex-direction: column; margin-bottom: 24px">
+                    <img src="~/Content/assets/images/quochuy.png" alt="Logo" class="logo" style="width: 100px; height: 100px">
+                    <h4 class="title">HỆ THỐNG ĐĂNG KÝ TIẾP DÂN</h4>
+                    <h5 class="subtitle">Tạo lịch đăng ký tiếp dân</h5>
+                </div>
+                <form name="registrationForm" novalidate>
+                    <div class="form-group">
+                        <label>Đơn vị tiếp nhận<span class="red"> *</span></label>
+                        <select name="IdDonViTiepDan" style="margin-bottom: 5px;" ng-model="formData.IdDonViTiepDan" required>
+                            <option value="" disabled selected>--- Chọn ---</option>
+                            <option ng-repeat="department in lstDepartments" value="{{department.Id}}">{{department.Name}}</option>
+                        </select>
+                        <span class="red" style="font-style: italic" ng-show="registrationForm.IdDonViTiepDan.$touched && registrationForm.IdDonViTiepDan.$invalid">Trường dữ liệu này không được để trống</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Thời gian đăng ký<span class="red"> *</span></label>
+                        <div class="input-group form-group-option date date-picker">
+                            <input class="form-control date-picker" style="margin-top: 0 !important; border-radius: 3px !important" type="text" placeholder="Nhập..." required value="formData.NgayDangKy" id="NgayDangKy" name="NgayDangKy" ng-model="formData.NgayDangKy">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                        <span class="red" style="font-style: italic" ng-show="registrationForm.NgayDangKy.$touched && registrationForm.NgayDangKy.$invalid">Trường dữ liệu này không được để trống</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Nội dung<span class="red"> *</span></label>
+                        <textarea name="ChuDe" rows="4" maxlength="2000" style="border-radius: 4px !important" placeholder="Nhập..." ng-model="formData.ChuDe" required></textarea>
+                        <span class="red" style="font-style: italic" ng-show="registrationForm.ChuDe.$touched && registrationForm.ChuDe.$invalid">Trường dữ liệu này không được để trống</span>
+                    </div>
+                    <div class="form-group">
+                        <div style="display: flex; align-items: center; gap: 4px; cursor: pointer" ng-click="triggerFileInput()">
+                            <img src="~/Content/assets/images/upload_file.png" title="Upload file"> <span>Tối đa 5 file (PDF, JPG, JPEG, DOC, DOCX, XCL) - Tối đa 20MB/file</span>
+                        </div>
+                        <input type="file" id="file" accept=".doc,.docx,.pdf,.xls,.xlsx,.jpg" name="file" multiple onchange="angular.element(this).scope().validateFiles(this)" style="display: none;" />
+                        <ul style="list-style-type: none; margin: 0 !important">
+                            <li ng-repeat="file in fileList track by $index" style="padding: 3px 0; ">
+                                <span>📄</span> {{ file.name }} <span style="cursor: pointer; color: red;" ng-click="removeFile($index)"> ❌</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="button-group">
+                        <button ng-click="redirectToPage()" type="button" class="btn-custom btn-cancel">Hủy</button>
+                        <div>
+                            <button type="button" class="btn-custom btn-save" ng-click="saveForm(0)">Lưu</button>
+                            <button type="submit" class="btn-custom btn-submit" ng-click="saveForm(1)">Đăng ký →</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: transparent; z-index: 30001; opacity: .8; filter: alpha(opacity=70); display: none">
+        <p style="position: absolute; top: 5%; left: 50%; color: #ff6a00; text-align: center">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-spin fa-fw margin-bottom"></i><br />
+            Vui lòng đợi...
+        </p>
+    </div>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+    
+
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    });
+    $('#DateOfBirth').datepicker();
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+</script>
+

@@ -1,0 +1,50 @@
+﻿body {
+}
+body{
+    /*padding-right:0px !important;*/
+    font-size:12px !important;
+    font-family: Arial, sans-serif !important;
+    /*overflow-x:hidden;*/
+}
+
+.textboxnumber 
+{
+    text-align:right;
+    display: none;
+ }
+
+.labelnumber 
+{
+    text-align:right;    
+ }
+
+.capnhat
+{
+    display: none;
+ }
+
+
+.bt_change
+{
+    display: inline-block;
+ }
+
+
+table {
+           max-width:none !important;
+        }  
+
+table td {
+            overflow: hidden;
+            word-wrap: break-word;
+            /*word-break: break-all;*/
+        }    
+table tr td {
+            
+            padding:2px !important;
+            vertical-align:middle !important;
+        } 
+.hidden_item
+{
+    display: none;
+ }           

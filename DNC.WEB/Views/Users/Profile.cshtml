@@ -1,0 +1,283 @@
+﻿@{
+    ViewBag.Title = "Thông tin cá nhân";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<style>
+    .form-group {
+        margin-bottom: 5px;
+    }
+
+    .modal .form-control {
+        border: 1px solid white;
+    }
+
+    .profile-info-value {
+        padding: 14px !important;
+    }
+
+    .note-container {
+        border: 1px solid #e5731b;
+        background-color: #fefaf5;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        /*width: fit-content;*/
+    }
+
+    .note-header {
+        display: flex;
+        align-items: center;
+    }
+
+    .note-icon {
+        color: #e5731b;
+        font-weight: bold;
+        margin-right: 5px;
+    }
+
+    .note-text {
+        font-weight: bold;
+        color: #e5731b;
+    }
+
+    .note-description {
+        color: #e5731b;
+        font-weight: normal;
+    }
+
+    .update-btn {
+        background-color: #e5731b;
+        color: white;
+        padding: 6px 12px;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+        font-size: 14px;
+        border-radius: 4px;
+    }
+
+    .update-btn:hover {
+        background-color: #d56215;
+    }
+</style>
+
+<script src="~/ScriptController/ProfileJs.js"></script>
+<div class="main-content-inner" ng-controller="ProfileJs">
+    <div class="panel-default">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="/dang-ky-tiep-dan/danh-sach">Trang chủ</a>
+                </li>
+                <li class="active">Thông tin cá nhân</li>
+            </ul>
+        </div>
+        <div class="page-header panel-body">
+            <div class="p-table ptdv-pding">
+                <div class="panel-body" style="margin-top: 24px;">
+                    <div class="row" style="margin: 0 !important">
+                        <div class="col-xs-12">
+                            <div id="user-profile-1" class="user-profile row">
+                                <div class="col-xs-12 col-sm-3 center">
+                                    <div>
+                                        <span class="profile-picture">
+                                            <img id="avatar" class="editable img-responsive" ng-show="!formData.Avatar" alt="Ảnh đại diện" src="~/Content/assets/images/profile-pic.jpg" />
+                                            <img id="avatar" class="editable img-responsive" ng-show="formData.Avatar" alt="{{formData.DisplayName}}" src="{{formData.Avatar}}" />
+                                        </span>
+                                        <div class="space-4"></div>
+                                        <div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
+                                            <div class="inline position-relative">
+                                                <a href="#" class="user-title-label dropdown-toggle" data-toggle="dropdown">
+                                                    <span class="white">{{formData.DisplayName}}</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="space-6"></div>
+                                    <div class="profile-contact-info">
+                                        <div class="profile-contact-links align-center">
+                                            <a href="/thong-tin-ca-nhan/chinh-sua" class="btn btn-link">
+                                                <i class="ace-icon fa fa-gear bigger-120 "></i>
+                                                Chỉnh sửa thông tin
+                                            </a>
+                                            <a href="#" class="btn btn-link" ng-click="showChangePasswordModal()">
+                                                <i class="ace-icon fa fa-key bigger-120 "></i>
+                                                Đổi mật khẩu
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="hr hr12 dotted"></div>
+                                    <div style="display: flex; justify-content: center">
+                                        <img ng-show="formData.Status == 0" class="editable img-responsive" alt="Chờ đăng ký" src="~/Content/assets/images/cho_dang_ky.png" />
+                                        <img ng-show="formData.Status == 1" class="editable img-responsive" alt="Cập nhật" src="~/Content/assets/images/can_cap_nhat.png" />
+                                        <img ng-show="formData.Status == 2" class="editable img-responsive" alt="Đã kích hoạt" src="~/Content/assets/images/icon_da_kich_hoat.png" />
+                                        <img ng-show="formData.Status == 3" class="editable img-responsive" alt="Đã kích hoạt" src="~/Content/assets/images/icon_vohieuhoa.png" />
+                                    </div>
+                                    <div class="hr hr16 dotted"></div>
+                                    <div class="note-container" ng-show="formData.Status == 1">
+                                        <div class="note-header">
+                                            <span class="note-icon">❗</span>
+                                            <span class="note-text">Ghi chú:</span>
+                                            <span class="note-description">&nbsp;Nội dung phê duyệt</span>
+                                        </div>
+                                        <button ng-click="redirectUpdate()" class="update-btn">Cập nhật ngay</button>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-9">
+                                    <div class="profile-user-info profile-user-info-striped">
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Họ và tên </div>
+                                            <div class="profile-info-value">
+                                                <span class="editable" id="displayName">{{formData.DisplayName}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Số điện thoại </div>
+                                            <div class="profile-info-value" id="mobile"> {{formData.Mobile}} </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Email </div>
+                                            <div class="profile-info-value">
+                                                <span class="editable" id="email">{{formData.Email}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Ngày sinh </div>
+                                            <div class="profile-info-value">
+                                                <span class="editable" id="dateOfBirth">{{formData.DateOfBirth | date:"dd/MM/yyyy"}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Giới tính </div>
+                                            <div class="profile-info-value">
+                                                <span class="editable" id="gender">{{formData.Gender == true ? "Nữ" : "Nam"}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Căn cước công dân </div>
+                                            <div class="profile-info-value">
+                                                <span class="editable" id="idCard">{{formData.IdCard}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Ngày cấp </div>
+                                            <div class="profile-info-value">
+                                                <span class="editable" id="issuanceDate">{{formData.IssuanceDate | date:"dd/MM/yyyy"}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Nơi cấp </div>
+                                            <div class="profile-info-value">
+                                                <span class="editable" id="issuanceAgency">{{formData.IssuanceAgency}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Địa chỉ </div>
+                                            <div class="profile-info-value">
+                                                <span class="editable" id="specifiedAddress">{{formData.SpecifiedAddress}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Dân tộc </div>
+                                            <div class="profile-info-value">
+                                                <span class="editable" id="ethnicId">{{formData.EthnicId}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Quốc tịch </div>
+                                            <div class="profile-info-value">
+                                                <span class="editable" id="nationalityId">{{formData.NationalityId}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="space-20"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: transparent; z-index: 30001; opacity: .8; filter: alpha(opacity=70); display: none">
+        <p style="position: absolute; top: 5%; left: 50%; color: #ff6a00; text-align: center">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-spin fa-fw margin-bottom"></i><br />
+            Vui lòng đợi...
+        </p>
+    </div>
+    <!-- Modal -->
+    <div id="changePasswordModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Đổi Mật Khẩu</h4>
+                </div>
+                <div class="modal-body">
+                    <form name="passwordForm" novalidate style="padding: 12px">
+                        <!-- Mật khẩu hiện tại -->
+                        <div class="form-group">
+                            <label for="currentPassword">Mật khẩu hiện tại</label>
+                            <input type="password" class="form-control border-input" id="currentPassword" name="currentPassword" placeholder="Nhập..." ng-model="passwordData.currentPassword" required>
+                            <span class="text-danger" style="font-style: italic" ng-show="passwordForm.currentPassword.$touched && passwordForm.currentPassword.$error.required">
+                                Trường dữ liệu này không được để trống
+                            </span>
+                        </div>
+
+                        <!-- Mật khẩu mới -->
+                        <div class="form-group" style="margin-top: 14px;">
+                            <label for="newPassword">Mật khẩu mới</label>
+                            <input type="password" class="form-control border-input" id="newPassword" name="newPassword" placeholder="Nhập..." ng-model="passwordData.newPassword" ng-minlength="6" required>
+                            <span class="text-danger" style="font-style: italic" ng-show="passwordForm.newPassword.$touched && passwordForm.newPassword.$error.required">
+                                Trường dữ liệu này không được để trống
+                            </span>
+                            <span class="text-danger" style="font-style: italic" ng-show="passwordForm.newPassword.$touched && passwordForm.newPassword.$error.minlength">
+                                Mật khẩu phải có ít nhất 6 ký tự
+                            </span>
+                        </div>
+
+                        <!-- Xác nhận mật khẩu mới -->
+                        <div class="form-group" style="margin-top: 14px;">
+                            <label for="confirmPassword">Xác nhận mật khẩu</label>
+                            <input type="password" class="form-control border-input" id="confirmPassword" name="confirmPassword" placeholder="Nhập..." ng-model="passwordData.confirmPassword" ng-pattern="passwordData.newPassword" required>
+                            <span class="text-danger" style="font-style: italic" ng-show="passwordForm.confirmPassword.$touched && passwordForm.confirmPassword.$error.required">
+                                Trường dữ liệu này không được để trống
+                            </span>
+                            <span class="text-danger" style="font-style: italic" ng-show="passwordForm.confirmPassword.$touched && passwordForm.confirmPassword.$error.pattern">
+                                Mật khẩu không khớp
+                            </span>
+                        </div>
+
+                        <!-- Nút Lưu -->
+                        <button type="button" ng-click="savePass()" class="btn btn-success" style="border-radius: 6px; margin-top: 18px">
+                            Đổi mật khẩu
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    });
+    $('#DateOfBirth').datepicker();
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+</script>
+

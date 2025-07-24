@@ -1,0 +1,496 @@
+﻿@using System.Activities.Expressions
+@using DNC.WEB.Models
+@using DNC.WEB.Repository
+@{
+    AccountRp context = new AccountRp();
+    ViewBag.PortalTitle = context.SystemConfigs_GetAll_ByKey("PORTAL-TITLE").Value;
+    ViewBag.PortalUnit = context.SystemConfigs_GetAll_ByKey("PORTAL-UNIT").Value;
+    ViewBag.PortalFooter = context.SystemConfigs_GetAll_ByKey("PORTAL-FOOTER").Value;
+    ViewBag.PortalCopyright = context.SystemConfigs_GetAll_ByKey("PORTAL-COPYRIGHT").Value;
+    ViewBag.PortalYear = DateTime.Now.Year;
+    GenericRepository<Users> _context = new GenericRepository<Users>();
+    if (Session["Users"] != null)
+    {
+        var data = _context.Get((int)Session["Users"]);
+        ViewBag.Name = data.DisplayName;
+        ViewBag.ID = data.Id;
+    }
+    else
+    {
+        string url = Request.Url.AbsoluteUri;
+        Response.Redirect("~/Account/Index?url_redirect=" + Request.Url.AbsoluteUri);
+    }
+}
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.PortalTitle</title>
+    <link rel="icon" type="image/gif" href="~/Images/icon.png" />
+
+    <!-- bootstrap & fontawesome -->
+    <link href="~/Content/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/assets/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- page specific plugin styles -->
+    @*<link href="~/Content/assets/css/prettify.min.css" rel="stylesheet" />*@
+    <!-- ace styles -->
+    <link href="~/Content/assets/css/ace.min.css" rel="stylesheet" class="ace-main-stylesheet" id="main-ace-style" />
+    <link href="~/Content/assets/css/ace-skins.min.css" rel="stylesheet" />
+    <link href="~/Content/assets/css/ace-rtl.min.css" rel="stylesheet" />
+
+    <link href="~/Content/PageIndex.css" rel="stylesheet" />
+    <link href="~/Content/Css/custom.css" rel="stylesheet" />
+    <!-- Javascrpit -->
+    <script src="~/Content/assets/js/jquery-2.1.4.min.js"></script>
+
+    <!-- Angular app -->
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/angular-route.min.js"></script>
+    <script src="~/ScriptController/crud.js"></script>
+    <script src="~/Scripts/angular-ui/ui-bootstrap.js"></script>
+    <script src="~/Scripts/angular-cookie/angular-cookies.js"></script>
+    <script src="~/Scripts/angucomplete-alt.min.js"></script>
+    <script src="~/Scripts/angular-chart/fusioncharts.js"></script>
+    <script src="~/Scripts/angular-chart/fusioncharts.charts.js"></script>
+    <script src="~/Scripts/angular-fusioncharts.min.js"></script>
+    <script src="~/Scripts/angular-chart/zune-theme.js"></script>
+
+    <script src="~/Content/assets/js/bootstrap.min.js"></script>
+
+    <script src="~/Content/assets/js/ace-elements.min.js"></script>
+    <script src="~/Content/assets/js/ace.min.js"></script>
+    <script src="~/Scripts/notify.min.js"></script>
+
+    <script src="~/Content/assets/js/ace-extra.min.js"></script>
+    <script src="~/Content/jsTree/angular-ui-tree.js"></script>
+    <script src="~/Scripts/angular-io-barcode.js"></script>
+    <script>
+        var myApp = angular.module('myApp', ['ngRoute', 'crud', 'ngCookies', 'ui.tree', 'io-barcode', 'ng-fusioncharts', 'ui.select2'])
+            .directive('trimInput', function () {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function (scope, element, attrs, ngModel) {
+                        // Listen for the 'blur' event to trim the input value
+                        element.on('blur', function () {
+                            var value = element.val().trim();
+                            element.val(value);
+                            ngModel.$setViewValue(value);
+                            ngModel.$render();
+                        });
+                    }
+                };
+            })
+            .directive('preventAutofill', function () {
+                return {
+                    restrict: 'A',
+                    link: function (scope, element, attrs) {
+                        element.attr('readonly', true);
+
+                        setTimeout(() => {
+                            element.removeAttr('readonly');
+                        }, 1000);
+                    }
+                };
+            });
+
+        function isNumber(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <script src="~/ScriptController/PagesJs.js"></script>
+    <script src="~/ScriptController/UsersInfoJS.js"></script>
+    <link href="~/Content/Css/select2.min.css" rel="stylesheet" />
+    <script src="~/Content/js/select2.min.js"></script>
+    <script src="~/Scripts/angular-ui/select2.js"></script>
+</head>
+<body class="no-skin">
+    <div ng-controller="PagesJs">
+        <div ng-controller="UsersInfoJs">
+            <div class="main-container ace-save-state" id="main-container">
+                <script type="text/javascript">
+                    try { ace.settings.loadState('main-container') } catch (e) { }
+                </script>
+                <div id="sidebar" class="sidebar responsive ace-save-state compact" data-sidebar="true" data-sidebar-scroll="true" data-sidebar-hover="true">
+                    <script type="text/javascript">
+                        try { ace.settings.loadState('sidebar') } catch (e) { }
+                    </script>
+                    <ul class="nav nav-list" style="top: 0px;">
+                        <li ng-class="SetActive('Home/Index')">
+                            <a href="/Home/Index">
+                                <i class="menu-icon fa fa-home"></i>
+                                <span class="menu-text"> Trang chủ </span>
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="hover" id="page{{item.id}}" ng-repeat="item in lstData" ng-class="SetActiveParent(item)">
+                            <a id="link{{item.id}}" href="/{{item.link}}" ng-init="setClassDrop(item)">
+                                <i class="{{item.css}}"></i>
+                                <span class="menu-text">
+                                    {{item.name}}
+                                </span>
+                            </a>
+                            <b class="arrow"></b>
+                            <ul class="submenu can-scroll" ng-if="item.items.length > 0">
+                                <li class="hover" ng-repeat="sub in item.items" ng-class="SetActive(sub)">
+                                    <a href="/{{sub.link}}">
+                                        <i class="{{sub.css}} menu-icon fa fa-caret-right"></i>
+                                        {{sub.name}}
+                                    </a>
+                                    <b class="arrow"></b>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse" style="z-index: 1;">
+                        <i id="sidebar-toggle-icon" class="ace-save-state ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+                    </div>
+                </div>
+
+                <div class="main-content">
+                    <div id="navbar" class="navbar navbar-default ace-save-state" style="background: #199eb3; max-height:30px">
+                        <div class="navbar-container ace-save-state" id="navbar-container">
+                            <button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
+                                <span class="sr-only">Toggle sidebar</span>
+
+                                <span class="icon-bar"></span>
+
+                                <span class="icon-bar"></span>
+
+                                <span class="icon-bar"></span>
+                            </button>
+
+                            <div class="navbar-header pull-left" style="padding: auto">
+                                <a href="/Home/Index" class="navbar-brand">
+                                    <small>
+                                        @*<i class="fa fa-folder-open ace-icon bigger-125"></i>*@
+                                        @*<img src="../Images/logo_tt.png" class="logo-default">*@
+                                    </small>
+                                    <small class="large-title">
+                                        Hệ thống tiếp nhận, xử lý hồ sơ hành chính công
+                                    </small>
+                                </a>
+                            </div>
+                            <div class="navbar-buttons navbar-header pull-right" role="navigation">
+                                <ul class="nav ace-nav" style="">
+                                    <li>
+                                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                            <i class="ace-icon fa fa-bell icon-animated-bell"></i>
+                                            <span class="badge badge-important ng-binding">
+                                                {{TongThongBao}}
+                                            </span>
+                                        </a>
+                                        <ul class="dropdown-menu-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">
+                                            <li class="dropdown-header ng-binding">
+                                                <i class="ace-icon fa fa-exclamation-triangle"></i>
+                                                @*{{ThongBao.DonThuTiepNhan + ThongBao.DonThuDuyetXuLy + ThongBao.DonThuPhanXuLy + ThongBao.DonThuKetLuan + ThongBao.DonThuDuyetGiaiQuyet + ThongBao.DonThuTraKetQua}}*@ Thông báo
+                                            </li>
+
+                                            <li class="dropdown-content bt-thongbao ace-scroll" style="position: relative;">
+                                                <div class="scroll-track" style="display: none;"><div class="scroll-bar"></div></div>
+                                                <div class="scroll-content" style="max-height: 300px;">
+                                                    <ul class="dropdown-menu dropdown-navbar navbar-pink">
+                                                        <li ng-if="CheckNotificationPage('DonThu/DonThuTiepNhan')">
+                                                            <a href="../DonThu/DonThuTiepNhan" style="cursor:pointer;">
+                                                                <div class="clearfix">
+                                                                    <span class="pull-left">
+                                                                        Đơn thư chờ xử lý
+                                                                    </span>
+                                                                    <span class="pull-right badge badge-info ng-binding">{{ThongBao.DonThuXuLy}}</span>
+                                                                </div>
+                                                            </a>
+                                                        </li>
+                                                        <li ng-if="CheckNotificationPage('DonThu/DonThuDuyetXuLy')">
+                                                            <a href="../DonThu/DonThuDuyetXuLy" style="cursor:pointer;">
+                                                                <div class="clearfix">
+                                                                    <span class="pull-left">
+                                                                        Đơn thư duyệt xử lý
+                                                                    </span>
+                                                                    <span class="pull-right badge badge-info ng-binding">{{ThongBao.DonThuDuyetXuLy}}</span>
+                                                                </div>
+                                                            </a>
+                                                        </li>
+                                                        <li ng-if="CheckNotificationPage('DonThu/DonThuGiaiQuyet')">
+                                                            <a href="../DonThu/DonThuGiaiQuyet" style="cursor:pointer;">
+                                                                <div class="clearfix">
+                                                                    <span class="pull-left">
+                                                                        Đơn thư thụ lý giải quyết
+                                                                    </span>
+                                                                    <span class="pull-right badge badge-info ng-binding">{{ThongBao.DonThuThuLy}}</span>
+                                                                </div>
+                                                            </a>
+                                                        </li>
+                                                        <li ng-if="CheckNotificationPage('DonThu/DonThuKetLuan')">
+                                                            <a href="../DonThu/DonThuKetLuan" style="cursor:pointer;">
+                                                                <div class="clearfix">
+                                                                    <span class="pull-left">
+                                                                        Đơn thư chờ kết luận
+                                                                    </span>
+                                                                    <span class="pull-right badge badge-info ng-binding">{{ThongBao.DonThuKetLuan}}</span>
+                                                                </div>
+                                                            </a>
+                                                        </li>
+                                                        <li ng-if="CheckNotificationPage('DonThu/DonThuDuyetGiaiQuyet')">
+                                                            <a href="../DonThu/DonThuDuyetGiaiQuyet" style="cursor:pointer;">
+                                                                <div class="clearfix">
+                                                                    <span class="pull-left">
+                                                                        Đơn thư duyệt giải quyết
+                                                                    </span>
+                                                                    <span class="pull-right badge badge-info ng-binding">{{ThongBao.DonThuDuyetKetLuan}}</span>
+                                                                </div>
+                                                            </a>
+                                                        </li>
+                                                        <li ng-if="CheckNotificationPage('DonThu/DonThuTraKetQua')">
+                                                            <a href="../DonThu/DonThuTraKetQua" style="cursor:pointer;">
+                                                                <div class="clearfix">
+                                                                    <span class="pull-left">
+                                                                        Đơn thư trả kết quả
+                                                                    </span>
+                                                                    <span class="pull-right badge badge-info ng-binding">{{ThongBao.DonThuTraKetQua}}</span>
+                                                                </div>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="light-blue dropdown-modal">
+                                        <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: #199eb3">
+                                            <img class="nav-user-photo" src="~/Content/assets/images/avatars/user.png" alt="Jason's Photo">
+                                            <span class="user-info">
+                                                <small>Xin chào,</small>
+                                                @ViewBag.Name
+                                            </span>
+                                            <i class="ace-icon fa fa-caret-down"></i>
+                                        </a>
+
+                                        <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                                            <li>
+                                                <a href="#" data-toggle="modal" data-target="#modalProfile" ng-click="showUserInfo(@ViewBag.ID);">
+                                                    <i class="ace-icon fa fa-user"></i>
+                                                    Thông tin cá nhân
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#" data-toggle="modal" ng-click="showChangePasswordModal()">
+                                                    <i class="ace-icon fa fa-key" aria-hidden="true"></i>
+                                                    &nbsp;Đổi mật khẩu
+                                                </a>
+                                            </li>
+                                            <li class="divider"></li>
+                                            <li>
+                                                <a href="@Url.Action("Logout", "Account")">
+                                                    <i class="ace-icon fa fa-power-off"></i>
+                                                    &nbsp;Đăng Xuất
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    @RenderBody()
+                    @*@Scripts.Render("~/bundles/jquery")
+                @RenderSection("scripts", required: false)*@
+                </div><!-- /.main-content -->
+
+                <div class="footer">
+                    <div class="footer-inner">
+                        <div class="footer-content">
+                            <span class="bigger-120">
+                                <span class="blue bolder">© Ban tiếp dân tỉnh Tuyên Quang</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse display">
+                    <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+                </a>
+            </div>
+
+            @*Thông tin tài khoản*@
+            <div class="modal fade bs-example-modal-lg" id="modalProfile" role="dialog" tabindex="-1">
+                <div class="modal-dialog modal-lg" style="width: 75%">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title"> Thông tin cá nhân</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form name="infoForm" class="form-horizontal" role="form" id="infoForm">
+                                <div class="col-xs-12 col-sm-8 no-padding">
+                                    <div class="profile-user-info profile-user-info-striped">
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Tên hiển thị<i style="color: red">*</i>:</div>
+                                            <div class="profile-info-value">
+                                                <input type="text" class="form-control input-sm context_disable" id="FirstName" ng-enter="EntnkyND('Position')" ng-model="User.DisplayName" tabindex="2">
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Di động:</div>
+                                            <div class="profile-info-value">
+                                                <input id="Mobile" ng-enter="EntnkyND('TelOffice')" maxlength="20" type="text" class="form-control input-sm" ng-model="User.Mobile" onkeypress="return isNumber(event)" tabindex="3">
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Email:</div>
+                                            <div class="profile-info-value">
+                                                <input id="Email" ng-enter="EntnkyND('Sex')" maxlength="20" type="email" class="form-control input-sm" ng-model="User.Email" tabindex="4">
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Đơn vị công tác:</div>
+                                            <div class="profile-info-value">
+                                                {{depName}}
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Vị trí công tác:</div>
+                                            <div class="profile-info-value">
+                                                <input class="form-control input-sm" ng-enter="EntnkyND('Mobile')" ng-model="User.Position" id="Position" type="text" tabindex="5" />
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Giới tính:</div>
+                                            <div class="profile-info-value">
+                                                <label>
+                                                    <input name="switch-field-1" class="ace ace-switch ace-switch-7" type="checkbox" id="Sex" ng-enter="EntnkyND('btnCreate')" ng-model="User.Gender" tabindex="6">
+                                                    <span class="lbl" data-lbl="NỮ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NAM"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-4 no-padding-right">
+                                    <p class="title-blue blue uppercase no-margin no-border-bottom">
+                                        Danh sách nhóm quyền:
+                                    </p>
+                                    <ul class="list-unstyled spaced2">
+                                        <li ng-repeat="item in lstLoadRole">
+                                            <i class="ace-icon fa fa-check green"></i>
+                                            {{item.Name}}
+                                        </li>
+                                    </ul>
+                                    <div class="col-sm-12 no-padding">
+                                        <label class="help-block" id="lblquyen" ng-model="lblquyen" style="display: none"></label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer no-border-top">
+                            <a class="btn btn-xs btn-success" id="btnSave" ng-click="updateProfile(User)"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;&nbsp;Cập nhật</a>
+                            <a class="btn btn-xs btn-danger" data-dismiss="modal"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div id="changePasswordModal2" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Đổi Mật Khẩu</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form name="passwordForm" novalidate style="padding: 12px">
+                                <!-- Mật khẩu hiện tại -->
+                                <div class="form-group">
+                                    <label for="currentPassword">Mật khẩu hiện tại</label>
+                                    <input type="password" class="form-control border-input" id="currentPassword" name="currentPassword" placeholder="Nhập..." ng-model="passwordData.currentPassword" required>
+                                    <span class="text-danger" style="font-style: italic" ng-show="passwordForm.currentPassword.$touched && passwordForm.currentPassword.$error.required">
+                                        Trường dữ liệu này không được để trống
+                                    </span>
+                                </div>
+
+                                <!-- Mật khẩu mới -->
+                                <div class="form-group" style="margin-top: 14px;">
+                                    <label for="newPassword">Mật khẩu mới</label>
+                                    <input type="password" class="form-control border-input" id="newPassword" name="newPassword" placeholder="Nhập..." ng-model="passwordData.newPassword" ng-minlength="6" required>
+                                    <span class="text-danger" style="font-style: italic" ng-show="passwordForm.newPassword.$touched && passwordForm.newPassword.$error.required">
+                                        Trường dữ liệu này không được để trống
+                                    </span>
+                                    <span class="text-danger" style="font-style: italic" ng-show="passwordForm.newPassword.$touched && passwordForm.newPassword.$error.minlength">
+                                        Mật khẩu phải có ít nhất 6 ký tự
+                                    </span>
+                                </div>
+
+                                <!-- Xác nhận mật khẩu mới -->
+                                <div class="form-group" style="margin-top: 14px;">
+                                    <label for="confirmPassword">Xác nhận mật khẩu</label>
+                                    <input type="password" class="form-control border-input" id="confirmPassword" name="confirmPassword" placeholder="Nhập..." ng-model="passwordData.confirmPassword" ng-pattern="passwordData.newPassword" required>
+                                    <span class="text-danger" style="font-style: italic" ng-show="passwordForm.confirmPassword.$touched && passwordForm.confirmPassword.$error.required">
+                                        Trường dữ liệu này không được để trống
+                                    </span>
+                                    <span class="text-danger" style="font-style: italic" ng-show="passwordForm.confirmPassword.$touched && passwordForm.confirmPassword.$error.pattern">
+                                        Mật khẩu không khớp
+                                    </span>
+                                </div>
+
+                                <!-- Nút Lưu -->
+                                <button type="button" ng-click="savePass()" class="btn btn-success" style="border-radius: 6px; margin-top: 18px">
+                                    Đổi mật khẩu
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*Change password*@
+            <div id="modalChangePassword" class="modal fade" role="dialog" tabindex="-1">
+                <input type="text" id="crud" style="display: none;" />
+                <input type="text" id="uID" ng-model="user.ID" style="display: none;" />
+                <div class="modal-dialog modal-xs">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title"> Thay đổi mật khẩu</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-md-12 no-padding">
+                                <div class="profile-user-info profile-user-info-striped dv-name">
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name">Mật khẩu cũ:</div>
+                                        <div class="profile-info-value">
+                                            <input type="password" class="form-control" id="oldpassword" ng-enter="EntnkyND('password')" tabindex="1">
+                                            <label class="help-block" id="lbloldpass" ng-model="lblpass" style="display: none"></label>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Mật khẩu mới</div>
+                                        <div class="profile-info-value">
+                                            <input name="password" type="password" class="form-control" id="password" ng-enter="EntnkyND('repeatPassword')" ng-model="user.password" autofocus tabindex="2">
+                                            <label class="help-block" id="lblpass" ng-model="lblpass" style="display: none"></label>
+                                        </div>
+                                    </div>
+                                    <div class="profile-info-row">
+                                        <div class="profile-info-name"> Nhập lại mật khẩu</div>
+                                        <div class="profile-info-value">
+                                            <input type="password" class="form-control" name="repeatPassword" id="repeatPassword" ng-enter="EntnkyND('btnCreate')" ng-model="user.repeatPassword" ng-change="checkConfirmPw()" required tabindex="3">
+                                            <label class="help-block" id="lblpassconfirm" ng-model="lblpassconfirm" style="display: none"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn btn-xs btn-success" id="btnCreate" ng-enter="EntnkyND('closeMD')" ng-click="changePassword(user)" tabindex="3"><i class="fa fa-key" aria-hidden="true"></i>&nbsp;&nbsp;Đổi mật khẩu</a>
+                            <a class="btn btn-xs btn-danger" id="closeMD" data-dismiss="modal" tabindex="4"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

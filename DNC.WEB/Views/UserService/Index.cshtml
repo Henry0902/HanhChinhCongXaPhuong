@@ -1,0 +1,192 @@
+﻿@{
+    ViewBag.Title = "Tài khoản service";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/ScriptController/UserServiceJs.js"></script>
+<div class="main-content-inner" ng-controller="UserServiceJs">
+    <div class="panel-default">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="#">Quản lý hệ thống</a>
+                </li>
+                <li class="active">Tài khoản service</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search">
+                    <a class=" btn btn-success btn-xs tooltip-success" data-toggle="modal" data-target="#myModal" data-placement="top" ng-click="show('')" ng-if="checkFunctionRoles('2')"><i class="fa fa-plus-circle"></i> Thêm mới</a>
+                </form>
+            </div>
+        </div>
+        <div class="page-header panel-body">
+            <div class="p-table ptdv-pding">
+                <div class="panel-body">
+                    <div class="col-md-12 col-xs-12 no-padding">
+                        <div class="col-md-3 Pding-div">
+                            <h4>Số lượng: <span class="red">{{totalRecords}}</span></h4>
+                        </div>
+                        <div class="col-md-3 Pding-div">
+                        </div>
+                        <div class="col-md-3 Pding-div">
+                            <input type="text" id="txtSearch" ng-model="strSearch" trim-input prevent-autofill class="form-control input-sm" placeholder="Nhập tài khoản service"/>
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <select class="form-control input-sm" ng-model="trang_thai" ng-change="reload()">
+                                <option value="-1">--- Trạng thái ---</option>
+                                <option value="0">Sử dụng</option>
+                                <option value="1">Không sử dụng</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 Pding-div text-right">
+                            <a ng-click="reload()" class="btn btn-xs btn-primary">
+                                <i class="fa fa-search"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="p-table">
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover" border="1">
+                        <thead>
+                        <tr>
+                            <th class="text-center" style="width: 5%">STT</th>
+                            <th class="text-center" style="width: 30%">TÊN TÀI KHOẢN SERVICE</th>
+                            <th class="text-center">EMAIL</th>
+                            <th class="text-center" style="width: 10%">TRẠNG THÁI</th>
+                            <th class="text-center" style="width: 10%">NGÀY TẠO</th>
+                            <th class="text-center" style="width: 15%">CHỨC NĂNG</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in lstUserService">
+                            <td class="text-center">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                            <td class="text-left">{{item.userservice_name}}</td>
+                            <td class="text-left">{{item.userservice_email}}</td>
+                            <td class="text-left">
+                                <span ng-show="item.trang_thai==0">Sử dụng</span>
+                                <span ng-show="item.trang_thai==1">Không sử dụng</span>
+                            </td>
+                            <td class="text-right">{{ item.ngay_tao | date:"dd/MM/yyyy" }}</td>
+                            <td class="text-center">
+                                <span class="text-center control-btn action-buttons">
+                                    <a class="blue" data-toggle="modal" data-target="#myModal" ng-click="show(item.userservice_id);" id="{{item.userservice_id}}" data-placement="top" title="Sửa" ng-if="checkFunctionRoles('2')">
+                                        <i class="ace-icon fa fa-pencil bigger-150"></i>
+                                    </a>
+                                    <a class="red" ng-show="item.trang_thai==0" ng-click="UpdateStatus(item)" data-toggle="tooltip" data-placement="top" title="Xóa tài khoản" ng-if="checkFunctionRoles('3')">
+                                        <i class="ace-icon fa fa-trash-o bigger-150"></i>
+                                    </a>
+                                    <a class="green" ng-show="item.trang_thai==1" ng-click="UpdateStatus(item)" data-toggle="tooltip" data-placement="top" title="Mở khóa để tài khoản được sử dụng" ng-if="checkFunctionRoles('3')">
+                                        <i class="ace-icon fa fa-lock bigger-150"></i>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="show-paging col-md-12 no-padding">
+                        <div class="paging">
+                            <span>Hiển thị</span>
+                            <select ng-model="pageSize" ng-change="reload()">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                            </select>
+                            <span> tổng số <span class="totalrecord">{{totalRecords}}</span> bản ghi</span>
+                        </div>
+                        <div class="pagination no-padding">
+                            <ul class="pagination pull-right" style="margin: 0" ng-hide="pageCount==0">
+                                <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(1)"><a href="javascript:void(0)"><i class="fa fa-fast-backward"></i></a></li>
+                                <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(pageIndex-1)"><a href="javascript:void(0)"><i class="fa fa-backward"></i></a></li>
+                                <li ng-repeat="page in lstPage track by $index"><a href="javascript:void(0)" ng-click="selectPage(page)" ng-style="activepage(page)">{{page}}</a></li>
+                                <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageIndex+1)"><a href="javascript:void(0)"><i class="fa fa-forward"></i></a></li>
+                                <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageCount)"><a href="javascript:void(0)"><i class="fa fa-fast-forward"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal Insert Update*@
+    <div id="myModal" class="modal fade" role="dialog" tabindex="-1">
+        <input type="text" id="crud" style="display: none;"/>
+        <div class="modal-dialog modal-style">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" id="closeNQ" data-dismiss="modal" tabindex="6">&times;</button>
+                    <h4 class="modal-title" ng-show="UserService.userservice_id != null"><i class="fa fa-pencil-square-o bigger-100"> </i> Sửa thông tin tài khoản service: <span class="style_cole">{{UserService.userservice_name}}</span></h4>
+                    <h4 class="modal-title" ng-show="UserService.userservice_id == null"><i class="fa fa-pencil-square-o bigger-100"> </i> Thêm mới tài khoản service</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 no-padding">
+                        <div class="profile-user-info profile-user-info-striped dv-name">
+                            <div class="profile-info-row">
+                                <div class="profile-info-name">Tài khoản service<i style="color: red">(*)</i>:
+                                </div>
+                                <div class="profile-info-value">
+                                    <input type="text" class="form-control input-sm" id="MaUserservice" ng-model="UserService.userservice_name" ng-change="UserService.userservice_name = (UserService.userservice_name | lowercase)" tabindex="1" ng-disabled="UserService.userservice_id != null && UserService.userservice_id != 0">
+                                    <label class="help-block ng-pristine ng-untouched ng-valid" id="lblMa" ng-model="lblMa" style="display: none"></label>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name">Mật khẩu<i style="color: red">(*)</i>:
+                                </div>
+                                <div class="profile-info-value">
+                                    <input type="password" class="form-control input-sm" id="txtPass" ng-model="UserService.userservice_password" tabindex="2">
+                                    <label class="help-block ng-pristine ng-untouched ng-valid" id="lblPassword" ng-model="lblPassword" style="display: none"></label>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name">Nhập lại mật khẩu<i style="color: red">(*)</i>:
+                                </div>
+                                <div class="profile-info-value">
+                                    <input type="password" class="form-control input-sm" id="txtRetypePass" tabindex="4">
+                                    <label class="help-block ng-pristine ng-untouched ng-valid" id="lblRetypePass" ng-model="lblRetypePass" style="display: none"></label>
+                                </div>
+                            </div>
+
+                            <div class="profile-info-row">
+                                <div class="profile-info-name">Email<i style="color: red">(*)</i>:
+                                </div>
+                                <div class="profile-info-value">
+                                    <input type="text" class="form-control input-sm" id="txtEmail" ng-model="UserService.userservice_email" tabindex="4">
+                                    <label class="help-block ng-pristine ng-untouched ng-valid" id="lblUEmail" ng-model="lblUEmail" style="display: none"></label>
+                                </div>
+                            </div>
+                            <div class="profile-info-row">
+                                <div class="profile-info-name">Trạng thái:</div>
+                                <div class="profile-info-value">
+                                    <select name="trangthai" id="trangthai" tabindex="5" ng-model="UserService.trang_thai">
+                                        <option value="">--- Chọn trạng thái ---</option>
+                                        <option value="0">Sử dụng</option>
+                                        <option value="1">Không sử dụng</option>
+                                    </select>
+                                    <label class="help-block col-md-12 no-paddin ng-pristine ng-untouched ng-valid" id="lblTrangthai" ng-model="lblTrangthai" style="display: none; padding: 0 !important;"></label>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-6 no-padding">
+                        <div class="profile-user-info profile-user-info-striped dv-name">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-success" id="btnCreate" ng-click="preCreate(UserService)" tabindex="7"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;&nbsp;Lưu</a>
+                    <a class="btn btn-xs btn-danger" id="btnHuy" data-dismiss="modal" tabindex="8"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

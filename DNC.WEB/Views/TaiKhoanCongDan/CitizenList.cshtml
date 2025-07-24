@@ -1,0 +1,520 @@
+﻿@{
+    ViewBag.Title = "Danh sách tài khoản công dân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .form-group {
+        margin-bottom: 5px;
+    }
+
+    .profile-info-value {
+        padding: 14px !important;
+    }
+
+    .note-container {
+        border: 1px solid #e5731b;
+        background-color: #fefaf5;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .note-header {
+        display: flex;
+        align-items: center;
+    }
+
+    .note-icon {
+        color: #e5731b;
+        font-weight: bold;
+        margin-right: 5px;
+    }
+
+    .note-text {
+        font-weight: bold;
+        color: #e5731b;
+    }
+
+    .note-description {
+        color: #e5731b;
+        font-weight: normal;
+    }
+
+    .update-btn {
+        background-color: #e5731b;
+        color: white;
+        padding: 6px 12px;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+        font-size: 14px;
+        border-radius: 4px;
+    }
+
+    .update-btn:hover {
+        background-color: #d56215;
+    }
+
+    tr > td {
+        vertical-align: middle !important;
+    }
+
+    td > p {
+        margin: 0 !important;
+    }
+
+    .status-common {
+        padding: 4px;
+        min-width: 120px;
+        border-radius: 4px
+    }
+
+    .status-dang-soan-thao {
+        background-color: #DBEAFE;
+        color: #3B82F6;
+    }
+
+    .status-cho-xu-ly {
+        background-color: #FFD6E7;
+        color: #EB2F96;
+    }
+
+    .status-dang-xu-ly {
+        background-color: #EA580C;
+        color: #FFEDD5;
+    }
+
+    .status-da-phan-hoi {
+        background-color: #B5F5EC;
+        color: #08979C;
+    }
+
+    .status-khong-tiep-nhan {
+        background-color: #F0F0F0;
+        color: #434343;
+    }
+
+    .status-cong-dan-huy {
+        background-color: #FECACA;
+        color: #DC2626;
+    }
+
+    .status-da-tiep-dan {
+        background-color: #DCFCE7;
+        color: #22C55E;
+    }
+
+    td > img {
+        cursor: pointer;
+    }
+
+    .b-radius-3 {
+        border-radius: 3px !important;
+    }
+
+    td > a:hover {
+        text-decoration: none;
+    }
+
+    .wrapper {
+        margin: auto;
+        background: white;
+        padding: 0 20px;
+        border-radius: 8px;
+    }
+
+    .logo {
+        height: 80px;
+    }
+
+    .title {
+        color: #007bff;
+    }
+
+    .form-group {
+        text-align: left;
+        margin-bottom: 15px;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .btn-custom:hover {
+        opacity: 0.8;
+    }
+
+    .btn-custom {
+        padding: 7px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-save {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-submit {
+        background-color: #28a745;
+        color: white;
+    }
+
+    select {
+        padding: 0 !important;
+        height: 32px !important;
+    }
+
+    .subtitle {
+        font-weight: bold;
+    }
+
+    .status-cho-dang-ky {
+        background-color: #DBEAFE;
+        color: #3B82F6;
+    }
+
+    .status-can-cap-nhat {
+        background-color: #FFEDD5;
+        color: #EA580C;
+    }
+
+    .status-da-kich-hoat {
+        background-color: #B5F5EC;
+        color: #08979C;
+    }
+
+    .status-vo-hieu-hoa {
+        background-color: #FFD6E7;
+        color: #EB2F96;
+    }
+</style>
+
+<script src="~/ScriptController/CitizenListJs.js"></script>
+<div class="main-content-inner" ng-controller="CitizenListJs">
+    <div class="panel-default">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="/Home/Index">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="/tai-khoan-cong-dan/danh-sach">Tài khoản công dân</a>
+                </li>
+                <li class="active">Danh sách tài khoản</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+            </div>
+        </div>
+        <div class="panel-body" style="margin-top: 16px">
+            <div class="p-table">
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover" border="1">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 48px">STT</th>
+                                <th class="text-center" style="width: 200px">Tài khoản</th>
+                                <th class="text-center" style="width: 160px">Thời gian đăng ký</th>
+                                <th class="text-center" style="width: 260px">CCCD</th>
+                                <th class="text-center" style="width: 100px">Giới tính</th>
+                                <th class="text-center">Địa chỉ</th>
+                                <th class="text-center" style="width: 170px">Trạng thái</th>
+                                <th class="text-center" style="width: 140px">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>
+                                </th>
+                                <th>
+                                    <input type="text" id="keyword" ng-model="keyword" ng-keyup="onEnter($event)" trim-input style="border-radius: 3px !important" class="form-control" prevent-autofill trim-input placeholder="Nhập..." />
+                                </th>
+                                <th>
+                                    <div class="input-group form-group-option date date-picker">
+                                        <input id="createdDate" class=" form-control date-picker" style="border-radius: 3px !important" ng-change="reload()" ng-model="createdDate" type="text" placeholder="Chọn">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <input type="text" id="idCard" ng-model="idCard" ng-keyup="onEnter($event)" trim-input style="border-radius: 3px !important" class="form-control" prevent-autofill trim-input placeholder="Nhập..." />
+
+                                </th>
+                                <th>
+                                    <select class="form-control" style="border-radius: 3px !important" id="ddlGender" ng-model="gender" ng-change="reload()">
+                                        <option value="-1" selected>Chọn</option>
+                                        <option value="0">Nam</option>
+                                        <option value="1">Nữ</option>
+                                    </select>
+                                </th>
+                                <th>
+                                    <input type="text" id="address" ng-keyup="onEnter($event)" ng-model="address" trim-input style="border-radius: 3px !important" class="form-control" prevent-autofill trim-input placeholder="Nhập..." />
+                                </th>
+                                <th>
+                                    <select class="form-control" style="border-radius: 3px !important" id="ddlStatus" ng-model="status" ng-change="reload()">
+                                        <option value="-1" selected>Chọn</option>
+                                        <option ng-repeat="item in ListStatus" value="{{item.Code}}">{{item.Name}}</option>
+                                    </select>
+                                </th>
+                                <th></th>
+                            </tr>
+                            <tr ng-repeat="item in lstData">
+                                <td class="text-center">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                                <td class="text-left" title="{{item.DisplayName}} &#10; {{item.Mobile}}">
+                                    <a ng-href="/tai-khoan-cong-dan/chi-tiet/{{item.Id}}">
+                                        <p style="color: #3b82f6; margin-bottom: 0;">{{item.DisplayName}}</p>
+                                        <p style="color: #535862; margin-bottom: 0;">{{item.Mobile}}</p>
+                                    </a>
+                                </td>
+                                <td class="text-center">{{item.CreatedDate}}</td>
+                                <td class="text-left" title="{{item.IdCard}} &#10; {{item.IssuanceDate}} - {{item.IssuanceAgency}}">
+                                    <p>{{item.IdCard}}</p>
+                                    <p style="color: #535862">{{item.IssuanceDate}} - {{item.IssuanceAgency}}</p>
+                                </td>
+                                <td class="text-left">{{ item.Gender == false ? "Nam" : "Nữ"}}</td>
+                                <td class="text-left" title="{{item.FullAddress}}"><span class="line-clamp-text-line">{{ item.FullAddress }}</span></td>
+                                <td class="text-center">
+                                    <p ng-show="item.Status == 0" class="status-common status-cho-dang-ky">Chờ đăng ký</p>
+                                    <p ng-show="item.Status == 1" class="status-common status-can-cap-nhat">Cần cập nhật</p>
+                                    <p ng-show="item.Status == 2" class="status-common status-da-kich-hoat">Đã kích hoạt</p>
+                                    <p ng-show="item.Status == 3" class="status-common status-vo-hieu-hoa">Vô hiệu hoá</p>
+                                </td>
+                                <td class="text-center">
+                                    <div style="gap: 6px; display: flex; justify-content: center; align-items: center;">
+                                        <a ng-click="onShowApprove(item)" ng-show="item.Status == 0">
+                                            <img src="~/Content/assets/images/icon_pheduyet.png" title="Đồng ý">
+                                        </a>
+                                        <a ng-click="onShowClose(item)" ng-show="item.Status == 0">
+                                            <img src="~/Content/assets/images/icon_tuchoi.png" title="Từ chối">
+                                        </a>
+                                        <a ng-click="onShowLock(item)" ng-show="item.Status == 2">
+                                            <img src="~/Content/assets/images/icon_lock.png" title="Khoá">
+                                        </a>
+                                        <a ng-click="onShowLock(item)" ng-show="item.Status == 3">
+                                            <img src="~/Content/assets/images/icon_unlock.png" title="Mở khoá">
+                                        </a>
+                                        <a ng-show="item.Status == 2 || item.Status == 3" ng-click="showChangePasswordModal()">
+                                            <img src="~/Content/assets/images/icon_changepass.png" title="Đổi mật khẩu">
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="show-paging col-md-12 no-padding">
+                        <div class="paging">
+                            <span>Hiển thị</span>
+                            <select ng-model="pageSize" ng-change="reload()">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                            </select>
+                            <span> tổng số <span class="totalrecord">{{totalRecords}}</span> bản ghi</span>
+                        </div>
+                        <div class="pagination no-padding">
+                            <ul class="pagination pull-right" style="margin:0" ng-hide="pageCount==0">
+                                <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(1)"><a href="javascript:void(0)"><i class="fa fa-fast-backward"></i></a></li>
+                                <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(pageIndex-1)"><a href="javascript:void(0)"><i class="fa fa-backward"></i></a></li>
+                                <li ng-repeat="page in lstPage track by $index"><a href="javascript:void(0)" ng-click="selectPage(page)" ng-style="activepage(page)">{{page}}</a></li>
+                                <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageIndex+1)"><a href="javascript:void(0)"><i class="fa fa-forward"></i></a></li>
+                                <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageCount)"><a href="javascript:void(0)"><i class="fa fa-fast-forward"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal change password -->
+    <div id="changePasswordModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Đổi Mật Khẩu</h4>
+                </div>
+                <div class="modal-body">
+                    <form name="passwordForm" novalidate style="padding: 12px">
+                        <!-- Mật khẩu hiện tại -->
+                        <div class="form-group">
+                            <label for="currentPassword">Mật khẩu hiện tại</label>
+                            <input type="password" class="form-control border-input" id="currentPassword" name="currentPassword" placeholder="Nhập..." ng-model="passwordData.currentPassword" required>
+                            <span class="text-danger" style="font-style: italic" ng-show="passwordForm.currentPassword.$touched && passwordForm.currentPassword.$error.required">
+                                Trường dữ liệu này không được để trống
+                            </span>
+                        </div>
+
+                        <!-- Mật khẩu mới -->
+                        <div class="form-group" style="margin-top: 14px;">
+                            <label for="newPassword">Mật khẩu mới</label>
+                            <input type="password" class="form-control border-input" id="newPassword" name="newPassword" placeholder="Nhập..." ng-model="passwordData.newPassword" ng-minlength="6" required>
+                            <span class="text-danger" style="font-style: italic" ng-show="passwordForm.newPassword.$touched && passwordForm.newPassword.$error.required">
+                                Trường dữ liệu này không được để trống
+                            </span>
+                            <span class="text-danger" style="font-style: italic" ng-show="passwordForm.newPassword.$touched && passwordForm.newPassword.$error.minlength">
+                                Mật khẩu phải có ít nhất 6 ký tự
+                            </span>
+                        </div>
+
+                        <!-- Xác nhận mật khẩu mới -->
+                        <div class="form-group" style="margin-top: 14px;">
+                            <label for="confirmPassword">Xác nhận mật khẩu</label>
+                            <input type="password" class="form-control border-input" id="confirmPassword" name="confirmPassword" placeholder="Nhập..." ng-model="passwordData.confirmPassword" ng-pattern="passwordData.newPassword" required>
+                            <span class="text-danger" style="font-style: italic" ng-show="passwordForm.confirmPassword.$touched && passwordForm.confirmPassword.$error.required">
+                                Trường dữ liệu này không được để trống
+                            </span>
+                            <span class="text-danger" style="font-style: italic" ng-show="passwordForm.confirmPassword.$touched && passwordForm.confirmPassword.$error.pattern">
+                                Mật khẩu không khớp
+                            </span>
+                        </div>
+
+                        <!-- Nút Lưu -->
+                        <button type="button" ng-click="savePass()" class="btn btn-success" style="border-radius: 6px; margin-top: 18px">
+                            Đổi mật khẩu
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal khoá/ mở khoá*@
+    <div class="modal fade" id="lockModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" style="width: 500px">
+            <div class="modal-content" style="border-radius: 6px; border: none; overflow: hidden">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        {{selectedItem.Status == 2 ? 'Khoá' : 'Mở khoá'}} tài khoản công dân
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 24px 12px !important">
+                    Anh/chị có chắc chắn muốn {{selectedItem.Status == 2 ? 'khoá' : 'mở khoá'}} tài khoản công dân <span style="font-weight: 600">{{formData.UserName}}</span> không?
+                </div>
+                <div class="modal-footer" style="padding-top: 12px; padding-bottom: 12px;">
+                    <a class="btn btn-xs btn-info b-radius-3" style="min-width: 80px" data-dismiss="modal"><i class="fa fa-times-circle"></i> Huỷ</a>
+                    <a class="btn btn-danger btn-xs btn-ok b-radius-3" style="min-width: 80px" ng-click="onLock()"><i class="fa fa-check-square-o"></i> Xác nhận</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal xoá*@
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" style="width: 500px">
+            <div class="modal-content" style="border-radius: 6px; border: none; overflow: hidden">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        Xoá đăng ký tiếp dân
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 24px 12px !important">
+                    Anh/chị có chắc chắn muốn xoá đăng ký tiếp dân tại đơn vị <span style="font-weight: 600">{{selectedItem.TenDonVi}}</span> vào ngày <span style="font-weight: 600">{{selectedItem.NgayDangKy}}</span> không?
+                </div>
+                <div class="modal-footer" style="padding-top: 12px; padding-bottom: 12px;">
+                    <a class="btn btn-xs btn-info b-radius-3" style="min-width: 80px" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</a>
+                    <a class="btn btn-danger btn-xs btn-ok b-radius-3" style="min-width: 80px" ng-click="remove(selectedItem.Id)"><i class="fa fa-check-square-o"></i> Có</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal đồng ý*@
+    <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" style="width: 500px">
+            <div class="modal-content" style="border-radius: 6px; border: none; overflow: hidden">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        Đồng ý công dân đăng ký tài khoản
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 24px 12px !important">
+                    Anh/chị có chắc chắn muốn đồng ý công dân <span style="font-weight: 600">{{selectedItem.UserName}}</span> đăng ký tài khoản không?
+                </div>
+                <div class="modal-footer" style="padding-top: 12px; padding-bottom: 12px;">
+                    <a class="btn btn-xs btn-info b-radius-3" style="min-width: 80px" data-dismiss="modal"><i class="fa fa-times-circle"></i> Huỷ</a>
+                    <a class="btn btn-danger btn-xs btn-ok b-radius-3" style="min-width: 80px" ng-click="onApprove()"><i class="fa fa-check-square-o"></i> Xác nhận</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal từ chối*@
+    <div class="modal fade" id="closeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" style="width: 600px">
+            <div class="modal-content" style="border-radius: 6px; border: none; overflow: hidden">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        Từ chối công dân đăng ký tài khoản
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 24px 12px !important">
+                    Anh/chị có chắc chắn muốn từ chối công dân <span style="font-weight: 600">{{selectedItem.UserName}}</span> đăng ký tài khoản không?
+                    <form name="closeForm" novalidate style="margin-top: 16px">
+                        <div class="form-group">
+                            <label style="font-size: 13px">Ghi chú<span class="red"> *</span></label>
+                            <textarea name="Content" rows="2" maxlength="2000" style="border-radius: 4px !important; margin-top: 0 !important" placeholder="Nhập..." ng-model="formClose.Content" required></textarea>
+                            <span class="red" style="font-style: italic" ng-show="closeForm.Content.$touched && closeForm.Content.$invalid">Trường dữ liệu này không được để trống</span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="padding-top: 12px; padding-bottom: 12px;">
+                    <a class="btn btn-xs btn-info b-radius-3" style="min-width: 80px" data-dismiss="modal"><i class="fa fa-times-circle"></i> Huỷ</a>
+                    <a class="btn btn-danger btn-xs btn-ok b-radius-3" style="min-width: 80px" ng-click="OnClose()"><i class="fa fa-check-square-o"></i> Xác nhận</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: transparent; z-index: 30001; opacity: .8; filter: alpha(opacity=70); display: none">
+        <p style="position: absolute; top: 5%; left: 50%; color: #ff6a00; text-align: center">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-spin fa-fw margin-bottom"></i><br />
+            Vui lòng đợi...
+        </p>
+    </div>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    });
+    $('#DateOfBirth').datepicker();
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+</script>
+

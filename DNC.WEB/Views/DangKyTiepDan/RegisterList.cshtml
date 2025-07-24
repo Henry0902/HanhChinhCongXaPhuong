@@ -1,0 +1,553 @@
+﻿@{
+    ViewBag.Title = "Danh sách đăng ký tiếp dân";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<style>
+    .form-group {
+        margin-bottom: 5px;
+    }
+
+    .profile-info-value {
+        padding: 14px !important;
+    }
+
+    .note-container {
+        border: 1px solid #e5731b;
+        background-color: #fefaf5;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .note-header {
+        display: flex;
+        align-items: center;
+    }
+
+    .note-icon {
+        color: #e5731b;
+        font-weight: bold;
+        margin-right: 5px;
+    }
+
+    .note-text {
+        font-weight: bold;
+        color: #e5731b;
+    }
+
+    .note-description {
+        color: #e5731b;
+        font-weight: normal;
+    }
+
+    .update-btn {
+        background-color: #e5731b;
+        color: white;
+        padding: 6px 12px;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+        font-size: 14px;
+        border-radius: 4px;
+    }
+
+    .update-btn:hover {
+        background-color: #d56215;
+    }
+
+    tr > td {
+        vertical-align: middle !important;
+    }
+
+    td > p {
+        margin: 0 !important;
+    }
+
+    .status-common {
+        padding: 4px;
+        min-width: 120px;
+        border-radius: 4px
+    }
+
+    .status-dang-soan-thao {
+        background-color: #DBEAFE;
+        color: #3B82F6;
+    }
+
+    .status-cho-xu-ly {
+        background-color: #FFD6E7;
+        color: #EB2F96;
+    }
+
+    .status-dang-xu-ly {
+        background-color: #FFEDD5;
+        color: #EA580C;
+    }
+
+    .status-da-phan-hoi {
+        background-color: #B5F5EC;
+        color: #08979C;
+    }
+
+    .status-khong-tiep-nhan {
+        background-color: #F0F0F0;
+        color: #434343;
+    }
+
+    .status-cong-dan-huy {
+        background-color: #FECACA;
+        color: #DC2626;
+    }
+
+    .status-da-tiep-dan {
+        background-color: #DCFCE7;
+        color: #22C55E;
+    }
+
+    td > img {
+        cursor: pointer;
+    }
+
+    .b-radius-3 {
+        border-radius: 3px !important;
+    }
+
+    td > a:hover {
+        text-decoration: none;
+    }
+
+    .wrapper {
+        margin: auto;
+        background: white;
+        padding: 0 20px;
+        border-radius: 8px;
+    }
+
+    .logo {
+        height: 80px;
+    }
+
+    .title {
+        color: #007bff;
+    }
+
+    .form-group {
+        text-align: left;
+        margin-bottom: 15px;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .btn-custom:hover {
+        opacity: 0.8;
+    }
+
+    .btn-custom {
+        padding: 7px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-save {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-submit {
+        background-color: #28a745;
+        color: white;
+    }
+
+    select {
+        padding: 0 !important;
+        height: 32px !important;
+    }
+
+    .subtitle {
+        font-weight: bold;
+    }
+</style>
+
+<script src="~/ScriptController/RegisterListJs.js"></script>
+<div class="main-content-inner" ng-controller="RegisterListJs">
+    <div class="panel-default">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="/thong-tin-ca-nhan/chi-tiet">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="/thong-tin-ca-nhan/chi-tiet">Đăng ký tiếp dân</a>
+                </li>
+                <li class="active">Danh sách</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search">
+                    <a href="#" class="btn btn-success btn-xs tooltip-success b-radius-3" ng-show="userInfo.Status == 2" ng-click="showModalAdd()"><i class="fa fa-plus-circle"></i> Thêm mới</a>
+                </form>
+            </div>
+        </div>
+        <div class="page-header panel-body">
+            <div class="p-table ptdv-pding">
+                <div class="panel-body">
+                    <div class="col-md-12 col-xs-12 no-padding">
+                        <div class="col-md-2 Pding-div">
+                            <select class="form-control" id="ddlDepartment" ng-model="DepartmentId" ng-change="reload()" style="border-radius: 3px !important">
+                                <option value="-1" selected>--- Chọn đơn vị ---</option>
+                                <option ng-repeat="item in lstDepartments" value="{{item.Id}}">{{item.Name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <div class="input-group form-group-option date date-picker">
+                                <input id="RegisterDate" class=" form-control date-picker" style="border-radius: 3px !important" ng-change="reload()" ng-model="RegisterDate" type="text" placeholder="Chọn thời gian đăng ký">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-2 Pding-div">
+                            <select class="form-control" style="border-radius: 3px !important" id="ddlStatus" ng-model="Status" ng-change="reload()">
+                                <option value="-1" selected>--- Chọn trạng thái ---</option>
+                                <option ng-repeat="item in ListStatus" value="{{item.Code}}">{{item.Name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-5 Pding-div">
+                            <input type="text" id="Content" ng-model="Content" ng-change="onChange()" ng-keyup="onEnter($event)" style="border-radius: 3px !important" class="form-control" prevent-autofill trim-input placeholder="Tìm theo chủ đề" />
+                        </div>
+                        <div class="col-md-1 Pding-div text-right">
+                            <a ng-click="reload()" class="btn btn-xs btn-primary b-radius-3">
+                                <i class="fa fa-search">Tìm kiếm</i>
+                            </a>
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="p-table">
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover" border="1">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 48px">STT</th>
+                                <th class="text-center" style="width: 200px">Mã đăng ký</th>
+                                <th class="text-center">Chủ đề</th>
+                                <th class="text-center" style="width: 180px">Đơn vị</th>
+                                <th class="text-center" style="width: 140px">Thời gian đăng ký</th>
+                                <th class="text-center" style="width: 170px">Trạng thái</th>
+                                <th class="text-center" style="width: 140px">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in lstData">
+                                <td class="text-center">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                                <td class="text-left" style="font-weight: bold"> 
+                                    <a ng-href="/dang-ky-tiep-dan/chi-tiet/{{item.Id}}">{{item.MaDangKy}}</a> 
+                                </td>
+                                <td title="{{item.ChuDe}}"><span class="line-clamp-text-line">{{item.ChuDe}}</span></td>
+                                <td class="text-left"> {{item.TenDonVi}} </td>
+                                <td class="text-center">{{ item.ThoiGianHen ? item.ThoiGianHen : item.NgayDangKy}} <p style="color: #DC6803" ng-show="item.TrangThai == 3 && isExpired(item.ThoiGianHenTemp)">(Quá hạn)</p></td>
+                                <td class="text-center">
+                                    <p ng-class="getClassCss(item.TrangThai)">{{item.TrangThaiText}}</p>
+                                </td>
+                                <td class="text-center">
+                                    <div style="gap: 6px; display: flex; justify-content: center; align-items: center;">
+                                        <a ng-click="showModalEdit(item.Id)" ng-show="item.TrangThai == 0">
+                                            <img src="~/Content/assets/images/icon_edit.png" title="Sửa">
+                                        </a>
+                                        <a href="#" ng-show="item.TrangThai == 0" ng-click="openDeleteModal(item)">
+                                            <img src="~/Content/assets/images/icon_delete.png" title="Xóa">
+                                        </a>
+                                        <a href="#" ng-click="showModalSendRegister(item)" ng-show="item.TrangThai == 0">
+                                            <img src="~/Content/assets/images/icon_gui_dang_ky.png" title="Gửi đăng ký">
+                                        </a>
+                                        <a href="#" ng-click="showModalClose(item)" ng-show="[1,2,3].includes(item.TrangThai)">
+                                            <img src="~/Content/assets/images/icon_huy_dang_ky.png" title="Huỷ đăng ký">
+                                        </a>
+                                        <a href="#" ng-click="showModalResend(item)" ng-show="[4,5].includes(item.TrangThai)">
+                                            <img src="~/Content/assets/images/icon_resend.png" title="Đăng ký lại">
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="show-paging col-md-12 no-padding">
+                        <div class="paging">
+                            <span>Hiển thị</span>
+                            <select ng-model="pageSize" ng-change="reload()">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                            </select>
+                            <span> tổng số <span class="totalrecord">{{totalRecords}}</span> bản ghi</span>
+                        </div>
+                        <div class="pagination no-padding">
+                            <ul class="pagination pull-right" style="margin:0" ng-hide="pageCount==0">
+                                <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(1)"><a href="javascript:void(0)"><i class="fa fa-fast-backward"></i></a></li>
+                                <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(pageIndex-1)"><a href="javascript:void(0)"><i class="fa fa-backward"></i></a></li>
+                                <li ng-repeat="page in lstPage track by $index"><a href="javascript:void(0)" ng-click="selectPage(page)" ng-style="activepage(page)">{{page}}</a></li>
+                                <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageIndex+1)"><a href="javascript:void(0)"><i class="fa fa-forward"></i></a></li>
+                                <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageCount)"><a href="javascript:void(0)"><i class="fa fa-fast-forward"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal xoá*@
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" style="width: 500px">
+            <div class="modal-content" style="border-radius: 6px; border: none; overflow: hidden">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        Xoá đăng ký tiếp dân
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 24px 12px !important">
+                    Anh/chị có chắc chắn muốn xoá đăng ký tiếp dân tại đơn vị <span style="font-weight: 600">{{selectedItem.TenDonVi}}</span> vào ngày <span style="font-weight: 600">{{selectedItem.NgayDangKy}}</span> không?
+                </div>
+                <div class="modal-footer" style="padding-top: 12px; padding-bottom: 12px;">
+                    <a class="btn btn-xs btn-info b-radius-3" style="min-width: 80px" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</a>
+                    <a class="btn btn-danger btn-xs btn-ok b-radius-3" style="min-width: 80px" ng-click="remove(selectedItem.Id)"><i class="fa fa-check-square-o"></i> Có</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal gửi đăng ký*@
+    <div class="modal fade" id="sendRegisterModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" style="width: 500px">
+            <div class="modal-content" style="border-radius: 6px; border: none; overflow: hidden">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        Gửi đăng ký tiếp dân
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 24px 12px !important">
+                    Anh/chị có chắc chắn đăng ký tiếp dân tại đơn vị <span style="font-weight: 600">{{selectedItem.TenDonVi}}</span> vào ngày <span style="font-weight: 600">{{selectedItem.NgayDangKy}}</span> không?
+                </div>
+                <div class="modal-footer" style="padding-top: 12px; padding-bottom: 12px;">
+                    <a class="btn btn-xs btn-info b-radius-3" style="min-width: 80px" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</a>
+                    <a class="btn btn-danger btn-xs btn-ok b-radius-3" style="min-width: 80px" ng-click="sendRegister(selectedItem)"><i class="fa fa-check-square-o"></i> Có</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal huỷ đăng ký tiếp dân*@
+    <div class="modal fade" id="closeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" style="width: 600px">
+            <div class="modal-content" style="border-radius: 6px; border: none; overflow: hidden">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        Huỷ đăng ký tiếp dân
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 24px 12px !important">
+                    Anh/chị có chắc chắn muốn hủy đăng ký tiếp dân tại đơn vị <span style="font-weight: 600">{{selectedItem.TenDonVi}}</span> vào ngày <span style="font-weight: 600">{{selectedItem.NgayDangKy}}</span> không?
+                    <form name="closeForm" novalidate style="margin-top: 16px">
+                        <div class="form-group">
+                            <label style="font-size: 13px">Lý do<span class="red"> *</span></label>
+                            <textarea name="Content" rows="2" maxlength="2000" style="border-radius: 4px !important; margin-top: 0 !important" placeholder="Nhập..." ng-model="formClose.Content" required></textarea>
+                            <span class="red" style="font-style: italic" ng-show="closeForm.Content.$touched && closeForm.Content.$invalid">Trường dữ liệu này không được để trống</span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="padding-top: 12px; padding-bottom: 12px;">
+                    <a class="btn btn-xs btn-info b-radius-3" style="min-width: 80px" data-dismiss="modal"><i class="fa fa-times-circle"></i> Không</a>
+                    <a class="btn btn-danger btn-xs btn-ok b-radius-3" style="min-width: 80px" ng-click="CloseRegister()"><i class="fa fa-check-square-o"></i> Có</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Modal thêm mới *@
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" style="width: 800px">
+            <div class="modal-content" style="border-radius: 6px; border: none; overflow: hidden">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        <i class="ace-icon fa fa-plus bigger-100"></i> Thêm mới đăng ký tiếp dân
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 24px 12px !important">
+                    <div class="wrapper">
+                        <form name="registrationForm" novalidate>
+                            <div class="form-group">
+                                <label>Đơn vị tiếp nhận<span class="red"> *</span></label>
+                                <select name="IdDonViTiepDan" style="margin-bottom: 5px;" ng-model="formData.IdDonViTiepDan" required>
+                                    <option value="" disabled selected>--- Chọn ---</option>
+                                    <option ng-repeat="department in lstDepartments" value="{{department.Id}}">{{department.Name}}</option>
+                                </select>
+                                <span class="red" style="font-style: italic" ng-show="registrationForm.IdDonViTiepDan.$touched && registrationForm.IdDonViTiepDan.$invalid">Trường dữ liệu này không được để trống</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Thời gian đăng ký<span class="red"> *</span></label>
+                                <div class="input-group form-group-option date date-picker">
+                                    <input class="form-control date-picker" style="margin-top: 0 !important; border-radius: 3px !important" type="text" placeholder="Nhập..." required value="formData.NgayDangKy" id="NgayDangKy" name="NgayDangKy" ng-model="formData.NgayDangKy">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                                <span class="red" style="font-style: italic" ng-show="registrationForm.NgayDangKy.$touched && registrationForm.NgayDangKy.$invalid">Trường dữ liệu này không được để trống</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Nội dung<span class="red"> *</span></label>
+                                <textarea name="ChuDe" rows="4" maxlength="2000" style="border-radius: 4px !important" placeholder="Nhập..." ng-model="formData.ChuDe" required></textarea>
+                                <span class="red" style="font-style: italic" ng-show="registrationForm.ChuDe.$touched && registrationForm.ChuDe.$invalid">Trường dữ liệu này không được để trống</span>
+                            </div>
+                            <div class="form-group">
+                                <div style="display: flex; align-items: center; gap: 4px; cursor: pointer" ng-click="triggerFileInput()">
+                                    <img src="~/Content/assets/images/upload_file.png" title="Upload file"> <span>Tối đa 5 file (PDF, JPG, JPEG, DOC, DOCX, XCL) - Tối đa 20MB/file</span>
+                                </div>
+                                <input type="file" id="file" accept=".pdf,.jpg,.jpeg,.doc,.docx,.xcl" name="file" multiple onchange="angular.element(this).scope().validateFiles(this)" style="display: none;" />
+                                <ul style="list-style-type: none; margin: 0 !important">
+                                    <li ng-repeat="file in fileList track by $index" style="padding: 3px 0; ">
+                                        <span>📄</span> {{ file.name }} <span style="cursor: pointer; color: red;" ng-click="removeFile($index)"> ❌</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer" style="padding-top: 12px; padding-bottom: 12px;">
+                    <div class="button-group">
+                        <button ng-click="closeModalAdd()" type="button" class="btn-custom btn-cancel">Hủy</button>
+                        <div>
+                            <button type="button" class="btn-custom btn-save" ng-click="saveForm(0)">Lưu</button>
+                            <button type="button" class="btn-custom btn-submit" ng-click="saveForm(1)">Đăng ký →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Modal cập nhật *@
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" style="width: 800px">
+            <div class="modal-content" style="border-radius: 6px; border: none; overflow: hidden">
+                <div class="modal-header ">
+                    <button type="button" class="close btn-close-modal" id="closech" data-dismiss="modal" tabindex="8">&times;</button>
+                    <h4 class="modal-title">
+                        <i class="ace-icon fa fa-pencil-square-o bigger-100"></i> Chỉnh sửa đăng ký tiếp dân
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 24px 12px !important">
+                    <div class="wrapper">
+                        <form name="registrationForm" novalidate>
+                            <div class="form-group">
+                                <label>Đơn vị tiếp nhận<span class="red"> *</span></label>
+                                <select name="IdDonViTiepDan" style="margin-bottom: 5px;" ng-model="formData.IdDonViTiepDan" required>
+                                    <option value="" disabled selected>--- Chọn ---</option>
+                                    <option ng-repeat="department in lstDepartments" value="{{department.Id}}">{{department.Name}}</option>
+                                </select>
+                                <span class="red" style="font-style: italic" ng-show="registrationForm.IdDonViTiepDan.$touched && registrationForm.IdDonViTiepDan.$invalid">Trường dữ liệu này không được để trống</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Thời gian đăng ký<span class="red"> *</span></label>
+                                <div class="input-group form-group-option date date-picker">
+                                    <input class="form-control date-picker" style="margin-top: 0 !important; border-radius: 3px !important" type="text" placeholder="Nhập..." required value="formData.NgayDangKy" id="NgayDangKy" name="NgayDangKy" ng-model="formData.NgayDangKy">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                                <span class="red" style="font-style: italic" ng-show="registrationForm.NgayDangKy.$touched && registrationForm.NgayDangKy.$invalid">Trường dữ liệu này không được để trống</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Nội dung<span class="red"> *</span></label>
+                                <textarea name="ChuDe" rows="4" maxlength="2000" style="border-radius: 4px !important" placeholder="Nhập..." ng-model="formData.ChuDe" required></textarea>
+                                <span class="red" style="font-style: italic" ng-show="registrationForm.ChuDe.$touched && registrationForm.ChuDe.$invalid">Trường dữ liệu này không được để trống</span>
+                            </div>
+                            <div class="form-group">
+                                <div style="display: flex; align-items: center; gap: 4px; cursor: pointer" ng-click="triggerFileInput()">
+                                    <img src="~/Content/assets/images/upload_file.png" title="Upload file"> <span>Tối đa 5 file (PDF, JPG, JPEG, DOC, DOCX, XCL) - Tối đa 20MB/file</span>
+                                </div>
+                                <input type="file" id="file" accept=".pdf,.jpg,.jpeg,.doc,.docx,.xcl" name="file" multiple onchange="angular.element(this).scope().validateFiles(this)" style="display: none;" />
+                                <ul style="list-style-type: none; margin: 0 !important">
+                                    <li ng-repeat="file in fileList track by $index" style="padding: 3px 0; ">
+                                        <span>📄</span> {{ file.name }} <span style="cursor: pointer; color: red;" ng-click="removeFile($index)"> ❌</span>
+                                    </li>
+                                </ul>
+                                <ul style="list-style-type: none; margin: 0 !important">
+                                    <li ng-repeat="file in formData.ListFile track by $index" style="padding: 3px 0; ">
+                                        <span>📄</span> {{ file.TenTep }} <span style="cursor: pointer; color: red;" ng-click="removeFileUpdate($index)"> ❌</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer" style="padding-top: 12px; padding-bottom: 12px;">
+                    <div class="button-group">
+                        <button ng-click="closeModalAdd()" type="button" class="btn-custom btn-cancel">Hủy</button>
+                        <div>
+                            <button type="button" class="btn-custom btn-save" ng-click="saveFormUpdate(0)">Lưu</button>
+                            <button type="button" class="btn-custom btn-submit" ng-click="saveFormUpdate(1)">Đăng ký →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: transparent; z-index: 30001; opacity: .8; filter: alpha(opacity=70); display: none">
+        <p style="position: absolute; top: 5%; left: 50%; color: #ff6a00; text-align: center">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-spin fa-fw margin-bottom"></i><br />
+            Vui lòng đợi...
+        </p>
+    </div>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+    let today = new Date();
+    $('.date-picker').datepicker({
+        format: 'dd/mm/yyyy',
+        startDate: today, // Không cho chọn ngày nhỏ hơn hôm nay
+        autoclose: true,
+        todayHighlight: true
+    }).on('changeDate', function (e) {
+    });
+
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+</script>
+

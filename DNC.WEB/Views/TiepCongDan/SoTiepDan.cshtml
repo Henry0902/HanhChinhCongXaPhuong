@@ -1,0 +1,699 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .form-group {
+        margin-bottom: 5px;
+    }
+
+    .modal .form-control {
+        border: 1px solid white;
+    }
+</style>
+
+<script src="~/ScriptController/SoTiepDanJs.js"></script>
+<div class="main-content-inner" ng-controller="SoTiepDanJs">
+    <div class="panel-default">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <a href="../Home/Index">Trang chủ</a>
+                </li>
+                <li><a>Tiếp công dân</a></li>
+                <li class="active">Sổ tiếp công dân</li>
+            </ul>
+            <div class="nav-search" id="nav-search">
+                <form class="form-search">
+
+                </form>
+            </div>
+        </div>
+        <div class="page-header panel-body">
+            <div class="p-table ptdv-pding">
+                <div class="panel-body">
+                    <div class="col-sm-12">
+                        <div class="col-sm-4">
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <div class="col-sm-6 control-label no-padding-right bolder"> Kiểu tiếp công dân<b class="red">(*)</b>: </div>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" ng-model="KieuTiepDan" ng-change="reload()">
+                                            <option value="-1">--- Chọn kiểu tiếp ---</option>
+                                            <option value="0">Tiếp công dân không đơn</option>
+                                            <option value="1">Tiếp công dân có đơn</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <div class="col-sm-3 control-label no-padding-right bolder"> Phiên tiếp công dân<b class="red">(*)</b>: </div>
+                                    <div class="col-sm-9">
+                                        <select class="form-control" id="ddlPhienTCD" ng-model="IdPhienTCD" ng-change="reload()">
+                                            <option value="-1">--- Chọn phiên tiếp công dân ---</option>
+                                            <option ng-repeat="item in lstPhienTCD" value="{{item.Id}}">{{item.TenPhienTCD}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="col-sm-4">
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <div class="col-sm-6 control-label no-padding-right bolder"> Người nộp hồ sơ<b class="red">(*)</b>: </div>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" id="ddlLoaiDoiTuong" ng-model="IdDoiTuong" ng-change="reload()">
+                                            <option value="-1">--- Chọn loại đối tượng ---</option>
+                                            <option ng-repeat="item in lstLoaiDoiTuong" value="{{item.id}}">{{item.TenDoiTuong}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <div class="col-sm-3 control-label no-padding-right bolder"> Thông tin chủ đơn<b class="red">(*)</b>: </div>
+                                    <div class="col-sm-9">
+                                        <input type="text" id="txtDiaChi" class="form-control" ng-model="KeyWord" placeholder="Họ tên, CMTND/Thẻ căn cước công dân, Địa chỉ chi tiết ...">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="col-sm-4">
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <div class="col-sm-6 control-label no-padding-right bolder"> Tỉnh thành<b class="red">(*)</b>: </div>
+                                    <div class="col-sm-6">
+                                        <select style="padding: 0px; border: 0px" ui-select2 class="form-control" id="ddlTinhThanh" ng-model="IdTinhThanh" ng-change="getlstQuanHuyen(IdTinhThanh)">
+                                            <option value="-1">--- Chọn Tỉnh Thành---</option>
+                                            <option ng-repeat="item in lstTinhThanh" value="{{item.Id}}">{{item.Name}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <div class="col-sm-6 control-label no-padding-right bolder"> Quận huyện<b class="red">(*)</b>:</div>
+                                    <div class="col-sm-6">
+                                        <select style="padding: 0px; border: 0px" ui-select2 class="form-control" id="ddlQuanHuyen" ng-model="IdQuanHuyen" ng-change="getlstPhuongXa(IdQuanHuyen)">
+                                            <option value="-1">--- Chọn quận huyện---</option>
+                                            <option ng-repeat="item in lstQuanHuyen" value="{{item.id}}">{{item.TenQuanHuyen}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <div class="col-sm-6 control-label no-padding-right bolder"> Xã phường<b class="red">(*)</b>: </div>
+                                    <div class="col-sm-6">
+                                        <select style="padding: 0px; border: 0px" ui-select2 class="form-control" id="ddlPhuongXa" ng-model="IdPhuongXa">
+                                            <option value="-1">--- Chọn xã phường ---</option>
+                                            <option ng-repeat="item in lstPhuongXa" value="{{item.id}}">{{item.TenPhuongXa}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="col-sm-4">
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <div class="col-sm-6 control-label no-padding-right bolder"> Loại vụ việc<b class="red">(*)</b>: </div>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" id="ddlLoaiDonThu" ng-model="IdLoaiVu" ng-change="getlstLoaiKNTC(IdLoaiVu)">
+                                            <option value="-1">--- Chọn loại vụ ---</option>
+                                            <option ng-repeat="item in lstLoaiDonThu" value="{{item.Id}}">{{item.TenLoaiDonThu}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <div class="col-sm-6 control-label no-padding-right bolder"> Lĩnh vực<b class="red">(*)</b>:</div>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" id="ddlLoaiKNTC" ng-model="IdLoaiVuKNTC" ng-change="getlstLoaiKNTCChiTiet(IdLoaiVuKNTC)">
+                                            <option value="-1">--- Chọn loại khiếu nại tố cáo ---</option>
+                                            <option ng-repeat="item in lstLoaiKNTC" value="{{item.Id}}">{{item.TenLoaiKNTC}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <div class="col-sm-6 control-label no-padding-right bolder"> Loại hồ sơ<b class="red">(*)</b>: </div>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" id="ddlLoaiKNTCChiTiet" ng-model="IdLoaiVuKNTCChiTiet">
+                                            <option value="-1">--- Chọn loại khiếu nại tố cáo chi tiết---</option>
+                                            <option ng-repeat="item in lstLoaiKNTCChiTiet" value="{{item.id}}">{{item.TenLoaiKNTCChiTiet}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="col-sm-12">
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <div class="col-sm-2 control-label no-padding-right bolder"> Nội dung vụ việc<b class="red">(*)</b>: </div>
+                                    <div class="col-sm-10">
+                                        <input type="text" id="txtNoiDung" ng-model="NoiDung" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="col-sm-8">
+                            <div class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <div class="col-sm-3 control-label no-padding-right bolder"> Ngày tiếp công dân<b class="red">(*)</b>:</div>
+                                    <div class="col-sm-9">
+                                        <div class="input-group form-group-option date date-picker" style="width:45%; float:left">
+                                            <input id="TuNgay" class=" form-control date-picker" ng-model="TuNgay" type="text" placeholder="Từ ngày:">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                        <span style=" height:34px; padding: auto; float:left">&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;</span>
+
+                                        <div class="input-group form-group-option date date-picker" style="width:45%">
+                                            <input id="DenNgay" class="form-control date-picker" size=" 16" ng-model="DenNgay" type="text" placeholder="Đến ngày:" />
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <a ng-click="reload()" class="btn btn-xs btn-primary">
+                                <i class="fa fa-search">Tra cứu</i>
+                            </a>
+                            <a class=" btn btn-success btn-xs tooltip-success pull-right" data-toggle="modal" data-target="#myModal" data-placement="top" ng-click="Export_SoTiepCongDan()" ng-if="checkFunctionRoles('2')"><i class="fa fa-print"></i> In sổ tiếp dân</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="p-table">
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover" border="1">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 3%">STT</th>
+                                @*<th class="text-center" style="width: 3%">MÃ ĐƠN</th>*@
+                                <th class="text-center" style="width: 8%">Ngày tiếp</th>
+                                <th class="text-center" style="width: 15%">Phiên tiếp công dân / Kiểu tiếp CD</th>                                
+                                <th class="text-center" style="width: 10%">Loại đối tượng / Số người</th>
+                                <th class="text-center" style="width: 20%">Tên chủ đơn / Địa chỉ</th>
+                                <th class="text-center">Nội dung vụ việc</th>
+                                <th class="text-center" style="width: 20%">Kết quả tiếp</th>
+                                <th class="text-center" style="width: 5%">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in lstTiepDan">
+                                <td class="text-center">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                                @*<td class="text-center">{{item.Id}}</td>*@
+                                <td class="text-center">
+                                    {{ item.NgayTiep | date:"dd/MM/yyyy" }}
+                                    <span ng-if="item.IdLuotTiep==0" class="label label-sm label-success">Lượt tiếp mới</span>
+                                    <span ng-if="item.IdLuotTiep==1" class="label label-sm label-warning">Chung lượt tiếp</span>
+                                </td>
+                                <td>
+                                    {{item.TenPhienTCD}}
+                                    <span ng-if="item.IdUyQuyen==0" class="blue"> (Thủ trưởng tiếp)</span>
+                                    <span ng-if="item.IdUyQuyen==1" class="orange"> (Ủy quyền tiếp)</span>
+                                    <hr style="width: 100%; margin: 5px 0; border-color: #b7b7b7; border-bottom: none; ">
+                                    <span ng-if="item.KieuTiepDan==0"> Tiếp không đơn</span>
+                                    <span ng-if="item.KieuTiepDan==1"> Tiếp có đơn</span>
+                                </td>                                
+                                <td class="text-center">{{item.TenDoiTuong}} <hr style="width: 100%; margin: 5px 0; border-color: #b7b7b7; border-bottom: none; "> {{item.SoNguoi}}</td>
+                                <td>
+                                    <b class="blue"><a href="" data-toggle="modal" data-target="#myModalXem" ng-click="show(item.Id);">{{item.HoTen}}</a> </b>
+                                    <hr style="width: 100%; margin: 5px 0; border-color: #b7b7b7; border-bottom: none; "> 
+                                    {{item.DiaChi}}, {{item.TenPhuongXa}}, {{item.TenQuanHuyen}}, {{item.TenTinhThanh}}
+                                </td>
+                                <td>{{item.NoiDungTiepDan}}</td>
+                                <td>{{item.KetQuaTiepDan}}</td>
+                                <td class="text-center">
+                                    <span class="text-center control-btn action-buttons">
+                                        <a class="blue" ng-if="item.KieuTiepDan == 0" ng-click="update(item.Id);" id="{{item.Id}}" ng-if="checkFunctionRoles('1')" data-placement="top" title="Sửa">
+                                            <i class="ace-icon fa fa-pencil bigger-150"></i>
+                                        </a>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="show-paging col-md-12 no-padding">
+                        <div class="paging">
+                            <span>Hiển thị</span>
+                            <select ng-model="pageSize" ng-change="reload()">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                            </select>
+                            <span> tổng số <span class="totalrecord">{{totalRecords}}</span> bản ghi</span>
+                        </div>
+                        <div class="pagination no-padding">
+                            <ul class="pagination pull-right" style="margin:0" ng-hide="pageCount==0">
+                                <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(1)"><a href="javascript:void(0)"><i class="fa fa-fast-backward"></i></a></li>
+                                <li ng-class="isDisable(pageIndex,1)" ng-click="selectPage(pageIndex-1)"><a href="javascript:void(0)"><i class="fa fa-backward"></i></a></li>
+                                <li ng-repeat="page in lstPage track by $index"><a href="javascript:void(0)" ng-click="selectPage(page)" ng-style="activepage(page)">{{page}}</a></li>
+                                <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageIndex+1)"><a href="javascript:void(0)"><i class="fa fa-forward"></i></a></li>
+                                <li ng-class="isDisable(pageIndex,pageCount)" ng-click="selectPage(pageCount)"><a href="javascript:void(0)"><i class="fa fa-fast-forward"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>                  
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: transparent; z-index: 30001; opacity: .8; filter: alpha(opacity=70); display: none">
+        <p style="position: absolute; top: 5%; left: 50%; color: #ff6a00; text-align: center">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-spin fa-fw margin-bottom"></i><br />
+            Vui lòng đợi...
+        </p>
+    </div>
+    @*Modal Xem*@
+    <div id="myModalXem" class="modal fade" role="dialog" tabindex="-1">
+        <input type="text" id="crud" style="display:none;" />
+        <div class="modal-dialog modal-style" style="width:95%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close-modal" data-dismiss="modal" tabindex="7">&times;</button>
+                    <h4 class="modal-title" ng-show="TiepDan.Id != null"><i class="ace-icon fa fa-eye"> </i> Thông tin tiếp công dân: <span class="style_cole">{{TiepDan.HoTen}}</span></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs" id="myTab">
+                            <li id="TabThongTin" class="active">
+                                <a data-toggle="tab" href="#ThongTinTiepDan" aria-expanded="true">
+                                    <i class="orange2 ace-icon fa fa-info bigger-120"></i>
+                                    Thông tin tiếp dân - hồ sơ
+                                </a>
+                            </li>
+
+                            <li id="TabXuLy"  class="" ng-if="TiepDan.KieuTiepDan == 1">
+                                <a data-toggle="tab" href="#XuLyDonThu" aria-expanded="false">
+                                    <i class="green ace-icon fa fa-tasks bigger-120"></i>
+                                    Quá trình xử lý hồ sơ
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div id="ThongTinTiepDan" class="tab-pane fade active in">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group ">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Số thứ tự tiếp công dân: </div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{TiepDan.Id}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Ngày tiếp công dân:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{TiepDan.NgayTiep}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> kiểu tiếp công dân:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control" ng-if="TiepDan.KieuTiepDan == 0">Tiếp không đơn</span>
+                                                    <span class="form-control" ng-if="TiepDan.KieuTiepDan == 1">Tiếp có đơn</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-3 control-label no-padding-right bolder"> Phiên tiếp công dân:</div>
+                                                <div class="col-sm-9">
+                                                    <span class="form-control">{{TiepDan.TenPhienTCD}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="clear: both"></div>
+                                <div class="hr1 dotted"></div>
+                                @*<div class="page-header">*@
+                                <h5 class="col-sm-12">
+                                    <b> Thông tin người nộp hồ sơ</b>
+                                </h5>
+                                @*</div>*@
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Người nộp hồ sơ: </div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{TiepDan.TenDoiTuong}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Số người: </div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{TiepDan.SoNguoi}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-8">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-3 control-label no-padding-right bolder"> Họ và tên:</div>
+                                                <div class="col-sm-9">
+                                                    <span class="form-control">{{TiepDan.HoTen}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Giới tính:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control" ng-show="TiepDan.GioiTinh == 0">Nam</span>
+                                                    <span class="form-control" ng-show="TiepDan.GioiTinh == 1">Nữ</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> CMTND / Thẻ CCCD:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{TiepDan.SoGiayTo}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Ngày cấp:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{TiepDan.NgayCap}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Nơi cấp:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{TiepDan.NoiCap}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-12">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-2 control-label no-padding-right bolder"> Địa chỉ:</div>
+                                                <div class="col-sm-10">
+                                                    <span class="form-control">{{TiepDan.DiaChi}}, {{TiepDan.TenPhuongXa}}, {{TiepDan.TenQuanHuyen}}, {{TiepDan.TenTinhThanh}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Quốc tịch:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{TiepDan.TenQuocTich}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Dân tộc: </div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{TiepDan.TenDanToc}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Loại vụ: </div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{TiepDan.TenLoaiDonThu}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Lĩnh vực:</div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{TiepDan.TenLoaiKNTC}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 control-label no-padding-right bolder"> Loại hồ sơ : </div>
+                                                <div class="col-sm-6">
+                                                    <span class="form-control">{{TiepDan.TenLoaiKNTCChiTiet}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12" ng-if="TiepDan.KieuTiepDan == 0">
+                                    <div class="col-sm-12">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-2 control-label no-padding-right bolder"> Nội dung tiếp:  </div>
+                                                <div class="col-sm-10">
+                                                    <span class="form-control">{{TiepDan.NoiDungTiepDan}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12" ng-if="TiepDan.KieuTiepDan == 0">
+                                    <div class="col-sm-12">
+                                        <div class="form-horizontal" role="form">
+                                            <div class="form-group">
+                                                <div class="col-sm-2 control-label no-padding-right bolder"> Kết quả tiếp: </div>
+                                                <div class="col-sm-10">
+                                                    <span class="form-control">{{TiepDan.KetQuaTiepDan}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="clear: both"></div>
+                                <div class="hr1 dotted"></div>
+                                <div ng-if="TiepDan.KieuTiepDan == 1">
+                                    <h5 class="col-sm-12">
+                                        <b> Thông tin hồ sơ</b>
+                                    </h5>                                    
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-12">
+                                            <div class="form-horizontal" role="form">
+                                                <div class="form-group">
+                                                    <div class="col-sm-2 control-label no-padding-right bolder"> Nội dung hồ sơ: </div>
+                                                    <div class="col-sm-10">
+                                                        <span class="form-control">{{TiepDan.NoiDungDonThu}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-12">
+                                            <div class="form-horizontal" role="form">
+                                                <div class="form-group">
+                                                    <div class="col-sm-2 control-label no-padding-right bolder"> Hồ sơ đính kèm: </div>
+                                                    <div class="col-sm-10">
+                                                        <div class="dropdown" ng-repeat="sf in TiepDan.FileUpload" style="padding-right: 5px;">
+                                                            <img src="{{sf.icon}}" style="width: 20px; height: 20px; cursor: pointer; margin-bottom: 5px;" data-toggle="dropdown">&nbsp;{{sf.file_original}}
+                                                            <ul class="dropdown-menu">
+                                                                <li><a href="javascript:void(0)" data-toggle="modal" data-target="#ModalToViewFile" id="{{sf.file_id}}" ng-click="viewFileByDocId(sf.file_extension,sf.file_url,sf.file_original);">Xem tài liệu</a></li>
+                                                                <li><a href="{{sf.file_url}}">Tải tài liệu</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="XuLyDonThu" class="tab-pane fade">
+                                <h5 class="col-sm-12">
+                                    <b> Thông tin xử lý hồ sơ</b>
+                                </h5>
+                                <div class="col-sm-12">
+                                    <div class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <div class="col-sm-2 control-label no-padding-right bolder"> Trạng thái hồ sơ: </div>
+                                            <div class="col-sm-10">
+                                                <span class="form-control">{{TiepDan.TenTrangThai}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <div class="col-sm-2 control-label no-padding-right bolder"> Hướng xử lý hồ sơ: </div>
+                                            <div class="col-sm-10">
+                                                <span class="form-control">{{TiepDan.TenHuongXuLy}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="clear: both"></div>
+                                <div class="hr1 dotted"></div>
+                                <h5 class="col-sm-12">
+                                    <b> Thông tin quá trình xử lý </b>
+                                </h5>
+                                <table class="table table-bordered table-hover" border="1">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center" style="width: 3%">STT</th>
+                                            <th class="text-center" style="width: 15%">Tên bước thực hiện</th>
+                                            <th class="text-center" style="width: 20%">Đơn vị / Người thực hiện </th>
+                                            <th class="text-center">Ý kiến xử lý / Nội dung thụ lý giải quyết</th>
+                                            <th class="text-center" style="width: 15%">File đính kèm</th>
+                                            <th class="text-center" style="width: 10%">Ngày thực hiện</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in lstXuLyDonThu">
+                                            <td class="text-center">{{$index+1+(pageSize*(pageIndex-1))}}</td>
+                                            <td >{{item.TenTrangThai}}</td>
+                                            <td>{{item.TenDonVi}} / {{item.TenNguoiTao}}</td>
+                                            <td>{{item.NoiDung}}</td>
+                                            <td>
+                                                <div class="dropdown" ng-repeat="sf in item.FileUpload" style="padding-right: 5px;">
+                                                    <img src="{{sf.icon}}" style="width: 20px; height: 20px; cursor: pointer; margin-bottom: 5px;" data-toggle="dropdown">&nbsp;{{sf.file_original}}
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="javascript:void(0)" data-toggle="modal" data-target="#ModalToViewFile" id="{{sf.file_id}}" ng-click="viewFileByDocId(sf.file_extension,sf.file_url,sf.file_original);">Xem tài liệu</a></li>
+                                                        <li><a href="{{sf.file_url}}">Tải tài liệu</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">{{ item.NgayTao | date:"HH:mm dd/MM/yyyy" }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>                   
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-xs btn-danger" data-dismiss="modal" tabindex="6"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;Đóng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Modal View File*@
+    <div class="modal fade" id="ModalToViewFile" role="dialog">
+        <div class="modal-dialog modal-lg modal-style" style="width:98%">
+            <div class="modal-content">
+                <div class="modal-header" style="border-bottom:none;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"> Xem nội dung file: {{FileView.file_original}}</h4>
+                </div>
+                <div class="modal-body" style="max-height: calc(100vh - 50px);">
+                    <div class="col-md-12 no-padding">
+                        <iframe id="IframeViewFile" style="width: 100%; height: 500px; background-color: gray;" src=" "></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <iframe id="BC_SoTiepCongDan" style="display: none;"></iframe>
+</div>
+<script src="~/Content/assets/js/bootstrap-datepicker.min.js"></script>
+<script src="~/Content/assets/js/bootstrap-timepicker.min.js"></script>
+<link href="~/Content/assets/css/datepicker.min.css" rel="stylesheet" />
+<script>
+    $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd/mm/yyyy"
+    });
+    $('#DateOfBirth').datepicker();
+    $(function () {
+        $('#Mobile').on('keydown', function (e) {
+            -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode)
+                && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode
+                && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode)
+                && e.preventDefault();
+        });
+    });
+</script>
+
