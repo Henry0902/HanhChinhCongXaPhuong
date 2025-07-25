@@ -10,14 +10,20 @@ myApp.controller("TiepCongDanJs",
         $scope.TiepDan.IdPhienTCD = -1;
         $scope.TiepDan.IdDoiTuong = 1; // Mạc định là cá nhân
         $scope.TiepDan.GioiTinh = 0;
-        $scope.TiepDan.IdTinhThanh = 60; // Mạc định là Bắc Ninh
+        $scope.TiepDan.IdTinhThanh = 16; // Mạc định là Bắc Ninh
         $scope.TiepDan.IdQuanHuyen = -1;
         $scope.TiepDan.IdPhuongXa = -1;
         $scope.TiepDan.IdQuocTich = 1; // Mạc định là Việt Nam
         $scope.TiepDan.IdDanToc = 1; // Mạc định là Kinh
         $scope.TiepDan.IdNguonDonThu = -1;
+       
+      
 
-        $scope.TiepDan.IdLoaiVu = -1;
+        $scope.IdDonVi = $cookieStore.get("DeparmentId");
+        $scope.TiepDan.IdLoaiVu = $scope.IdDonVi;
+
+        //$scope.TiepDan.IdLoaiVu = $scope.IdDonVi;
+        
         $scope.TiepDan.IdLoaiVuKNTC = -1;
         $scope.TiepDan.IdLoaiVuKNTCChiTiet = -1;
         //$scope.TiepDan.LanGiaiQuyet = 0;
@@ -36,9 +42,11 @@ myApp.controller("TiepCongDanJs",
         $scope.HoTenSearch = '';
         $scope.NoiDungSearch = '';
         $scope.CMTNDSearch = '';
-        $scope.IdTinhThanhSearch = -1; // Mạc định là Bắc Ninh
+        $scope.IdTinhThanhSearch = 16; // Mạc định là Bắc Ninh
         $scope.IdQuanHuyenSearch = -1;
         $scope.IdPhuongXaSearch = -1;
+    
+        
 
         $scope.today = new Date();       
         $scope.lstPage = [];
@@ -619,9 +627,13 @@ myApp.controller("TiepCongDanJs",
                        getlstDanToc();                       
                        
                        getlstLoaiDonThu();
-                       getlstLoaiKNTCCookie($scope.TiepDan.IdLoaiVu);
-                       //getlstLoaiKNTCByNguonDonThuCookie($scope.TiepDan.IdNguonDonThu);
-                       getlstLoaiKNTCChiTietCookie($scope.TiepDan.IdLoaiVuKNTC);
+
+                       
+                       $scope.getlstLoaiKNTC($scope.TiepDan.IdLoaiVu);
+
+                       //getlstLoaiKNTCCookie($scope.TiepDan.IdLoaiVu);
+                       ////getlstLoaiKNTCByNguonDonThuCookie($scope.TiepDan.IdNguonDonThu);
+                       //getlstLoaiKNTCChiTietCookie($scope.TiepDan.IdLoaiVuKNTC);
                        
 
                        //if (data.KieuTiepDan == 1) {
@@ -655,6 +667,10 @@ myApp.controller("TiepCongDanJs",
                 getlstQuocTich();
                 getlstDanToc();
                 getlstLoaiDonThu();
+                // --- Bổ sung logic theo yêu cầu ---
+                $scope.TiepDan.IdLoaiVu = $scope.IdDonVi;
+                $scope.getlstLoaiKNTC($scope.TiepDan.IdLoaiVu);
+                // --- End bổ sung ---
                 $("#divLoading").hide();
             }
         }
@@ -687,12 +703,13 @@ myApp.controller("TiepCongDanJs",
             $scope.TiepDan.IdPhienTCD = -1;
             $scope.TiepDan.IdDoiTuong = 1;
             $scope.TiepDan.GioiTinh = 0;
-            $scope.TiepDan.IdTinhThanh = 60;
+            $scope.TiepDan.IdTinhThanh = 16;
             $scope.TiepDan.IdQuanHuyen = -1;
             $scope.TiepDan.IdPhuongXa = -1;
             $scope.TiepDan.IdQuocTich = 1;
             $scope.TiepDan.IdDanToc = 1;
-            $scope.TiepDan.IdLoaiVu = -1;
+            $scope.TiepDan.IdLoaiVu = $scope.TiepDan.DepartmentId;
+           
             $scope.TiepDan.IdLoaiVuKNTC = -1;
             $scope.TiepDan.IdLoaiVuKNTCChiTiet = -1;
             //$scope.TiepDan.LanGiaiQuyet = 0;
