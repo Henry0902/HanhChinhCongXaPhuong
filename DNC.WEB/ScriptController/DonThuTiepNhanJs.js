@@ -233,6 +233,16 @@ myApp.controller("DonThuTiepNhanJs",
             $scope.HuongXuLy.IdDonViTiepNhan = -1;
             $scope.HuongXuLy.NgayThoiHanThuLy = '';
             $scope.fileList = [];
+            
+            // Đảm bảo rằng khi người dùng chọn hướng xử lý = 1 hoặc 3, cơ quan xác minh sẽ được set tự động
+            $scope.$watch('HuongXuLy.IdHuongXuLy', function (newVal, oldVal) {
+                if (newVal == 1 && oldVal != 1) {
+                    $scope.HuongXuLy.IdDonViXacMinh = $cookieStore.get("DeparmentId");
+                }
+                if (newVal == 3 && oldVal != 3) {
+                    $scope.HuongXuLy.IdDonViTiepNhan = $cookieStore.get("DeparmentId");
+                }
+            });
         }
 
         // Hiển thị thông tin modal Insert Update
@@ -394,8 +404,20 @@ myApp.controller("DonThuTiepNhanJs",
 
         $scope.ChangeHuongXuLy = function () {
             $scope.HuongXuLy.NoiDung = "Hướng xử lý: " + $("#ddlHuongXuLy option:selected").text();
+            
+            // Reset các giá trị
             $scope.HuongXuLy.IdDonViXacMinh = -1;
             $scope.HuongXuLy.IdDonViTiepNhan = -1;
+            
+            // Nếu chọn hướng xử lý = 1 (xác minh), tự động set cơ quan xác minh là đơn vị hiện tại của người dùng
+            if ($scope.HuongXuLy.IdHuongXuLy == 1) {
+                $scope.HuongXuLy.IdDonViXacMinh = $cookieStore.get("DeparmentId");
+            }
+            
+            // Nếu chọn hướng xử lý = 3, tự động set cơ quan xác minh là đơn vị hiện tại của người dùng
+            if ($scope.HuongXuLy.IdHuongXuLy == 3) {
+                $scope.HuongXuLy.IdDonViTiepNhan = $cookieStore.get("DeparmentId");
+            }
         }
 
         // Thực hiện lưu trên modal Insert Update
@@ -411,13 +433,13 @@ myApp.controller("DonThuTiepNhanJs",
                 return false;
             }
 
-            if (data.IdHuongXuLy == 1  && data.IdDonViXacMinh == -1) {
+            if ((data.IdHuongXuLy == 1 || data.IdHuongXuLy == 3) && data.IdDonViXacMinh == -1) {
                 $("#s2id_ddlCoQuanXacMinh").notify("Chọn cơ quan được giao nhiệm vụ xác minh", "error");
                 $("#s2id_ddlCoQuanXacMinh").focus();
                 return false;
             }
 
-            if ((data.IdHuongXuLy == 2 || data.IdHuongXuLy == 3) && data.IdDonViTiepNhan == -1) {
+            if (data.IdHuongXuLy == 2 && data.IdDonViTiepNhan == -1) {
                 $("#s2id_ddlCoQuanTiepNhan").notify("Chọn cơ quan tiếp nhận", "error");
                 $("#s2id_ddlCoQuanTiepNhan").focus();
                 return false;
@@ -472,7 +494,7 @@ myApp.controller("DonThuTiepNhanJs",
             $scope.XuLyDonThu.NoiDung = data.NoiDung;
             $scope.XuLyDonThu.VuViecId = $scope.DonThu.VuViecId;
             $scope.XuLyDonThu.IdDonThuGoc = $scope.DonThu.IdDonThuGoc;
-            if (data.IdHuongXuLy == 2) {
+            if (data.IdHuongXuLy == 2 || data.IdHuongXuLy == 3) {
                 $scope.XuLyDonThu.IdDonViTiepNhan = $scope.DonThu.IdDonViTiepNhan;
             }
             
