@@ -10,7 +10,7 @@ myApp.controller("DonThuTiepNhanJs",
         $scope.Keyword = '';
         $scope.DeparmentId = $cookieStore.get("DeparmentId");
 
-        
+       
 
         $scope.lstDonThu = [];
 
@@ -37,7 +37,22 @@ myApp.controller("DonThuTiepNhanJs",
 
         //-------------------------------------------------------------------------------
 
-        
+        //$scope.IsCanBoTiepNhan = false;
+        //// Lấy ra tên vai trò của user
+        //$scope.TenVaiTro = "";
+        //var getTenVaiTro = function (UserId) {
+        //    if (!UserId) {
+        //        $scope.TenCanBoTiepNhan = "";
+        //        return;
+        //    }
+        //    crudService.getAll("/Users/GetTenVaiTroById?id=" + UserId)
+        //        .success(function (data) {
+
+        //            $scope.TenVaiTro = data.Name || "";
+
+        //        });
+        //};
+        //getTenVaiTro();
 
         // Convert datetime
         var parseDate = function (value) {
@@ -88,7 +103,6 @@ myApp.controller("DonThuTiepNhanJs",
         getAllDepartment();
 
         //lấy danh Cán bộ xử lý
-        
         var GetAllByRole = function () {
             // Sử dụng method mới để lấy chỉ cán bộ xử lý
             crudService.getAll("/Roles/GetRoleIdByName?roleName=cán bộ xử lý")
@@ -163,11 +177,6 @@ myApp.controller("DonThuTiepNhanJs",
             });
         }
 
-        // Thêm đoạn này ngay sau khai báo biến trên
-        //$scope.UserRole = $cookieStore.get("roleId"); // Lấy role từ cookie
-        //console.log("Tất cả cookie:", $cookies.getAll());
-        //console.log("usrerole:", $cookieStore.get("roleId"));
-        //$scope.IsCanBoTiepNhan = ($scope.UserRole === 'CanBoTiepNhan');
 
         // Init data
         var init = function () {

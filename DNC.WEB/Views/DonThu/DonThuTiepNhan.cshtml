@@ -166,7 +166,7 @@
                                 @*<td>{{item.TenNguoiNhap}}</td>*@
                                 <td class="text-center">
                                     <span class="text-center control-btn action-buttons">
-                                        <a class="red" data-toggle="modal" data-target="#myModal" ng-click="ShowHuongXuLy(item.Id)" id="{{item.Id}}" ng-if="checkFunctionRoles('1')&& !IsCanBoTiepNhan" data-placement=" top" title="Xử lý hồ sơ">
+                                        <a class="red" data-toggle="modal" data-target="#myModal" ng-click="ShowHuongXuLy(item.Id)" id="{{item.Id}}" ng-if="checkFunctionRoles('1')" data-placement=" top" title="Xử lý hồ sơ">
                                             <i class="ace-icon fa fa-tasks bigger-180"></i>
                                         </a>
                                         <a class="blue" ng-click="update(item.Id);" id="{{item.Id}}" ng-if="checkFunctionRoles('1')" data-placement="top" title="Sửa">

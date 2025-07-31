@@ -14,6 +14,7 @@ using System.IO;
 using System.Net.Mime;
 using DNC.WEB.Services;
 using System.Data.Entity.Migrations;
+using System.Data.SqlClient;
 
 namespace DNC.WEB.Controllers
 {
@@ -243,6 +244,27 @@ namespace DNC.WEB.Controllers
                 return Json(user, JsonRequestBehavior.AllowGet);
             return HttpNotFound();
         }
+
+        //// Lấy tên Name của role theo id của user
+        //[HttpGet]
+        //public ActionResult GetTenVaiTroById(int id)
+        //{
+        //    // Tìm user theo id
+        //    var user = _db.Users.FirstOrDefault(x => x.Id == id && !x.IsDeleted);
+        //    if (user == null)
+        //        return HttpNotFound();
+
+        //    // Lấy roleId đầu tiên của user (nếu có nhiều role, lấy 1 role đầu tiên)
+        //    var userRole = _db.UsersRoles.FirstOrDefault(ur => ur.UserId == user.Id);
+        //    if (userRole == null)
+        //        return Json(new { RoleName = "" }, JsonRequestBehavior.AllowGet);
+
+        //    // Lấy tên vai trò
+        //    var role = _db.Roles.FirstOrDefault(r => r.Id == userRole.RoleId && !r.IsDelete);
+        //    var roleName = role != null ? role.Name : "";
+
+        //    return Json(new { RoleName = roleName }, JsonRequestBehavior.AllowGet);
+        //}
 
         [HttpGet]
         public Users GetUserInfoById(int id)
@@ -662,5 +684,36 @@ namespace DNC.WEB.Controllers
         {
             return Json(_db.Users.Where(x => x.DepartmentId == departmentId).OrderBy(x => x.UserName).ToList(), JsonRequestBehavior.AllowGet);
         }
+
+        //[HttpGet]
+        //public JsonResult GetCurrentRoleName()
+        //{
+        //    // Lấy UserName từ Identity
+        //    var userName = User.Identity.Name;
+        //    if (string.IsNullOrEmpty(userName))
+        //    {
+        //        return Json(new { RoleName = "" }, JsonRequestBehavior.AllowGet);
+        //    }
+
+        //    // Lấy user từ DbContext
+        //    var user = _db.Users.FirstOrDefault(u => u.UserName == userName && !u.IsDeleted);
+        //    if (user == null)
+        //    {
+        //        return Json(new { RoleName = "" }, JsonRequestBehavior.AllowGet);
+        //    }
+
+        //    // Lấy roleId đầu tiên của user (nếu có nhiều role, lấy 1 role đầu tiên)
+        //    var userRole = _db.UsersRoles.FirstOrDefault(ur => ur.UserId == user.Id);
+        //    if (userRole == null)
+        //    {
+        //        return Json(new { RoleName = "" }, JsonRequestBehavior.AllowGet);
+        //    }
+
+        //    // Lấy tên vai trò
+        //    var role = _db.Roles.FirstOrDefault(r => r.Id == userRole.RoleId && !r.IsDelete);
+        //    var roleName = role != null ? role.Name : "";
+
+        //    return Json(new { RoleName = roleName }, JsonRequestBehavior.AllowGet);
+        //}
     }
 }
