@@ -135,12 +135,13 @@
                             <tr>
                                 <th class="text-center" style="width: 3%">STT</th>
                                 @*<th class="text-center" style="width: 3%">MÃ ĐƠN</th>*@
-                                <th class="text-center" style="width: 8%">Nguồn đơn</th>
+                                @*<th class="text-center" style="width: 8%">Nguồn đơn</th>*@
                                 <th class="text-center" style="width: 8%">Ngày nhập</th>
                                 <th class="text-center" style="width: 10%">Loại đối tượng / Số người</th>
                                 <th class="text-center" style="width: 20%">Tên chủ đơn / Địa chỉ</th>
                                 <th class="text-center">Nội dung hồ sơ</th>
                                 <th class="text-center" style="width: 15%">Trạng thái / Hướng xử lý</th>
+                                <th class="text-center" style="width: 10%">Cán bộ xử lý</th>
                                 @*<th class="text-center" style="width: 10%">Cán bộ nhập</th>*@
                                 <th class="text-center" style="width: 5%">Thao tác</th>
                             </tr>
@@ -149,7 +150,7 @@
                             <tr ng-repeat="item in lstDonThu">
                                 <td class="text-center">{{$index+1+(pageSize*(pageIndex-1))}}</td>
                                 @*<td class="text-center">{{item.Id}}</td>*@
-                                <td>{{item.TenNguonDon}}</td>
+                                @*<td>{{item.TenNguonDon}}</td>*@
                                 <td class="text-center">{{ item.NgayNhap | date:"dd/MM/yyyy" }}</td>
                                 <td class="text-center"> {{item.TenDoiTuong}} <hr style="width: 100%; margin: 5px 0; border-color: #b7b7b7; border-bottom: none; "> {{item.SoNguoi}}</td>
                                 <td>
@@ -165,7 +166,7 @@
                                     <span ng-if="item.IdTrangThai==99" class="label label-sm label-info">{{item.TenTrangThai}}</span>
                                     <hr style="width: 100%; margin: 5px 0; border-color: #b7b7b7; border-bottom: none; ">{{item.TenHuongXuLy}}
                                 </td>
-                                @*<td>{{item.TenNguoiNhap}}</td>*@
+                                <td>{{item.TenCanBoXuLy}}</td>
                                 <td class="text-center">
                                     <span class="text-center control-btn action-buttons">
                                         <a class="blue" data-toggle="modal" data-target="#myModal" ng-click="ShowHuongXuLy(item.Id)" id="{{item.Id}}" ng-if="checkFunctionRoles('1')" data-placement=" top" title="Xử lý hồ sơ">
@@ -530,7 +531,7 @@
                                             <th class="text-center" style="width: 15%">Tên bước thực hiện</th>
                                             <th class="text-center" style="width: 20%">Đơn vị / Người thực hiện </th>
                                             <th class="text-center">Ý kiến xử lý / Nội dung thụ lý giải quyết </th>
-                                            <th class="text-center" style="width: 15%">File đính kèm</th>
+                                            <th class="text-center" style="width: 15%">File đính kèm khi xử lý</th>
                                             <th class="text-center" style="width: 10%">Ngày thực hiện</th>
                                         </tr>
                                     </thead>

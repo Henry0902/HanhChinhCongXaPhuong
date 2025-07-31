@@ -526,7 +526,7 @@
                                             <th class="text-center" style="width: 15%">Tên bước thực hiện</th>
                                             <th class="text-center" style="width: 20%">Đơn vị / Người thực hiện </th>
                                             <th class="text-center">Ý kiến xử lý / Nội dung thụ lý giải quyết </th>
-                                            <th class="text-center" style="width: 15%">File đính kèm</th>
+                                            <th class="text-center" style="width: 15%">File đính kèm khi xử lý</th>
                                             <th class="text-center" style="width: 10%">Ngày thực hiện</th>
                                         </tr>
                                     </thead>
@@ -573,11 +573,11 @@
                 <div class="modal-body">
                     <div id="ThongTinTiepDan" class="tab-pane fade active in">
                         <div class="col-sm-12">
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <div class="form-horizontal" role="form">
                                     <div class="form-group">
-                                        <div class="col-sm-6 control-label no-padding-right bolder"> Ngày ban hành: <b class="red">(*)</b>:</div>
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-4 control-label no-padding-right bolder"> Ngày trả kết quả: <b class="red">(*)</b>:</div>
+                                        <div class="col-sm-8">
                                             <div class="input-group form-group-option date date-picker">
                                                 <input id="txtNgayBanHanh" class=" form-control date-picker" ng-model="KetLuan.NgayBanHanh" type="text">
                                                 <span class="input-group-addon">
@@ -588,70 +588,74 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-8">
-                                <div class="form-horizontal" role="form">
-                                    <div class="form-group">
-                                        <div class="col-sm-4 control-label no-padding-right bolder"> Văn bản kết luận: </div>
-                                        <div class="col-sm-8">
-                                            <span class="btn btn-info btn-file" id="files" style="padding: inherit;" tabindex="23">
-                                                <i class="ace-icon fa fa-upload"></i>Tải File từ máy tính<input type="file" id="file" accept=".doc,.docx,.pdf,.xls,.xlsx,.jpg" name="file" multiple onchange="angular.element(this).scope().selectFileforUpload(this)" />
-                                            </span>
-                                            Định dạng cho phép: doc, docx, pdf, xls, xlsx, jpg, jpeg, png. Kích cỡ tối đa 10mb
-                                            <table>
-                                                <tbody>
-                                                    <tr ng-repeat="item in lstDataForPlugin track by $index" style="height: 25px">
-                                                        <td class="text-center">{{$index+1}}</td>
-                                                        <td>&nbsp;&nbsp;&nbsp;{{item.file_original}}</td>
-                                                        <td class="text-center">
-                                                            <span class="text-center control-btn">
-                                                                <a class="red" ng-click="deleteFile(item.Id);" data-placement="top" title="Xóa" style="margin-left: 10px;">
-                                                                    <i class="ace-icon fa fa-trash-o bigger-150"></i>
-                                                                </a>
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                                <tbody>
-                                                    <tr ng-repeat="items in fileList track by $index" style="height: 25px">
-                                                        <td class="text-center">{{$index+1 + lstDataForPlugin.length}}.</td>
-                                                        <td>&nbsp;&nbsp;&nbsp;{{items.file.name.split('.')[0]}}</td>
-                                                        <td>
-                                                            <span class="text-center control-btn">
-                                                                <a class="red" ng-click="removeFile(items);" data-placement="top" title="Xóa" style="margin-left: 10px;">
-                                                                    <i class="ace-icon fa fa-remove bigger-150"></i>
-                                                                </a>
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-                        <div class="col-sm-12">
-                            <div class="col-sm-6">
-                                <div class="form-horizontal" role="form">
-                                    <div class="form-group">
-                                        <div class="col-sm-4 control-label no-padding-right bolder"> Loại kết quả: <b class="red">(*)</b>:</div>
-                                        <div class="col-sm-8">
-                                            <select class="form-control" id="ddlLoaiKetQua" ng-model="KetLuan.IdLoaiKetQua">
-                                                <option value="-1">--- Chọn loại kết quả ---</option>
-                                                <option ng-repeat="item in lstLoaiKetQua" value="{{item.Id}}" ng-selected="KetLuan.IdLoaiKetQua == item.Id">{{item.TenLoaiKetQua}}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-12">
                             <div class="col-sm-12">
-                                <div class="form-horizontal" role="form">
-                                    <div class="form-group">
-                                        <div class="col-sm-2 control-label no-padding-right bolder"> Nội dung kết quả: <b class="red">(*)</b>:</div>
-                                        <div class="col-sm-10">
-                                            <textarea id="txtNoiDung" class="form-control" ng-model="KetLuan.NoiDung" rows="2"></textarea>
+                                <div class="col-sm-6">
+                                    <div class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <div class="col-sm-4 control-label no-padding-right bolder"> Loại kết quả: <b class="red">(*)</b>:</div>
+                                            <div class="col-sm-8">
+                                                <select class="form-control" id="ddlLoaiKetQua" ng-model="KetLuan.IdLoaiKetQua">
+                                                    <option value="-1">--- Chọn loại kết quả ---</option>
+                                                    <option ng-repeat="item in lstLoaiKetQua" value="{{item.Id}}" ng-selected="KetLuan.IdLoaiKetQua == item.Id">{{item.TenLoaiKetQua}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="col-sm-12">
+                                    <div class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <div class="col-sm-2 control-label no-padding-right bolder"> Nội dung kết quả: <b class="red">(*)</b>:</div>
+                                            <div class="col-sm-10">
+                                                <textarea id="txtNoiDung" class="form-control" ng-model="KetLuan.NoiDung" rows="2"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="col-sm-12">
+                                    <div class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <div class="col-sm-2 control-label no-padding-right bolder"> Đính kèm kết quả điện tử: </div>
+                                            <div class="col-sm-8">
+                                                <span class="btn btn-info btn-file" id="files" style="padding: inherit;" tabindex="23">
+                                                    <i class="ace-icon fa fa-upload"></i>Tải File từ máy tính<input type="file" id="file" accept=".doc,.docx,.pdf,.xls,.xlsx,.jpg" name="file" multiple onchange="angular.element(this).scope().selectFileforUpload(this)" />
+                                                </span>
+                                                Định dạng cho phép: doc, docx, pdf, xls, xlsx, jpg, jpeg, png. Kích cỡ tối đa 10mb
+                                                <table>
+                                                    <tbody>
+                                                        <tr ng-repeat="item in lstDataForPlugin track by $index" style="height: 25px">
+                                                            <td class="text-center">{{$index+1}}</td>
+                                                            <td>&nbsp;&nbsp;&nbsp;{{item.file_original}}</td>
+                                                            <td class="text-center">
+                                                                <span class="text-center control-btn">
+                                                                    <a class="red" ng-click="deleteFile(item.Id);" data-placement="top" title="Xóa" style="margin-left: 10px;">
+                                                                        <i class="ace-icon fa fa-trash-o bigger-150"></i>
+                                                                    </a>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tbody>
+                                                        <tr ng-repeat="items in fileList track by $index" style="height: 25px">
+                                                            <td class="text-center">{{$index+1 + lstDataForPlugin.length}}.</td>
+                                                            <td>&nbsp;&nbsp;&nbsp;{{items.file.name.split('.')[0]}}</td>
+                                                            <td>
+                                                                <span class="text-center control-btn">
+                                                                    <a class="red" ng-click="removeFile(items);" data-placement="top" title="Xóa" style="margin-left: 10px;">
+                                                                        <i class="ace-icon fa fa-remove bigger-150"></i>
+                                                                    </a>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -696,7 +700,7 @@
                         <div style="clear: both"></div>
                         <div class="hr1 dotted"></div>
                         <div class="space-2"></div>                     
-                        <div class="col-sm-12">
+                        @*<div class="col-sm-12">
                             <div class="col-sm-6">
                                 <div class="form-horizontal" role="form">
                                     <div class="form-group">
@@ -765,7 +769,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>*@
                     </div>
                 </div>
                 <div class="modal-footer">

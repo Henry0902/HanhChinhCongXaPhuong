@@ -327,7 +327,7 @@ myApp.controller("DonThuGiaiQuyetJs",
             $scope.XuLyDonThu.IdDonVi = $cookieStore.get("DeparmentId");
             $scope.XuLyDonThu.IdNguoiTao = $cookieStore.get("UserID");
             $scope.XuLyDonThu.VuViecId = data.VuViecId;
-            $scope.XuLyDonThu.IdDonThuGoc = data.IdDonThuGoc;
+            $scope.XuLyDonThu.IdDonThuGoc = data.IdDonThu;
             crudService.create("/XuLyDonThu/Create", $scope.XuLyDonThu)
               .success(function (result) {
                   $.notify("Cập nhật nội dung giải quyết hồ sơ thành công !", "success");
@@ -335,6 +335,7 @@ myApp.controller("DonThuGiaiQuyetJs",
                   if ($scope.fileList.length != 0) {
                       var count = 0;
                       for (var i = 0; i < $scope.fileList.length; i++) {
+
                           fileUploadService.UploadedFile($scope.fileList[i].file, result.Id, $scope.FileType, result.IdDonThuGoc);
                           count++;
                       }

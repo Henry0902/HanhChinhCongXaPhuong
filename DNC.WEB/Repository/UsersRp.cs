@@ -45,6 +45,35 @@ namespace DNC.WEB.Repository
             }
         }
 
+        // lấy user theo role id
+        public List<UsersGridView> GetUsersByRole(int roleId)
+        {
+            var data = _obj.Database.SqlQuery<UsersGridView>("Users_GetByRole @RoleId",
+                    new SqlParameter("@RoleId", roleId)
+                    ).ToList();
+            return data;
+        }
+
+        public List<UsersGridView> GetUserById(int IdNguoiTao)
+        {
+            var data = _obj.Database.SqlQuery<UsersGridView>("Users_GetByRole @RoleId",
+                    new SqlParameter("@RoleId", IdNguoiTao)
+                    ).ToList();
+            return data;
+        }
+
+        //public Users GetById(int id)
+        //{
+        //    try
+        //    {
+        //        return _obj.Users.FirstOrDefault(u => u.Id == id);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return null;
+        //    }
+        //}
+
         public List<int> CheckExisted(string phoneNumber, string email, string idCard)
         {
             var listResponse = new List<int>();

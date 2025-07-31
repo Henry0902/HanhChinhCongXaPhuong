@@ -37,6 +37,7 @@
         var lblpw = document.getElementById("lblmatkhau");
         var lblemail = document.getElementById("lblemail");
         var lblsdt = document.getElementById("lblsdt");
+        var lblidcard = document.getElementById("lblidcard");
         var lblquyen = document.getElementById("lblquyen");
         var department = document.getElementsByName("department");
         var quyen = document.getElementsByName("quyen");
@@ -89,6 +90,18 @@
                 $("#lblsdt").hide();
             }
         }); 
+        $('#IdCard').change(function () {
+            var idcard = document.forms["createForm"]["IdCard"].value;
+            if (idcard == null || idcard == "") {
+                $("#lblidcard").hide();
+            } else if (!/^\d{12}$/.test(idcard)) {
+                $("#lblidcard").show();
+                lblidcard.textContent = "Số CCCD phải gồm 12 số!";
+                return false;
+            } else {
+                $("#lblidcard").hide();
+            }
+        });
         // Clear Data
         var clearData = function() {
             $scope.lstPage = [];
@@ -691,6 +704,16 @@
                     mobile1.focus();
                     return true;
                 }
+                var idcard = document.forms["createForm"]["IdCard"].value;
+                if (data.IdCard == null || data.IdCard == "") {
+                    $("#lblidcard").hide();
+                }
+                else if (idcard.length < 11 || idcard.length > 12) {
+                    $("#lblidcard").show();
+                    lblidcard.textContent = "Số CCCD không đúng!";
+                    idcard.focus();
+                    return true;
+                }
                 var regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                 var x = document.forms["createForm"]["EmailUser"].value;
                 if (data.Email == null || data.Email == "") {
@@ -768,6 +791,15 @@
                     $("#lblsdt").show();
                     lblsdt.textContent = "Số điện thoại không đúng!";
                     mobile1.focus();
+                    return true;
+                }
+                var idcard = document.forms["createForm"]["IdCard"].value;
+                if (data.IdCard == null || data.IdCard == "") {
+                    $("#lblidcard").hide();
+                } else if (idcard.length < 11 || idcard.length > 12) {
+                    $("#lblidcard").show();
+                    lblidcard.textContent = "Số CCCD không đúng!";
+                    idcard.focus();
                     return true;
                 }
                 var field = $("input[name='quyen']").serializeArray();

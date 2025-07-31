@@ -5,6 +5,7 @@ myApp.controller("DonThuKetLuanJs",
         
         $scope.namID = -1;
         $scope.NguonDonId = -1;
+        $scope.IdLoaiKetQua = -1;
         $scope.loaihsID = -1;
         $scope.TuNgay = '';
         $scope.DenNgay = '';
@@ -340,12 +341,13 @@ myApp.controller("DonThuKetLuanJs",
                     }
 
                     //Cập nhật trạng thái cho hồ sơ
+                    var idTrangThai = (data.IdLoaiKetQua == 2) ? 2 : 6;
                     $http({
                         url: "/DonThu/UpdateTrangThai",
                         method: "GET",
                         params: {
                             Id: data.IdDonThu,
-                            IdTrangThai: 6 //trạng thái phê duyệt kết quả giải quyết
+                            IdTrangThai: idTrangThai //trạng thái phê duyệt kết quả giải quyết
                         }
                         }).success(function () {
                             createXuLyDonThu(data);
@@ -384,12 +386,13 @@ myApp.controller("DonThuKetLuanJs",
                     }
 
                     //Cập nhật trạng thái cho hồ sơ
+                    var idTrangThai = (data.IdLoaiKetQua == 2) ? 2 : 6;
                     $http({
                         url: "/DonThu/UpdateTrangThai",
                         method: "GET",
                         params: {
                             Id: data.IdDonThu,
-                            IdTrangThai: 6 //trạng thái phê duyệt kết quả giải quyết
+                            IdTrangThai: idTrangThai //trạng thái phê duyệt kết quả giải quyết
 
                         }
                     }).success(function () {

@@ -189,6 +189,13 @@
                                     </div>
                                 </div>
                                 <div class="profile-info-row">
+                                    <div class="profile-info-name"> CCCD:</div>
+                                    <div class="profile-info-value">
+                                        <input id="IdCard" ng-enter="EntnkyND('Address')" onkeypress="return isNumber(event)" type="text" class="form-control input-sm" ng-model="User.IdCard" required autofocus tabindex="6">
+                                        <label class="help-block" id="lblidcard" ng-model="lblidcard" style="display: none"></label>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
                                     <div class="profile-info-name"> Email:</div>
                                     <div class="profile-info-value">
                                         <input type="text" class="form-control input-sm" id="EmailUser" ng-enter="EntnkyND('Mobile1')" ng-model="User.Email" required autofocus tabindex="5">
@@ -287,11 +294,19 @@
                                     </div>
                                 </div>
                                 <div class="profile-info-row">
+                                    <div class="profile-info-name"> CCCd: </div>
+
+                                    <div class="profile-info-value">
+                                        <span class="editable" ng-model="User.IdCard">{{User.IdCard}}</span>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
                                     <div class="profile-info-name"> Ngày sinh: </div>
                                     <div class="profile-info-value">
                                         <span class="editable" ng-model="User.DateOfBirth">{{User.DateOfBirth}}</span>
                                     </div>
                                 </div>
+
                                 <div class="profile-info-row">
                                     <div class="profile-info-name"> Điện thoại: </div>
 

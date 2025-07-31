@@ -166,7 +166,7 @@
                                 @*<td>{{item.TenNguoiNhap}}</td>*@
                                 <td class="text-center">
                                     <span class="text-center control-btn action-buttons">
-                                        <a class="red" data-toggle="modal" data-target="#myModal" ng-click="ShowHuongXuLy(item.Id)" id="{{item.Id}}" ng-if="checkFunctionRoles('1')" data-placement=" top" title="Xử lý hồ sơ">
+                                        <a class="red" data-toggle="modal" data-target="#myModal" ng-click="ShowHuongXuLy(item.Id)" id="{{item.Id}}" ng-if="checkFunctionRoles('1')&& !IsCanBoTiepNhan" data-placement=" top" title="Xử lý hồ sơ">
                                             <i class="ace-icon fa fa-tasks bigger-180"></i>
                                         </a>
                                         <a class="blue" ng-click="update(item.Id);" id="{{item.Id}}" ng-if="checkFunctionRoles('1')" data-placement="top" title="Sửa">
@@ -510,7 +510,7 @@
                                             <th class="text-center" style="width: 15%">Tên bước thực hiện</th>
                                             <th class="text-center" style="width: 20%">Đơn vị / Người thực hiện </th>
                                             <th class="text-center">Ý kiến xử lý / Nội dung thụ lý giải quyết </th>
-                                            <th class="text-center" style="width: 15%">File đính kèm</th>
+                                            <th class="text-center" style="width: 15%">File đính kèm khi xử lý</th>
                                             <th class="text-center" style="width: 10%">Ngày thực hiện</th>
                                         </tr>
                                     </thead>
@@ -575,7 +575,16 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="profile-info-row" ng-if="HuongXuLy.IdHuongXuLy == 2 || HuongXuLy.IdHuongXuLy == 3">
+                            <div class="profile-info-row" ng-if="HuongXuLy.IdHuongXuLy == 1">
+                                <div class="profile-info-name"> Phân công cán bộ<b class="red">(*)</b>:</div>
+                                <div class="profile-info-value">
+                                    <select style="padding: 0px; border: 0px" ui-select2 class="form-control" id="ddlCanBoXuLy" ng-model="HuongXuLy.IdCanBoXuLy">
+                                        <option value="-1">--- Chọn cán bộ ---</option>
+                                        <option ng-repeat="item in lstCanBoXuLy" value="{{item.Id}}">{{item.DisplayName}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="profile-info-row" ng-if="HuongXuLy.IdHuongXuLy == 3">
                                 <div class="profile-info-name"> Cơ quan tiếp nhận<b class="red">(*)</b>:</div>
                                 <div class="profile-info-value">
                                     <select style="padding: 0px; border: 0px" ui-select2 class="form-control" id="ddlCoQuanTiepNhan" ng-model="HuongXuLy.IdDonViTiepNhan">
@@ -584,6 +593,16 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="profile-info-row" ng-if="HuongXuLy.IdHuongXuLy == 3">
+                                <div class="profile-info-name"> Phân công cán bộ<b class="red">(*)</b>:</div>
+                                <div class="profile-info-value">
+                                    <select style="padding: 0px; border: 0px" ui-select2 class="form-control" id="ddlCanBoXuLy" ng-model="HuongXuLy.IdNguoiTao">
+                                        <option >{{TenCanBoTiepNhan}}</option>
+                                    </select>
+                                    
+                                </div>
+                            </div>
+
                             <div class="profile-info-row" ng-show="HuongXuLy.IdHuongXuLy == 1 || HuongXuLy.IdHuongXuLy == 2">
                                 <div class="profile-info-name"> Thời hạn thụ lý giải quyết:</div>
                                 <div class="profile-info-value">

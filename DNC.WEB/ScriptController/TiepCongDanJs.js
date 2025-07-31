@@ -858,6 +858,17 @@ myApp.controller("TiepCongDanJs",
                 return false;
             }
 
+            if (data.SoGiayTo == null || data.SoGiayTo.trim() == "") {
+                $("#txtCMTND").notify("Nhập số giấy tờ (CMND/CCCD)", "error");
+                $("#txtCMTND").focus();
+                return false;
+            }
+            if (!/^\d{9}$|^\d{12}$/.test(data.SoGiayTo)) {
+                $("#txtCMTND").notify("Số giấy tờ phải gồm 9 hoặc 12 số!", "error");
+                $("#txtCMTND").focus();
+                return false;
+            }
+
             //if (data.IdLoaiVu == 1 || data.IdLoaiVu == 2) {
             //    if (data.IdLoaiVuKNTC == null || data.IdLoaiVuKNTC == -1) {
             //        $("#ddlLoaiKNTC").notify("Chọn loại vụ khiếu nại tố cáo", "error");

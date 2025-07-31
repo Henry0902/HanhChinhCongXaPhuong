@@ -152,18 +152,20 @@ namespace DNC.WEB.Repository
             return data;
         }
 
-        public bool UpdateHuongXuLy(int Id, int IdHuongXuLy, int IdDonViXuLy, int IdDonViXacMinh, int IdDonViTiepNhan, string NgayThoiHanThuLy, int IdTrangThai)
+        public bool UpdateHuongXuLy(int Id, int IdHuongXuLy, int IdDonViXuLy, int IdDonViXacMinh, int IdDonViTiepNhan, int IdCanBoXuLy, int IdNguoiTao ,string NgayThoiHanThuLy, int IdTrangThai)
         {
             using (var trans = _obj.Database.BeginTransaction())
             {
                 try
                 {
-                    _obj.Database.ExecuteSqlCommand("DonThu_UpdateHuongXuLy @Id,@IdHuongXuLy,@IdDonViXuLy,@IdDonViXacMinh,@IdDonViTiepNhan,@NgayThoiHanThuLy,@IdTrangThai",
+                    _obj.Database.ExecuteSqlCommand("DonThu_UpdateHuongXuLy @Id,@IdHuongXuLy,@IdDonViXuLy,@IdDonViXacMinh,@IdDonViTiepNhan,@IdCanBoXuLy,@IdNguoiTao,@NgayThoiHanThuLy,@IdTrangThai",
                         new SqlParameter("@Id", Id),
                         new SqlParameter("@IdHuongXuLy", IdHuongXuLy),
                         new SqlParameter("@IdDonViXuLy", IdDonViXuLy),
                         new SqlParameter("@IdDonViXacMinh", IdDonViXacMinh),
                         new SqlParameter("@IdDonViTiepNhan", IdDonViTiepNhan),
+                        new SqlParameter("@IdCanBoXuLy", IdCanBoXuLy),
+                        new SqlParameter("@IdNguoiTao", IdNguoiTao),
                         new SqlParameter("@NgayThoiHanThuLy", NgayThoiHanThuLy),
                         new SqlParameter("@IdTrangThai", IdTrangThai));
                     trans.Commit();

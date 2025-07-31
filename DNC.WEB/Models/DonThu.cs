@@ -53,6 +53,8 @@ namespace DNC.WEB.Models
         public int? IdDonThuGoc { get; set; }
         public DateTime? Approve_at { get; set; }
         public int? Pre_Status { get; set; }
+
+        public int? IdCanBoXuLy { get; set; }
     }
 
     public class DonThuSearch
@@ -111,6 +113,9 @@ namespace DNC.WEB.Models
         public DateTime? Approve_at { get; set; }
         public int? Pre_Status { get; set; }
         public int IsChuyenDon { get; set; }
+        public int? IdCanBoXuLy { get; set; }
+        public string TenCanBoXuLy { get; set; }
+        public string TenCanBoTiepNhan { get; set; }
     }
 
     public class DonThuSearchHuy
@@ -169,6 +174,7 @@ namespace DNC.WEB.Models
         public int? IdDonThuGoc { get; set; }
         public DateTime? Approve_at { get; set; }
         public int? Pre_Status { get; set; }
+        public int? IdCanBoXuLy { get; set; }
     }
 
     public class DonThuInfo
@@ -228,6 +234,7 @@ namespace DNC.WEB.Models
         public int? IdDonThuGoc { get; set; }
         public DateTime? Approve_at { get; set; }
         public int? Pre_Status { get; set; }
+        public int? IdCanBoXuLy { get; set; }
     }
 
     public class DonThuInfoView
@@ -288,6 +295,7 @@ namespace DNC.WEB.Models
         public int? IdDonThuGoc { get; set; }
         public DateTime? Approve_at { get; set; }
         public int? Pre_Status { get; set; }
+        public int? IdCanBoXuLy { get; set; }
     }
 
     public class DonThuInfoPrint

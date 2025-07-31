@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using DNC.CM;
 using DNC.WEB.Models;
 using DNC.WEB.Repository;
+using System.Linq;
 
 namespace DNC.WEB.Controllers
 {
@@ -158,6 +159,25 @@ namespace DNC.WEB.Controllers
         {
             _obj = new RolesRp();
             return Json(_obj.SearchAll(pageIndex, pageSize, keyword, status), JsonRequestBehavior.AllowGet);
+        }
+
+        // lấy roleid bằng tên
+        [HttpGet]
+        public ActionResult GetRoleIdByName(string roleName)
+        {
+            // Đảm bảo roleName không null và loại bỏ khoảng trắng thừa
+            if (string.IsNullOrEmpty(roleName))
+                return Json(0, JsonRequestBehavior.AllowGet);
+
+            var db = new DbConnectContext();
+            // Tìm role theo tên (không phân biệt hoa thường, loại bỏ khoảng trắng)
+            var role = db.Roles
+                .FirstOrDefault(r => r.Name.Trim().ToLower() == roleName.Trim().ToLower() && r.IsDelete == false);
+
+            if (role != null)
+                return Json(role.Id, JsonRequestBehavior.AllowGet);
+            else
+                return Json(0, JsonRequestBehavior.AllowGet); // Không tìm thấy
         }
 
         // Đếm số người dùng và số chức năng của nhóm quyền

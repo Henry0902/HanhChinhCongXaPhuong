@@ -4,10 +4,13 @@ myApp.controller("DonThuTiepNhanJs",
         // Tham số  
         
         $scope.NguonDonId = -1;
+        $scope.RoleId = 2016;
         $scope.TuNgay = '';
         $scope.DenNgay = '';
         $scope.Keyword = '';
         $scope.DeparmentId = $cookieStore.get("DeparmentId");
+
+        
 
         $scope.lstDonThu = [];
 
@@ -18,8 +21,9 @@ myApp.controller("DonThuTiepNhanJs",
         $scope.HuongXuLy = {};
         $scope.HuongXuLy.IdHuongXuLy = -1;
         $scope.HuongXuLy.IdDonViXuLy = $cookieStore.get("DeparmentId");
-        $scope.HuongXuLy.IdDonViXacMinh = -1;
+        $scope.HuongXuLy.IdDonViXacMinh = $cookieStore.get("DeparmentId");;
         $scope.HuongXuLy.IdDonViTiepNhan = -1;
+        $scope.HuongXuLy.IdCanBoXuLy = -1;
         $scope.HuongXuLy.NgayThoiHanThuLy = '';
         $scope.XuLyDonThu = {};
         $scope.today = new Date();
@@ -83,6 +87,54 @@ myApp.controller("DonThuTiepNhanJs",
         }
         getAllDepartment();
 
+        //lấy danh Cán bộ xử lý
+        
+        var GetAllByRole = function () {
+            // Sử dụng method mới để lấy chỉ cán bộ xử lý
+            crudService.getAll("/Roles/GetRoleIdByName?roleName=cán bộ xử lý")
+                .success(function (roleId) {
+                    if (roleId && roleId > 0) {
+                        crudService.getAll("/Users/GetAllByRole?roleId=" + roleId)
+                            .success(function (data) {
+                                $scope.lstCanBoXuLy = data;
+                            });
+                    } else {
+                        $scope.lstCanBoXuLy = [];
+                        alert("Không tìm thấy RoleId cho vai trò này!");
+                    }
+                });
+        }
+        GetAllByRole();
+
+        // Lấy ra tên cán bộ tiếp nhận
+        $scope.TenCanBoTiepNhan = "";
+        var getTenCanBoTiepNhan = function (idNguoiTao) {
+            if (!idNguoiTao) {
+                $scope.TenCanBoTiepNhan = "";
+                return;
+            }
+            crudService.getAll("/Users/GetDisplayNameById?id=" + idNguoiTao)
+                .success(function (data) {
+                    
+                    $scope.TenCanBoTiepNhan = data.DisplayName || "";
+                    
+                });
+        };
+        getTenCanBoTiepNhan();
+
+        // Theo dõi sự thay đổi của IdHuongXuLy
+        $scope.$watch('HuongXuLy.IdHuongXuLy', function (newVal, oldVal) {
+            if (newVal == 1) {
+                GetAllByRole();
+                $scope.TenCanBoTiepNhan = "";
+            } else if (newVal == 3) {
+                getTenCanBoTiepNhan($scope.DonThu.IdNguoiNhap);
+            } else {
+                $scope.TenCanBoTiepNhan = "";
+            }
+        });
+
+
         //lấy danh phòng ban đơn vị con 1 cấp
         //$scope.lstDepartments = [];
         //var getDepartmentLevel1 = function () {
@@ -110,6 +162,12 @@ myApp.controller("DonThuTiepNhanJs",
                 }
             });
         }
+
+        // Thêm đoạn này ngay sau khai báo biến trên
+        //$scope.UserRole = $cookieStore.get("roleId"); // Lấy role từ cookie
+        //console.log("Tất cả cookie:", $cookies.getAll());
+        //console.log("usrerole:", $cookieStore.get("roleId"));
+        //$scope.IsCanBoTiepNhan = ($scope.UserRole === 'CanBoTiepNhan');
 
         // Init data
         var init = function () {
@@ -231,6 +289,7 @@ myApp.controller("DonThuTiepNhanJs",
             $scope.HuongXuLy.IdHuongXuLy = -1;
             $scope.HuongXuLy.IdDonViXacMinh = -1;
             $scope.HuongXuLy.IdDonViTiepNhan = -1;
+            $scope.HuongXuLy.IdCanBoXuLy = -1;
             $scope.HuongXuLy.NgayThoiHanThuLy = '';
             $scope.fileList = [];
             
@@ -408,6 +467,7 @@ myApp.controller("DonThuTiepNhanJs",
             // Reset các giá trị
             $scope.HuongXuLy.IdDonViXacMinh = -1;
             $scope.HuongXuLy.IdDonViTiepNhan = -1;
+            $scope.HuongXuLy.IdCanBoXuLy = -1;
             
             // Nếu chọn hướng xử lý = 1 (xác minh), tự động set cơ quan xác minh là đơn vị hiện tại của người dùng
             if ($scope.HuongXuLy.IdHuongXuLy == 1) {
@@ -422,6 +482,17 @@ myApp.controller("DonThuTiepNhanJs",
 
         // Thực hiện lưu trên modal Insert Update
         $scope.preCreateHuongXuLy = function (data) {
+            // Gán IdDonViXacMinh bằng DeparmentId từ cookieStore
+            if (data.IdHuongXuLy == 1) {
+                data.IdDonViXacMinh = $cookieStore.get("DeparmentId");
+            }
+            // Đảm bảo IdNguoiTao là Id cán bộ tiếp nhận
+            if (data.IdHuongXuLy == 3) {
+                data.IdDonViXacMinh = $cookieStore.get("DeparmentId");
+                data.IdNguoiTao = $scope.DonThu.IdNguoiNhap;
+            }
+           
+            console.log("Đã gọi preCreateHuongXuLy", data);
             if (data == null) {
                 $("#ddlHuongXuLy").notify("Chọn hướng xử lý", "error");
                 return;
@@ -451,6 +522,18 @@ myApp.controller("DonThuTiepNhanJs",
                 return false;
             }
 
+            if ((data.IdCanBoXuLy == null || data.IdCanBoXuLy == -1) && data.IdDonViXacMinh == null) {
+                $("#ddlCanBoXuLy").notify("Chọn cán bộ xử lý", "error");
+                $("#ddlCanBoXuLy").focus();
+                return false;
+            }
+
+            if ((data.IdNguoiTao == null || data.IdNguoiTao == -1)&& data.IdDonViXacMinh == null) {
+                $("#ddlCanBoXuLy").notify("Chọn cán bộ tiếp nhận", "error");
+                $("#ddlCanBoXuLy").focus();
+                return false;
+            }
+
             data.NgayThoiHanThuLy = $('#txtNgayThoiHanThuLy').val();
 
             createHuongXuLy(data);
@@ -459,8 +542,15 @@ myApp.controller("DonThuTiepNhanJs",
 
         // Hàm thực hiện create HuongXuLy
         var createHuongXuLy = function (data) {
-            //console.log(data); return;
-            data.IdTrangThai = 3; // Trạng thái phê duyệt kết quả xử lý
+            if (data.IdHuongXuLy == 1) {
+                data.IdTrangThai = 3;
+            }
+            if (data.IdHuongXuLy == 3) {
+                data.IdTrangThai = 2;
+            }
+
+            // Đảm bảo IdNguoiTao là Id cán bộ tiếp nhận
+            data.IdNguoiTao = $scope.DonThu.IdNguoiNhap;
 
             return $http({
                 url: "/DonThu/UpdateHuongXuLy",
@@ -471,6 +561,8 @@ myApp.controller("DonThuTiepNhanJs",
                     IdDonViXuLy: $cookieStore.get("DeparmentId"),
                     IdDonViXacMinh: data.IdDonViXacMinh,
                     IdDonViTiepNhan: data.IdDonViTiepNhan,
+                    IdCanBoXuLy: data.IdCanBoXuLy,
+                    IdNguoiTao: $cookieStore.get("UserID"),
                     NgayThoiHanThuLy: data.NgayThoiHanThuLy,
                     IdTrangThai: data.IdTrangThai,
                 }

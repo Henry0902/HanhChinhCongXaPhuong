@@ -347,7 +347,7 @@ namespace DNC.WEB.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
         }
-        public ActionResult UpdateHuongXuLy(int Id, int IdHuongXuLy, int IdDonViXuLy, int IdDonViXacMinh, int IdDonViTiepNhan, string NgayThoiHanThuLy, int IdTrangThai)
+        public ActionResult UpdateHuongXuLy(int Id, int IdHuongXuLy, int IdDonViXuLy, int IdDonViXacMinh, int IdDonViTiepNhan, int IdCanBoXuLy,int IdNguoiTao, string NgayThoiHanThuLy, int IdTrangThai)
         {
             _obj = new DonThuRp();
             Dictionary<string, object> jsonResult = new Dictionary<string, object>();
@@ -358,7 +358,7 @@ namespace DNC.WEB.Controllers
                 {
                     NgayThoiHanThuLy = DateTime.ParseExact(NgayThoiHanThuLy, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy/MM/dd");
                 }
-                var result = _obj.UpdateHuongXuLy(Id, IdHuongXuLy, IdDonViXuLy, IdDonViXacMinh, IdDonViTiepNhan, NgayThoiHanThuLy, IdTrangThai);
+                var result = _obj.UpdateHuongXuLy(Id, IdHuongXuLy, IdDonViXuLy, IdDonViXacMinh, IdDonViTiepNhan, IdCanBoXuLy, IdNguoiTao, NgayThoiHanThuLy, IdTrangThai);
                 if (result)
                 {
                     jsonResult.Add(Constants.STATUS, true);

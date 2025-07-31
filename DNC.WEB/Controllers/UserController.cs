@@ -232,6 +232,18 @@ namespace DNC.WEB.Controllers
             return HttpNotFound();
         }
 
+        //lấy tên user theo id
+        [HttpGet]
+        public ActionResult GetDisplayNameById(int id)
+        {
+            var user = _db.Users.Where(x => x.Id == id)
+                                .Select(x => new { x.DisplayName })
+                                .FirstOrDefault();
+            if (user != null)
+                return Json(user, JsonRequestBehavior.AllowGet);
+            return HttpNotFound();
+        }
+
         [HttpGet]
         public Users GetUserInfoById(int id)
         {
@@ -495,7 +507,35 @@ namespace DNC.WEB.Controllers
             _obj = new UsersRp();
             return Json(_obj.SearchAll(pageIndex, pageSize, name, islocked, isdeleted, roleID), JsonRequestBehavior.AllowGet);
         }
-          
+
+        //get user by role id
+        public ActionResult GetAllByRole(int roleId)
+        {
+            _obj = new UsersRp();
+            var data = _obj.GetUsersByRole(roleId); // Sử dụng stored procedure
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        //lấy ra tên cán bộ tiếp nhận
+        //public ActionResult GetTenCanBoTiepNhan(int IdNguoiTao)
+        //{
+        //    _obj = new UsersRp();
+        //    var data = _obj.GetById(IdNguoiTao); // Sử dụng stored procedure
+        //    return Json(data, JsonRequestBehavior.AllowGet);
+        //}
+
+        //[HttpGet]
+        //public ActionResult GetById(int id)
+        //{
+        //    _obj = new UsersRp();
+        //    var data = _obj.GetById(id);
+        //    if (data != null)
+        //    {
+        //        return Json(data, JsonRequestBehavior.AllowGet);
+        //    }
+        //    return HttpNotFound();
+        //}
+
         [HttpPost]
         public ActionResult getsuggestUser(string keyword)
         {
